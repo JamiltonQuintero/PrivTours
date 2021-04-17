@@ -1,0 +1,72 @@
+﻿@model IEnumerable<PrivTours.Models.Entities.Cliente>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles{
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper dark-mode">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Clientes Private Tours</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Clientes</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <p>
+                <a class="btn btn-outline-success" asp-action="Create"><i class="fa fa-plus-circle"></i> Crear nuevo cliente</a>
+            </p>
+
+            <table class="table dark-mode" id="tabla" >
+                <thead>
+                    <tr>
+                        <th >
+                            @Html.DisplayNameFor(model => model.Nombre)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Nombre)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.ClienteId">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.ClienteId">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.ClienteId">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@section Scripts{
+
+
+    <script src="~/js/Tabla.js"></script>
+}
