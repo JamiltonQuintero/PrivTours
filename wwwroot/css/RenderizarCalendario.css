@@ -1,0 +1,12 @@
+﻿#loading {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#calendar {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 10px;
+}

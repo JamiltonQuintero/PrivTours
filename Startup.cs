@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PrivTours.Models.Abstract;
+using PrivTours.Models.Business;
 using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
 using System;
@@ -34,6 +36,9 @@ namespace PrivTours
             services.AddDbContext<DbContextPriv>(option => option.UseSqlServer(conexion));
 
             services.AddIdentity<UsuarioIdentity, IdentityRole>().AddEntityFrameworkStores<DbContextPriv>();
+
+            services.AddScoped<ISolicitudesBusiness, SolicitudesBusiness>();
+
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -86,7 +91,7 @@ namespace PrivTours
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Admin}/{action=Dashboard}/{id?}");
+                    pattern: "{controller=Solicitudes}/{action=Index}/{id?}");
             });
         }
     }

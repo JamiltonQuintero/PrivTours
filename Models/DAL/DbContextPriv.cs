@@ -20,6 +20,8 @@ namespace PrivTours.Models.DAL
 
         public DbSet<Servicio> Servicios { get; set; }
 
+        public DbSet<Solicitud> Solicitudes { get; set; }
+
         public DbSet<UsuarioIdentity> UsuariosIdentity { get; set; }
 
     }
