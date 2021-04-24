@@ -6,43 +6,170 @@
     <link href="~/css/RenderizarCalendario.css" rel="stylesheet" />
 }
 
-<div class="content-wrapper">
+<div class="content-wrapper dark-mode">
 
-    <div class="content-header">
-        <div class="container-fluid">
+<div class="content-header">
+    <div class="container-fluid">
 
 
-            <div class="intro-y box">
+        <div class="intro-y box">
 
-                <div id='loading'>loading...</div>
-                <div id="calendar">
+            <div id='loading'>loading...</div>
+            <div id="calendar">
 
-                </div>
             </div>
+        </div>
 
-            <!-- Modal Detalle-->
-            <div id="modalSolicitudDetalle" class="modal fade" role="dialog">
-                <div class="modal-dialog">
+        <!-- Modal Detalle-->
 
-                    <!-- Modal content-->
-                    <div class="modal-content">
+        <div class="modal" id="modalSolicitudDetalle">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detalle Solicitud</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
 
-                        <div class="modal-header">
-                            <h1 class="modal-title">Detalle evento</h1>
-                        </div>
+
+                        <!--AQUI VA ELD ETALLE-->
+
+                        <form id="formularioSolicitudEditar">
+
+                            <div class="row">
+
+                                <div class="col 6">
+
+                                    <div class="form group col-6">
+
+                                        <label>Fecha Inicio</label>
+                                        <input class="input w-full border mt-2 flex-1"  type="time"   />
+
+                                    </div>
+
+                                    <br />
+
+
+                                    <div class="form group col-6">
+
+                                        <label>Hora de Inicio</label>
+                                        <input class="input w-full border mt-2 flex-1" type="time" id="" />
+
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="col 6">
+
+                                    <div class="form group">
+
+                                        <label>Fecha Fin</label>
+                                        <input class="input w-full border mt-2 flex-1" type="date"  />
+
+                                    </div>
+
+                                    <br />
+
+
+                                    <div class="form group">
+
+                                        <label>Hora de Finalizacion</label>
+                                        <input class="input w-full border mt-2 flex-1" type="time"  id="" />
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <br />
+                            <br />
+
+
+
+                            <div class="row">
+
+                                <div class="col 6 ">
+
+                                    <div class="form group col-6">
+
+                                        <label>Cliente</label>
+                                        <select class="input w-full border mt-2 flex-1"  asp-items="ViewBag.Clientes">
+
+                                            <option>Seleccione</option>
+
+                                        </select>
+                                    </div>
+
+                                    <br />
+
+
+                                    <div class="form group col-6">
+
+                                        <label>Empleado</label>
+                                        <select class="input w-full border mt-2 flex-1"  asp-items="ViewBag.Empleados">
+
+                                            <option>Seleccione</option>
+
+                                        </select>
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="col 6">
+
+                                    <div class="form group col-6">
+
+                                        <label>Servicio</label>
+                                        <select class="input w-full border mt-2 flex-1"  asp-items="ViewBag.Servicios">
+
+                                            <option>Seleccione</option>
+
+                                        </select>
+                                    </div>
+
+                                    <br />
+
+
+                                    <div class="form group">
+
+                                        <label>Descripcion</label>
+                                        <textarea class="input w-full border mt-2 flex-1" ></textarea>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form><!-- Fin formulario-->
+
 
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="editar()">Editar</button>
+                    </div>
                 </div>
-            </div> <!--Fin Modal Detalle-->
-            <!-- Modal Crear -->
-            <div id="modalCrearSoliciutd" class="modal fade" role="dialog">
-                <div class="modal-dialog">
+            </div>
+        </div><!--Fin Modal Detalle-->
 
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title">Crear una nueva solicitud</h1>
-                        </div>
+
+        <!-- Modal Crear -->
+        <div class="modal" id="modalCrearSoliciutd">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Crear una nueva solicitud</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+
 
                         <form id="formularioSolicitud">
 
@@ -57,16 +184,8 @@
 
                                     </div>
 
-                                    <div class="form group">
+                                    <br />
 
-                                        <label>Fecha Fin</label>
-                                        <input class="input w-full border mt-2 flex-1" type="date" asp-for="FechaFin" />
-
-                                    </div>
-
-                                </div>
-
-                                <div class="col 6 row">
 
                                     <div class="form group col-6">
 
@@ -75,7 +194,23 @@
 
                                     </div>
 
-                                    <div class="form group col-6">
+
+                                </div>
+
+
+                                <div class="col 6">
+
+                                    <div class="form group">
+
+                                        <label>Fecha Fin</label>
+                                        <input class="input w-full border mt-2 flex-1" type="date" asp-for="FechaFin" />
+
+                                    </div>
+
+                                    <br />
+
+
+                                    <div class="form group">
 
                                         <label>Hora de Finalizacion</label>
                                         <input class="input w-full border mt-2 flex-1" type="time" asp-for="HoraFinal" id="" />
@@ -85,70 +220,90 @@
                                 </div>
                             </div>
 
+                            <br />
+                            <br />
+
+
+
                             <div class="row">
-                                <div class="col 4">
-                                    <div class="form-group">
+
+                                <div class="col 6 ">
+
+                                    <div class="form group col-6">
+
                                         <label>Cliente</label>
                                         <select class="input w-full border mt-2 flex-1" asp-for="ClienteId" asp-items="ViewBag.Clientes">
 
-                                            <option>Seleccione un cliente</option>
+                                            <option>Seleccione</option>
 
                                         </select>
                                     </div>
-                                </div>
+
+                                    <br />
 
 
-                                <div class="col 4">
-                                    <div class="form-group">
-                                        <label>Cliente</label>
-                                        <select class="input w-full border mt-2 flex-1" asp-for="ServicioId" asp-items="ViewBag.Servicios">
+                                    <div class="form group col-6">
 
-                                            <option>Seleccione un Servicio</option>
-
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col 4">
-                                    <div class="form-group">
-                                        <label>Cliente</label>
+                                        <label>Empleado</label>
                                         <select class="input w-full border mt-2 flex-1" asp-for="EmpleadoId" asp-items="ViewBag.Empleados">
 
-                                            <option>Seleccione un Empleado</option>
+                                            <option>Seleccione</option>
 
                                         </select>
                                     </div>
+
+
                                 </div>
-
-                            </div>
-
-
-                            <div class="row">
 
 
                                 <div class="col 6">
-                                    <div class="form-group">
+
+                                    <div class="form group col-6">
+
+                                        <label>Servicio</label>
+                                        <select class="input w-full border mt-2 flex-1" asp-for="ServicioId" asp-items="ViewBag.Servicios">
+
+                                            <option>Seleccione</option>
+
+                                        </select>
+                                    </div>
+
+                                    <br />
+
+
+                                    <div class="form group">
+
                                         <label>Descripcion</label>
                                         <textarea class="input w-full border mt-2 flex-1" asp-for="Descripcion"></textarea>
                                     </div>
-                                </div>
 
+                                </div>
                             </div>
+
+                            <!--
+
+
+        -->
 
 
                         </form><!-- Fin formulario-->
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardar()">Guardar</button>
-                        </div>
+
 
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardar()">Guardar</button>
+                    </div>
                 </div>
-            </div><!-- Fin Modal Crear-->
+            </div>
+        </div><!-- Fin Modal Crear-->
 
-        </div>
+
+
+
     </div>
+</div>
 </div>
 
 @section Scripts {
