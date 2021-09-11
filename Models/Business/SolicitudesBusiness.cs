@@ -25,7 +25,7 @@ namespace PrivTours.Models.Business
         {
             return await _dbContext.Clientes.ToListAsync();
         }
-
+     
         public async Task<IEnumerable<Servicio>> ObtenerListaServicios()
         {
             return await _dbContext.Servicios.ToListAsync();
@@ -35,6 +35,8 @@ namespace PrivTours.Models.Business
         {
             return await _dbContext.Empleados.ToListAsync();
         }
+
+        
 
         public async Task<List<SolicitudViewModel>> ObtenerListaSolicitudes()
         {
