@@ -1,0 +1,195 @@
+﻿@model PrivTours.ViewModels.UsuarioViewModel
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+@Html.HiddenFor(u => u.Id)
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper dark-mode">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Editar usuario</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Usuarios</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="col-md-6">
+                        <form method="post" asp-action="Editar" id="formulario" name="formulario">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div asp-validation-summary="ModelOnly" class="text-danger">
+                                <!--<input type="hidden" name="Id" id="Id" />-->
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Nombre" class="control-label"></label>
+                                <input asp-for="Nombre" class="form-control" />
+                                <span asp-validation-for="Nombre" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Apellido" class="control-label"></label>
+                                <input asp-for="Apellido" class="form-control" />
+                                <span asp-validation-for="Apellido" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Documento" class="control-label"></label>
+                                <input asp-for="Documento" class="form-control" />
+                                <span asp-validation-for="Documento" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Telefono" class="control-label"></label>
+                                <input asp-for="Telefono" class="form-control" />
+                                <span asp-validation-for="Telefono" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Password" class="control-label"></label>
+                                <input asp-for="Password" class="form-control" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ConfirmarPassword" class="control-label"></label>
+                                <input type="password" asp-for="ConfirmarPassword" class="form-control" />
+                                <span asp-validation-for="ConfirmarPassword" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="RolSeleccionado" class="control-label"></label>
+                                <select asp-for="RolSeleccionado" class="form-control" asp-items="ViewBag.Roles"></select>
+                                <span asp-validation-for="RolSeleccionado" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <a asp-action="Index">Volver</a>
+            </div>
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+    <!-- /.content-wrapper -->
+</div>
+@section Scripts {
+
+    <script>
+
+    function Editar() {
+
+        var isValid = true;
+        if (document.getElementById("Nombre").value == '') {
+            $('#Nombre').siblings('span.text-danger').text('El nombre es requerido');
+            isValid = false;
+        } else {
+            $('#Nombre').siblings('span.text-danger').text('');
+        }
+        if (document.getElementById("Email").value == '') {
+            $('#Email').siblings('span.text-danger').text('El correo electrónico  es requerido');
+            isValid = false;
+        } else {
+            if (!validaEmail($('#Email').val())) {
+                $('#Email').siblings('span.text-danger').text('Correo electrónico inválido');
+                isValid = false;
+            } else {
+                $('#Email').siblings('span.text-danger').text('');
+            }
+        }
+
+
+        if (isValid) {
+            Swal.fire({ //Mensaje de confirmar
+                title: '¿Desea editar el usuario?',
+                //showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: `Editar`,
+                cancelButtonText: `Cancelar`,
+                reverseButtons: true
+            }).then((result) => {
+
+                if (result.isConfirmed) { // si confirmamos
+                    var formData = new FormData(); //se crea el objeto de tipo formData que va a contener todo lo que vamos a enviar
+                    formData.append("Id", document.getElementById("Id").value);
+                    formData.append("Nombre", document.getElementById("Nombre").value);
+                    formData.append("Email", document.getElementById("Email").value);
+                    formData.append("Apellido", document.getElementById("Apellido").value);
+                    formData.append("Documento", document.getElementById("Documento").value);
+                    formData.append("Telefono", document.getElementById("Telefono").value);
+                    formData.append("Password", document.getElementById("Password").value);
+                    formData.append("ConfirmarPassword", document.getElementById("ConfirmarPassword").value);
+                    formData.append("RolSeleccionado", document.getElementById("RolSeleccionado").value);
+
+                     $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("Editar","Usuarios")',
+                            contentType: false,
+                            processData: false,
+                            data: formData,
+                            success: function (result) {
+
+                                if (result.data == "ok") {
+                                    setTimeout(
+                                        function () {
+                                            window.location.href = "@Url.Action("Index","Usuarios")";
+                                        }, 2000);
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Usuario editado',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
+                                } else {
+                                    console.log("ERROR!!")
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: 'Ocurrió un error al editar el usuario',
+                                    })
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err.data)
+                            }
+                     });
+
+                } else if (result.isDenied) {
+                    Swal.fire('Usuario no editado', '', 'info')
+                }
+            })
+        }
+
+
+    }
+
+    function validaEmail(email) {
+        var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
+    }
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

@@ -1,0 +1,49 @@
+﻿@model PrivTours.ViewModels.UsuarioViewModel
+
+@{
+    ViewData["Title"] = "Eliminar";
+}
+
+<h1>Eliminar</h1>
+
+
+<div>
+    <h4>Usuario</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(modelUsuario => modelUsuario.Id)
+        </dt>
+        <dt class="col-sm-2">
+            @Html.DisplayFor(modelUsuario => modelUsuario.Documento)
+        </dt>
+        <dt class="col-sm-2">
+            @Html.DisplayFor(modelUsuario => modelUsuario.Nombre)
+        </dt>
+        </dt>
+        <dt class="col-sm-2">
+            @Html.DisplayFor(modelUsuario => modelUsuario.Apellido)
+        </dt>
+        </dt>
+        <dt class="col-sm-2">
+            @Html.DisplayFor(modelUsuario => modelUsuario.Telefono)
+        </dt>
+        <dt class="col-sm-2">
+            @Html.DisplayFor(modelUsuario => modelUsuario.Email)
+        </dt>
+        <dt class="col-sm-2">
+            @Html.DisplayFor(modelUsuario => modelUsuario.RolSeleccionado)
+        </dt>
+
+
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
+@section Scripts{
+
+}
