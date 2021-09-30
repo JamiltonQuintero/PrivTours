@@ -84,8 +84,6 @@ namespace PrivTours.Controllers
                     if (result.Succeeded)
                     {
                         usuario.Id = await _userManager.GetUserIdAsync(usuario);
-                        //IdentityRole RolConsultado = await _roleManager.FindByIdAsync(usuarioViewModel.RolSeleccionado);
-                        //await _userManager.AddToRoleAsync(usuario, RolConsultado.Name);
                         await _userManager.AddToRoleAsync(usuario, usuarioViewModel.RolSeleccionado);
                         TempData["Accion"] = "Crear";
                         TempData["Mensaje"] = "Se ha creado correctamente el usuario " + usuario.Nombre;
