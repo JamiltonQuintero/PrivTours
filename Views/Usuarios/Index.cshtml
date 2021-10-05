@@ -7,7 +7,7 @@
 }
 
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper dark-mode">
+<div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -52,28 +52,35 @@
                 <tbody>
                     @foreach (var usuario in Model)
                     {
-                        <tr>
-                            
-                            <td>
-                                @Html.DisplayFor(modelUsuario => usuario.Documento)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelUsuario => usuario.Nombre)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelUsuario => usuario.Email)
-                            </td>
-                            <td>                              
-                                @string.Join(" ", usuario.Rol.ToList())
-                            </td>
-                            <td>
-                            </td>
-                            <td>
+                    <tr>
 
-                                <a class="btn btn-secondary" asp-action="Editar" asp-route-id="@usuario.Id"><i class="fas fa-user-edit"></i></a>
-                                <a class="btn btn-danger" onclick="eliminar('@usuario.Id', '@usuario.Nombre');"><i class="fas fa-user-minus"></i></a>
-                                
-                            </td>
+                        <td>
+                            @Html.DisplayFor(modelUsuario => usuario.Documento)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelUsuario => usuario.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelUsuario => usuario.Email)
+                        </td>
+                        <td>
+                            @string.Join(" ", usuario.Rol.ToList())
+                        </td>
+                        
+                            @if (usuario.Estado == true)
+                            {
+                                <td>Activo</td>
+                            }
+                            else
+                            {
+                                <td>Inactivo</td>
+                             }                            
+                    <td>
+
+                        <a class="btn btn-secondary" asp-action="Editar" asp-route-id="@usuario.Id"><i class="fas fa-user-edit"></i></a>
+                        <a class="btn  @(@usuario.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@usuario.Id', '@usuario.Nombre', @usuario.Estado.ToString().ToLower());"><i class="fas @(@usuario.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
+                        <a class="btn btn-danger" onclick="eliminar('@usuario.Id', '@usuario.Nombre');"><i class="fas fa-user-minus"></i></a>
+                    </td>
 
                         </tr>
                     }
@@ -90,7 +97,7 @@
 </div>
 @section Scripts{
 
-    <!-- <script src="~/js/Tabla.js"></script>-->
+    <script src="~/js/Tabla.js"></script>
     <script>
 
     @if(TempData["Mensaje"] != null && TempData["Accion"].ToString().Equals("Crear")) { <text>
@@ -139,6 +146,53 @@
                     $.ajax({
                         type: "GET",
                         url: '@Url.Action("Delete","Usuarios", new { id = "id" })'.replace("id", encodeURIComponent(id)),
+                        contentType: false,
+                        processData: false,
+                        success: function (result) {
+
+                            if (result.data == "ok") {
+                                setTimeout(function () {
+                                    window.location.href = "@Url.Action("Index","Usuarios")";
+                                }, 3000);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: result.message,
+                                    showConfirmButton: false,
+                                    timer: 5000
+                                })
+                            } else {
+                                console.log("ERROR!!");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: result.message,
+                                })
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err.data)
+                        }
+                    });
+                }
+            })
+        }
+
+        function cambiarEstado(id, nombreUsuario, estadoActual) {
+            Swal.fire({
+                title: '¿Está seguro de cambiar estado al usuario?',
+                text: nombreUsuario,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: estadoActual == true ? '#d33' : '#28A745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, '.concat(estadoActual == true ? 'Inactivar' : 'Activar'),
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("CambiarEstado","Usuarios", new { id = "id" })'.replace("id", encodeURIComponent(id)),
                         contentType: false,
                         processData: false,
                         success: function (result) {

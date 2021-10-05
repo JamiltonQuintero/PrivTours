@@ -40,7 +40,8 @@ namespace PrivTours.Controllers
                     Documento = usuario.Documento,
                     Telefono = usuario.Telefono,
                     Email = usuario.Email,
-                    Rol = await ObtenerRolUsuario(usuario)
+                    Rol = await ObtenerRolUsuario(usuario),
+                    Estado = usuario.LockoutEnd == null
                 };
 
                 listaUsuariosViewModel.Add(usuarioViewModel);
@@ -74,7 +75,8 @@ namespace PrivTours.Controllers
                     Nombre = usuarioViewModel.Nombre,
                     Apellido = usuarioViewModel.Apellido,
                     Documento = usuarioViewModel.Documento,
-                    Telefono = usuarioViewModel.Telefono,                    
+                    Telefono = usuarioViewModel.Telefono,
+                    EmailConfirmed = true
                 };
 
                 try
@@ -208,6 +210,67 @@ namespace PrivTours.Controllers
             {
                 return Json(new { data = "error", message = "Ocurrió un error al eliminar el usuario" });
             }
+        }
+
+        public async Task<IActionResult> CambiarEstado(string id)
+        {
+            if (id == null)
+            {
+                return Json(new { data = "error", message = "Id no encontrado" });
+            }
+            try
+            {
+                var usuario = await _userManager.FindByIdAsync(id);
+                if (usuario == null)
+                    return Json(new { data = "error", message = "Usuario a cambiar estado no existe" });
+
+                if (usuario.LockoutEnd == null)
+                {
+                    usuario.LockoutEnd = new DateTimeOffset(3000, 12, 31, 23, 59, 59, 0, new TimeSpan(-5, 0, 0));
+                }
+                else
+                {
+                    usuario.LockoutEnd = null;
+                }
+                await _userManager.SetLockoutEndDateAsync(usuario, usuario.LockoutEnd);
+                var NuevoEstado = usuario.LockoutEnd == null ? "Activado" : "Inactivado";
+                return Json(new { data = "ok", message = "Usuario " + usuario.Nombre + " fue " + NuevoEstado + " correctamente" });
+            }
+            catch (Exception)
+            {
+                return Json(new { data = "error", message = "Ocurrió un error al cambiar estado al usuario" });
+            }
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel loginViewModel)
+        {
+
+            if (ModelState.IsValid)
+            {
+
+                var result = await _signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RecordarMe, false);
+
+                if (result.Succeeded)
+                {
+
+                    return RedirectToAction("Index", "Home");
+
+                }
+                ModelState.AddModelError("", "Error login");
+            }
+
+            return View();
+        }
+        public async Task<IActionResult> CerrarSesion()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Usuarios");
         }
 
     }
