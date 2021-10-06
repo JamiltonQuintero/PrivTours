@@ -25,7 +25,7 @@ namespace PrivTours.Controllers
             _roleManager = roleManager;
         }
 
-        [Authorize(Roles = "Administrador,Secretaria")]
+        //[Authorize(Roles = "Administrador,Secretaria")]
         public async Task<IActionResult> Index()
         {
             var usuarios = await _userManager.Users.ToListAsync();
@@ -56,7 +56,7 @@ namespace PrivTours.Controllers
             return new List<string>(await _userManager.GetRolesAsync(usuario));
         }
 
-        [Authorize(Roles = "Administrador")]
+        //[Authorize(Roles = "Administrador")]
         [HttpGet]
         public async Task<IActionResult> Crearusuario()
         {
@@ -64,7 +64,7 @@ namespace PrivTours.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administrador")]
+       // [Authorize(Roles = "Administrador")]
         [HttpPost]
         public async Task<IActionResult> Crearusuario(UsuarioViewModel usuarioViewModel)
         {
@@ -111,7 +111,7 @@ namespace PrivTours.Controllers
             return View(usuarioViewModel);
         }
 
-        [Authorize(Roles = "Administrador")]
+       // [Authorize(Roles = "Administrador")]
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Editar(string id)
         {
@@ -147,7 +147,7 @@ namespace PrivTours.Controllers
         // POST: Clientes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "Administrador")]
+       // [Authorize(Roles = "Administrador")]
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(string id, [Bind("Id,Nombre,Apellido,Documento,Email,Telefono,RolSeleccionado")] UsuarioViewModel usuarioViewModel)
@@ -195,7 +195,7 @@ namespace PrivTours.Controllers
             return Json(new { data = "error" });
         }
         // GET: Clientes/Delete/5
-        [Authorize(Roles = "Administrador")]
+        //[Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -218,7 +218,7 @@ namespace PrivTours.Controllers
             }
         }
 
-        [Authorize(Roles = "Administrador")]
+       // [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> CambiarEstado(string id)
         {
             if (id == null)
@@ -255,7 +255,7 @@ namespace PrivTours.Controllers
             return View();
         }
 
-        [AllowAnonymous]
+       // [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
@@ -277,21 +277,21 @@ namespace PrivTours.Controllers
             return View();
         }
 
-        [AllowAnonymous]
+       // [AllowAnonymous]
         public async Task<IActionResult> CerrarSesion()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Dashboard", "Admin");
         }
 
-        [AllowAnonymous]
+       // [AllowAnonymous]
         [HttpGet]
         public IActionResult RecuperarContrasena()
         {
             return View();
         }
 
-        [AllowAnonymous]
+       // [AllowAnonymous]
         [HttpPost]
         public IActionResult RecuperarContrasena(RecuperarContrasenaViewModel recuperarContrasenaViewModel)
         {
