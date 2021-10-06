@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PrivTours.Models.Abstract;
 using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
 
@@ -12,17 +13,17 @@ namespace PrivTours.Controllers
 {
     public class ClientesController : Controller
     {
-        private readonly DbContextPriv _context;
+        private readonly IClientesBusiness _clientesBusiness;
 
-        public ClientesController(DbContextPriv context)
+        public ClientesController(IClientesBusiness clientesBusiness)
         {
-            _context = context;
+            _clientesBusiness = clientesBusiness;
         }
 
         // GET: Clientes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Clientes.ToListAsync());
+            return View(await _clientesBusiness.ObtenerListaClientes());
         }
 
         // GET: Clientes/Details/5
@@ -33,8 +34,8 @@ namespace PrivTours.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes
-                .FirstOrDefaultAsync(m => m.ClienteId == id);
+            var cliente = await _clientesBusiness.ObtenerClientePorId(id.Value);
+
             if (cliente == null)
             {
                 return NotFound();
@@ -58,11 +59,17 @@ namespace PrivTours.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(cliente);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _clientesBusiness.GuardarCliente(cliente);
+                    return Json(new { data = "ok" });
+                }
+                catch (Exception)
+                {
+                    return Json(new { data = "error" });
+                }
             }
-            return View(cliente);
+            return Json(new { data = "error" });
         }
 
         // GET: Clientes/Edit/5
@@ -73,7 +80,7 @@ namespace PrivTours.Controllers
                 return NotFound();
             }
 
-            var cliente = await _context.Clientes.FindAsync(id);
+            var cliente = await _clientesBusiness.ObtenerClientePorId(id.Value);
             if (cliente == null)
             {
                 return NotFound();
@@ -90,30 +97,23 @@ namespace PrivTours.Controllers
         {
             if (id != cliente.ClienteId)
             {
-                return NotFound();
+                return Json(new { data = "error" });
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(cliente);
-                    await _context.SaveChangesAsync();
+                    await _clientesBusiness.EditarCliente(cliente);
+                    return Json(new { data = "ok" });
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
-                    if (!ClienteExists(cliente.ClienteId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
+                    return Json(new { data = "error" });
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(cliente);
+            return Json(new { data = "error" });
         }
 
         // GET: Clientes/Delete/5
@@ -121,33 +121,23 @@ namespace PrivTours.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return Json(new { data = "error", message = "Id no encontrado" });
             }
-
-            var cliente = await _context.Clientes
-                .FirstOrDefaultAsync(m => m.ClienteId == id);
-            if (cliente == null)
+            try
             {
-                return NotFound();
+                var cliente = await _clientesBusiness.ObtenerClientePorId(id.Value);
+                if (cliente == null)
+
+                    return Json(new { data = "error", message = "Cliente a eliminar no existe" });
+                await _clientesBusiness.EliminarCliente(cliente);
+
+                return Json(new { data = "ok", message = "Cliente " + cliente.Nombre + " fue eliminado correctamente" });
             }
-
-            return View(cliente);
-        }
-
-        // POST: Clientes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var cliente = await _context.Clientes.FindAsync(id);
-            _context.Clientes.Remove(cliente);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ClienteExists(int id)
-        {
-            return _context.Clientes.Any(e => e.ClienteId == id);
+            catch (Exception)
+            {
+                return Json(new { data = "error", message = "Ocurrió un error al eliminar al cliente" });
+            }
         }
     }
 }
+

@@ -4,21 +4,125 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Cliente</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ClienteId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Detalle cliente</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Clientes">Gestión Clientes</a></li>
+                        <li class="breadcrumb-item active">Detalle cliente</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+
+
+
+                <table class="tabla" id="tabla">
+                    <thead>
+                        <tr>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.ClienteId)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Nombre)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Apellidos)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.IdTipoDoc)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NumDoc)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Pais)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Telefono)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.Estado)
+                            </th>
+
+                    </thead>
+
+                    <tbody>
+
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(model => model.ClienteId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.Nombre)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.Apellidos)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.IdTipoDoc)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.IdTipoDoc)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.NumDoc)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.Pais)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.Email)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.Telefono)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.Estado)
+                                </td>
+                            </tr>
+                        
+                    </tbody>
+
+                </table>
+                <div class="form-group">
+                    <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
+                </div>
+            </div>
+
+
+        </div>
+
+        @*<div>
+            <a asp-action="Edit" type="button" asp-route-id="@cliente.ClienteId" class="btn btn-outline-primary">Editar</a> |
+            <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+        </div>*@
+
+
+
+
+
+
+    </div>
+    <!-- /.row -->
+</div><!-- /.container-fluid -->

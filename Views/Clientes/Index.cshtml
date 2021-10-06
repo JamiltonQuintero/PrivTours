@@ -1,13 +1,10 @@
 ﻿@model IEnumerable<PrivTours.Models.Entities.Cliente>
 
+
 @{
     ViewData["Title"] = "Index";
 }
-
 @section Styles{
-
-
-
 }
 
 <!-- Content Wrapper. Contains page content -->
@@ -17,11 +14,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Clientes Private Tours</h1>
+                    <h1 class="m-0">Gestionar cliente</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li class="breadcrumb-item active">Clientes</li>
                     </ol>
                 </div><!-- /.col -->
@@ -36,28 +33,54 @@
                 <a class="btn btn-outline-success" asp-action="Create"><i class="fa fa-plus-circle"></i> Crear nuevo cliente</a>
             </p>
 
-            <table class="table table-bordered table- " id="tabla" >
+            <table class="table" id="tabla">
                 <thead>
                     <tr>
-                        <th >
+                        <th>
+                            @Html.DisplayNameFor(model => model.ClienteId)
+                        </th>
+                        <th>
                             @Html.DisplayNameFor(model => model.Nombre)
                         </th>
-                        <th></th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Email)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Telefono)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.NumDoc)
+                        </th>
+                        <th>
+                            Acciones
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var cliente in Model)
                     {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Nombre)
-                            </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.ClienteId">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.ClienteId">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.ClienteId">Delete</a>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelCliente => cliente.ClienteId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelCliente => cliente.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelCliente => cliente.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelCliente => cliente.Telefono)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelCliente => cliente.NumDoc)
+                        </td>
+                        <td>
+                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@cliente.ClienteId"><i class="fas fa-user-edit"></i>Editar</a> |
+                            <a class="btn btn-success" asp-action="Details" asp-route-id="@cliente.ClienteId"><i class="fas fa-info-circle"></i>Detalle</a> |
+                            <a class="m1-1 btn btn-danger" onclick="eliminar(@cliente.ClienteId, '@cliente.Nombre');"><i class="fas fa-user-minus"></i>Eliminar</a>
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>
@@ -70,6 +93,57 @@
 <!-- /.content-wrapper -->
 @section Scripts{
 
-
     <script src="~/js/Tabla.js"></script>
+    <script>
+        function eliminar(id, nombreCliente) {
+            Swal.fire({
+                title: '¿Está seguro de eliminar el cliente?',
+                text: id + '-' + nombreCliente,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("Delete","Clientes", new { id = "id" })'.replace("id", encodeURIComponent(id)),
+                        contentType: false,
+                        processData: false,
+                        success: function (result) {
+
+                            if (result.data == "ok") {
+                                setTimeout(function () {
+                                    window.location.href = "@Url.Action("Index","Clientes")";
+                                }, 3000);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: result.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            } else {
+                                console.log("ERROR!!");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: result.message,
+                                })
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err.data)
+                        }
+                    });
+                }
+            })
+        }
+    </script>
 }
+
+
+
+

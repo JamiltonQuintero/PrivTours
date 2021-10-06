@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrivTours.Models.DAL;
 
 namespace PrivTours.Migrations
 {
     [DbContext(typeof(DbContextPriv))]
-    partial class DbContextPrivModelSnapshot : ModelSnapshot
+    [Migration("20211005222822_Clientes")]
+    partial class Clientes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,17 +276,8 @@ namespace PrivTours.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Apellido")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Celular")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Nombre")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TipoContrato")
-                        .HasColumnType("int");
 
                     b.HasKey("EmpleadoId");
 
@@ -352,16 +345,7 @@ namespace PrivTours.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("Apellido")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Documento")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Telefono")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("UsuarioIdentity");

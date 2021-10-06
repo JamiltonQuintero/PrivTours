@@ -5,9 +5,13 @@
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Migrations\20210922192516_BD.cs" />
-    <Compile Remove="Migrations\20210922192516_BD.Designer.cs" />
+
+    <None Include="Views\Clientes\Create.cshtml" />
+    <None Include="Views\Clientes\Delete.cshtml" />
+    <None Include="Views\Clientes\Details.cshtml" />
+    <None Include="Views\Clientes\Edit.cshtml" />
+    <None Include="Views\Clientes\Index.cshtml" />
+
   </ItemGroup>
 
   <ItemGroup>

@@ -1,12 +1,9 @@
 ﻿@model IEnumerable<PrivTours.Models.Entities.Servicio>
 
+
 @{
     ViewData["Title"] = "Index";
 }
-
-
-
-
 @section Styles{
 }
 
@@ -17,11 +14,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Servicios Private Tours</h1>
+                    <h1 class="m-0">Gestionar Servicio</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
                         <li class="breadcrumb-item active">Servicios</li>
                     </ol>
                 </div><!-- /.col -->
@@ -33,36 +30,60 @@
     <div class="content">
         <div class="container-fluid">
             <p>
-                <a class="btn btn-outline-success" asp-action="Create"><i class="fa fa-plus-circle"></i> Crear nuevo Empleado</a>
+                <a class="btn btn-outline-success" asp-action="Create"><i class="fa fa-plus-circle"></i> Crear nuevo servicio</a>
             </p>
-
 
             <table class="table" id="tabla">
                 <thead>
                     <tr>
                         <th>
+                            @Html.DisplayNameFor(model => model.ServicioId)
+                        </th>
+                        <th>
                             @Html.DisplayNameFor(model => model.Nombre)
                         </th>
-                        <th></th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Descripcion)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Restriccion)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Recomendacion)
+                        </th>
+                        <th>
+                            Acciones
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var servicio in Model)
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Nombre)
+                                @Html.DisplayFor(modelServicio => servicio.ServicioId)
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.ServicioId">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.ServicioId">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.ServicioId">Delete</a>
+                                @Html.DisplayFor(modelServicio => servicio.Nombre)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelServicio => servicio.Descripcion)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelServicio => servicio.Restriccion)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelServicio => servicio.Recomendacion)
+                            </td>
+                            <td>
+                                <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@servicio.ServicioId"><i class="fas fa-user-edit"></i>Editar</a> |
+                                <a class="btn btn-success" asp-action="Details" asp-route-id="@servicio.ServicioId"><i class="fas fa-info-circle"></i>Detalle</a> |
+                                <a class="m1-1 btn btn-danger" onclick="eliminar(@servicio.ServicioId, '@servicio.ServicioId');"><i class="fas fa-user-minus"></i>Eliminar</a>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
-
 
 
         </div><!-- /.container-fluid -->
@@ -72,7 +93,57 @@
 <!-- /.content-wrapper -->
 @section Scripts{
 
-
     <script src="~/js/Tabla.js"></script>
+    <script>
+        function eliminar(id, nombreServicio) {
+            Swal.fire({
+                title: '¿Está seguro de eliminar el Servicio?',
+                text: id + '-' + nombreServicio,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("Delete","Servicios", new { id = "id" })'.replace("id", encodeURIComponent(id)),
+                        contentType: false,
+                        processData: false,
+                        success: function (result) {
+
+                            if (result.data == "ok") {
+                                setTimeout(function () {
+                                    window.location.href = "@Url.Action("Index", "Servicios")";
+                                }, 3000);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: result.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            } else {
+                                console.log("ERROR!!");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: result.message,
+                                })
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err.data)
+                        }
+                    });
+                }
+            })
+        }
+    </script>
 }
+
+
+
 
