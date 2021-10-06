@@ -39,7 +39,7 @@ namespace PrivTours
 
             services.AddScoped<ISolicitudesBusiness, SolicitudesBusiness>();
             services.AddScoped<IEmpleadosBusiness, EmpleadosBusiness>();
-
+            services.AddScoped<IClientesBusiness, ClientesBusiness>();
 
             services.Configure<IdentityOptions>(options =>
             {
