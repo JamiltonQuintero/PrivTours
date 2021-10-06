@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 namespace PrivTours
 {
     public class Startup
-    {
+    {//
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
