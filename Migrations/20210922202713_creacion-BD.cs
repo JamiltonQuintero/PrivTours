@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PrivTours.Migrations
 {
-    public partial class ok : Migration
+    public partial class creacionBD : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -41,7 +41,10 @@ namespace PrivTours.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
-                    Nombre = table.Column<string>(nullable: true)
+                    Nombre = table.Column<string>(nullable: true),
+                    Apellido = table.Column<string>(nullable: true),
+                    Documento = table.Column<string>(nullable: true),
+                    Telefono = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -193,6 +196,44 @@ namespace PrivTours.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Solicitudes",
+                columns: table => new
+                {
+                    SolicitudId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FechaInicio = table.Column<DateTime>(nullable: false),
+                    FechaFin = table.Column<DateTime>(nullable: false),
+                    HoraInicio = table.Column<string>(nullable: true),
+                    HoraFinal = table.Column<string>(nullable: true),
+                    Descripcion = table.Column<string>(nullable: true),
+                    ClienteId = table.Column<int>(nullable: false),
+                    EmpleadoId = table.Column<int>(nullable: false),
+                    ServicioId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Solicitudes", x => x.SolicitudId);
+                    table.ForeignKey(
+                        name: "FK_Solicitudes_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "ClienteId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Solicitudes_Empleados_EmpleadoId",
+                        column: x => x.EmpleadoId,
+                        principalTable: "Empleados",
+                        principalColumn: "EmpleadoId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Solicitudes_Servicios_ServicioId",
+                        column: x => x.ServicioId,
+                        principalTable: "Servicios",
+                        principalColumn: "ServicioId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -231,6 +272,21 @@ namespace PrivTours.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solicitudes_ClienteId",
+                table: "Solicitudes",
+                column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solicitudes_EmpleadoId",
+                table: "Solicitudes",
+                column: "EmpleadoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Solicitudes_ServicioId",
+                table: "Solicitudes",
+                column: "ServicioId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -251,6 +307,15 @@ namespace PrivTours.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Solicitudes");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
                 name: "Clientes");
 
             migrationBuilder.DropTable(
@@ -258,12 +323,6 @@ namespace PrivTours.Migrations
 
             migrationBuilder.DropTable(
                 name: "Servicios");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }

@@ -10,8 +10,8 @@ using PrivTours.Models.DAL;
 namespace PrivTours.Migrations
 {
     [DbContext(typeof(DbContextPriv))]
-    [Migration("20210424195334_Solicitudes")]
-    partial class Solicitudes
+    [Migration("20211006110414_JQ add new fields fixed")]
+    partial class JQaddnewfieldsfixed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -245,8 +245,17 @@ namespace PrivTours.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Apellido")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Celular")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TipoContrato")
+                        .HasColumnType("int");
 
                     b.HasKey("EmpleadoId");
 

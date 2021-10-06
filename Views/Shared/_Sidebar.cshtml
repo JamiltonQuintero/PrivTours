@@ -1,5 +1,7 @@
-﻿
-@section Styles{ 
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<PrivTours.Models.Entities.UsuarioIdentity> SignInManager
+@inject UserManager<PrivTours.Models.Entities.UsuarioIdentity> UserManager
+@section Styles{
 
 }
 
@@ -19,7 +21,13 @@
                 <img src="~/adminlte/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a class="d-block">Don William</a>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a class="d-block">@User.Identity.Name</a>
+                } else
+                {
+                    <a class="d-block">Usuario</a>
+                }
             </div>
         </div>
 
@@ -46,7 +54,7 @@
 
                         <i class="nav-icon fas fa-chart-line"></i>
                         <p>
-                            Dasboard
+                            Dashboard
 
                         </p>
                     </a>
@@ -115,41 +123,32 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <li class="nav-item">
+                        <a asp-action="CerrarSesion" asp-controller="Usuarios" class="nav-link">
+                            <i class="nav-icon fas fa-sign-out-alt"></i>
+                            <p>
+                                Cerrar sesión
+                                <span class="right badge badge-danger">Salir</span>
 
-                        <i class="nav-icon fas fa-tasks"></i>
-                        <p>
-                            Tareas
+                            </p>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a asp-action="Login" asp-controller="Usuarios" class="nav-link">
+                            <i class="nav-icon fas fa-sign-out-alt"></i>
+                            <p>
+                                Iniciar sesión
+                                <span class="right badge badge-success">Ingresar</span>
 
-                        </p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-
-                        <i class="nav-icon fas fa-download"></i>
-                        <p>
-                            Reportes
-
-                        </p>
-                    </a>
-                </li>
-
-                
-
-                <li class="nav-item">
-                    <a asp-action="CerrarSesion" asp-controller="Usuarios" class="nav-link">
-                        <i class="nav-icon fas fa-sign-out-alt"></i>
-                        <p>
-                            Cerrar sesión
-                            <span class="right badge badge-danger">Salir</span>
-
-                        </p>
-                    </a>
-                </li>
-
+                            </p>
+                        </a>
+                    </li>
+                }
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
@@ -157,7 +156,7 @@
     <!-- /.sidebar -->
 </aside>
 
-@section Scripts{ 
+@section Scripts{
 
 
 }

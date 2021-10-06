@@ -10,8 +10,8 @@ using PrivTours.Models.DAL;
 namespace PrivTours.Migrations
 {
     [DbContext(typeof(DbContextPriv))]
-    [Migration("20210417025035_ok")]
-    partial class ok
+    [Migration("20210922202713_creacion-BD")]
+    partial class creacionBD
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -268,11 +268,62 @@ namespace PrivTours.Migrations
                     b.ToTable("Servicios");
                 });
 
+            modelBuilder.Entity("PrivTours.Models.Entities.Solicitud", b =>
+                {
+                    b.Property<int>("SolicitudId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EmpleadoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaFin")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaInicio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("HoraFinal")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HoraInicio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ServicioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SolicitudId");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("EmpleadoId");
+
+                    b.HasIndex("ServicioId");
+
+                    b.ToTable("Solicitudes");
+                });
+
             modelBuilder.Entity("PrivTours.Models.Entities.UsuarioIdentity", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
+                    b.Property<string>("Apellido")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Documento")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("UsuarioIdentity");
@@ -325,6 +376,27 @@ namespace PrivTours.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PrivTours.Models.Entities.Solicitud", b =>
+                {
+                    b.HasOne("PrivTours.Models.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrivTours.Models.Entities.Empleado", "Empleado")
+                        .WithMany()
+                        .HasForeignKey("EmpleadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrivTours.Models.Entities.Servicio", "Servicio")
+                        .WithMany()
+                        .HasForeignKey("ServicioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

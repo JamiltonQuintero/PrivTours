@@ -39,8 +39,10 @@ namespace PrivTours
 
             services.AddScoped<ISolicitudesBusiness, SolicitudesBusiness>();
             services.AddScoped<IEmpleadosBusiness, EmpleadosBusiness>();
+
             services.AddScoped<IClientesBusiness, ClientesBusiness>();
             services.AddScoped<IServiciosBusiness, ServiciosBusiness>();
+
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -57,7 +59,7 @@ namespace PrivTours
             services.ConfigureApplicationCookie(options =>
             {
 
-                options.AccessDeniedPath = new PathString("/Usuarios/Login");
+                options.AccessDeniedPath = new PathString("/Usuarios/AccesoDenegado");
                 options.LoginPath = new PathString("/Usuarios/Login");
                 options.Cookie.Name = "Cookie";
                 options.Cookie.HttpOnly = true;
@@ -86,7 +88,7 @@ namespace PrivTours
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -94,6 +96,7 @@ namespace PrivTours
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Solicitudes}/{action=Index}/{id?}");
+
             });
         }
     }

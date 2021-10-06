@@ -1,0 +1,121 @@
+﻿@model PrivTours.ViewModels.UsuarioViewModel
+
+@{
+    ViewData["Title"] = "Crear";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Crear usuario</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Usuarios</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="col-md-6">
+                        <form method="post" asp-action="CrearUsuario" id="formulario" name="formulario">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <label asp-for="Nombre" class="control-label"></label>
+                                <input asp-for="Nombre" class="form-control" />
+                                <span asp-validation-for="Nombre" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Apellido" class="control-label"></label>
+                                <input asp-for="Apellido" class="form-control" />
+                                <span asp-validation-for="Apellido" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Documento" class="control-label"></label>
+                                <input asp-for="Documento" class="form-control" />
+                                <span asp-validation-for="Documento" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Telefono" class="control-label"></label>
+                                <input asp-for="Telefono" class="form-control" />
+                                <span asp-validation-for="Telefono" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Password" class="control-label"></label>
+                                <input asp-for="Password" class="form-control" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ConfirmarPassword" class="control-label"></label>
+                                <input type="password" asp-for="ConfirmarPassword" class="form-control" />
+                                <span asp-validation-for="ConfirmarPassword" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="RolSeleccionado" class="control-label"></label>
+                                <select asp-for="RolSeleccionado" class="form-control" asp-items="ViewBag.Roles"></select>
+                                <span asp-validation-for="RolSeleccionado" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="button" value="Crear" class="btn btn-primary" onclick="guardarUsuario()" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <a asp-action="Index">Volver</a>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+    <!-- /.content-wrapper -->
+</div>
+
+@section Scripts {
+
+    <script>
+        function guardarUsuario() {
+            console.log("ingreso a guardar");
+            Swal.fire({
+                title: "Guardar usuario",
+                text: "¿Estás seguro que desea guardar el usuario?",
+                //showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                //denyButtonText: 'No guardar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    console.log("confirmado");
+                    document.getElementById('formulario').submit();
+
+                } else if (result.isDenied) {
+                    console.log("isDenied");
+                    Swal.fire('¡Usuario no guardado!', '', 'info')
+                }
+            })
+        }
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

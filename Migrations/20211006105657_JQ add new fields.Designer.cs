@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrivTours.Models.DAL;
 
 namespace PrivTours.Migrations
 {
     [DbContext(typeof(DbContextPriv))]
-    partial class DbContextPrivModelSnapshot : ModelSnapshot
+    [Migration("20211006105657_JQ add new fields")]
+    partial class JQaddnewfields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,39 +230,8 @@ namespace PrivTours.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Apellidos")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Estado")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaNac")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdTipoDoc")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nombre")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Notas")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("NumDoc")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Pais")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Telefono")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TelefonoEmer")
-                        .HasColumnType("int");
 
                     b.HasKey("ClienteId");
 
@@ -283,7 +254,7 @@ namespace PrivTours.Migrations
                     b.Property<string>("Nombre")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TipoContrato")
+                    b.Property<int>("tipoContrato")
                         .HasColumnType("int");
 
                     b.HasKey("EmpleadoId");
@@ -352,16 +323,7 @@ namespace PrivTours.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("Apellido")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Documento")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Nombre")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Telefono")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("UsuarioIdentity");
