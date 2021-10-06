@@ -4,21 +4,90 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Detalle Servicios</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Servicios">Gestión Servicioss</a></li>
+                        <li class="breadcrumb-item active">Detalle Servicio</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
 
-<div>
-    <h4>Servicio</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ServicioId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+
+                <table class="tabla" id="tabla">
+                    <thead>
+                        <tr>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.ServicioId)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Nombre)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Descripcion)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Restriccion)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Recomendacion)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Estado)
+                            </th>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                @Html.DisplayNameFor(model => model.ServicioId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.Nombre)
+                            </td>
+                            <td>
+                                @Html.DisplayNameFor(model => model.Descripcion)
+                            </td>
+                            <td>
+                                @Html.DisplayNameFor(model => model.Restriccion)
+                            </td>
+                            <td>
+                                @Html.DisplayNameFor(model => model.Recomendacion)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.Estado)
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+                <div class="form-group">
+                    <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /.row -->
+</div><!-- /.container-fluid -->

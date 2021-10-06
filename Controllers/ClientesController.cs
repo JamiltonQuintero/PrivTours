@@ -135,7 +135,6 @@ namespace PrivTours.Controllers
             }
             catch (Exception)
             {
-                //return RedirectToAction("Error", "Admin");
                 return Json(new { data = "error", message = "Ocurrió un error al eliminar al cliente" });
             }
         }

@@ -9,30 +9,30 @@ using System.Threading.Tasks;
 namespace PrivTours.Models.Business
 
 {
-    public class ClientesBusiness : IClientesBusiness
+    public class ServiciosBusiness : IServiciosBusiness
     {
 
         private readonly DbContextPriv _dbContext;
 
-        public ClientesBusiness(DbContextPriv context)
+        public ServiciosBusiness(DbContextPriv context)
         {
             _dbContext = context;
         }
 
-        public async Task<IEnumerable<Cliente>> ObtenerListaClientes()
+        public async Task<IEnumerable<Servicio>> ObtenerListaServicios()
         {
-            return await _dbContext.Clientes.ToListAsync();
+            return await _dbContext.Servicios.ToListAsync();
         }
 
-        public async Task<Cliente> ObtenerClientePorId(int id)
+        public async Task<Servicio> ObtenerServicioPorId(int id)
         {
-            return await _dbContext.Clientes.FirstOrDefaultAsync(m => m.ClienteId == id);
+            return await _dbContext.Servicios.FirstOrDefaultAsync(m => m.ServicioId == id);
         }
-        public async Task GuardarCliente(Cliente cliente)
+        public async Task GuardarServicio(Servicio servicio)
         {
             try
             {
-                _dbContext.Add(cliente);
+                _dbContext.Add(servicio);
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception e)
@@ -40,12 +40,12 @@ namespace PrivTours.Models.Business
                 throw e;
             }
         }
-        public async Task EditarCliente(Cliente cliente)
+        public async Task EditarServicio(Servicio servicio)
         {
 
             try
             {
-                _dbContext.Update(cliente);
+                _dbContext.Update(servicio);
                 await _dbContext.SaveChangesAsync();
 
             }
@@ -54,11 +54,11 @@ namespace PrivTours.Models.Business
                 throw e;
             }
         }
-        public async Task EliminarCliente(Cliente cliente)
+        public async Task EliminarServicio(Servicio servicio)
         {
             try
             {
-                _dbContext.Remove(cliente);
+                _dbContext.Remove(servicio);
                 await _dbContext.SaveChangesAsync();
 
             }
