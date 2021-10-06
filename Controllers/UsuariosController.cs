@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PrivTours.Controllers
 {
@@ -24,7 +25,7 @@ namespace PrivTours.Controllers
             _roleManager = roleManager;
         }
 
-
+        [Authorize(Roles = "Administrador,Secretaria")]
         public async Task<IActionResult> Index()
         {
             var usuarios = await _userManager.Users.ToListAsync();
@@ -55,6 +56,7 @@ namespace PrivTours.Controllers
             return new List<string>(await _userManager.GetRolesAsync(usuario));
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpGet]
         public async Task<IActionResult> Crearusuario()
         {
@@ -62,6 +64,7 @@ namespace PrivTours.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         public async Task<IActionResult> Crearusuario(UsuarioViewModel usuarioViewModel)
         {
@@ -108,6 +111,7 @@ namespace PrivTours.Controllers
             return View(usuarioViewModel);
         }
 
+        [Authorize(Roles = "Administrador")]
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Editar(string id)
         {
@@ -143,6 +147,7 @@ namespace PrivTours.Controllers
         // POST: Clientes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(string id, [Bind("Id,Nombre,Apellido,Documento,Email,Telefono,RolSeleccionado")] UsuarioViewModel usuarioViewModel)
@@ -190,6 +195,7 @@ namespace PrivTours.Controllers
             return Json(new { data = "error" });
         }
         // GET: Clientes/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -212,6 +218,7 @@ namespace PrivTours.Controllers
             }
         }
 
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> CambiarEstado(string id)
         {
             if (id == null)
@@ -242,11 +249,13 @@ namespace PrivTours.Controllers
             }
         }
 
+
         public IActionResult Login()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
@@ -259,7 +268,7 @@ namespace PrivTours.Controllers
                 if (result.Succeeded)
                 {
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Usuarios");
 
                 }
                 ModelState.AddModelError("", "Error login");
@@ -267,11 +276,46 @@ namespace PrivTours.Controllers
 
             return View();
         }
+
+        [AllowAnonymous]
         public async Task<IActionResult> CerrarSesion()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Usuarios");
+            return RedirectToAction("Dashboard", "Admin");
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult RecuperarContrasena()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult RecuperarContrasena(RecuperarContrasenaViewModel recuperarContrasenaViewModel)
+        {
+
+            if (ModelState.IsValid)
+            {
+
+                /*var result = await _signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RecordarMe, false);
+
+                if (result.Succeeded)
+                {
+
+                    return RedirectToAction("Index", "Home");
+
+                }*/
+                ModelState.AddModelError("", "Error recuperar contraseña");
+            }
+
+            return View();
+        }
+
+        public IActionResult AccesoDenegado()
+        {
+            return View();
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model PrivTours.ViewModels.LoginViewModel
+﻿@model PrivTours.ViewModels.RecuperarContrasenaViewModel
 
 @{
     Layout = null;
@@ -27,44 +27,24 @@
         </div>
         <div class="card">
             <div class="card-body login-card-body">
-                <p class="login-box-msg">Iniciar Sesión</p>
+                <p class="login-box-msg">Recuperar Contraseña</p>
 
-                <form method="post" asp-action="Login">
+                <form method="post" asp-action="RecuperarContrasena">
                     <span asp-validation-for="Email" class="text-danger small"></span>
                     <div class="input-group mb-3">
                         <input asp-for="Email" class="form-control" placeholder="email" />
+
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
                             </div>
                         </div>
                     </div>
-                    <span asp-validation-for="Password" class="text-danger small"></span>
-                    <div class="input-group mb-3">
-                        <input asp-for="Password" class="form-control" placeholder="password" />
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="icheck-primary">
-                                <label asp-for="RecordarMe">
-                                    <input asp-for="RecordarMe" />
-                                    @Html.DisplayNameFor(m => m.RecordarMe)
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+                        <button type="submit" class="btn btn-primary btn-block">Enviar</button>
                     </div>
-
-                    <div>
-                        <a asp-action="RecuperarContrasena">Olvidé la contraseña</a>
-                    </div>
+                                        
 
                     <div asp-validation-summary="All" class="text-danger small"></div>
                 </form>
@@ -85,3 +65,4 @@
 <script src="~/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
 <script src="~/adminlte/dist/js/adminlte.min.js"></script>
+
