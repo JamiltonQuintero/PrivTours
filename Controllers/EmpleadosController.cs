@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PrivTours.Models.Abstract;
 using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
 
@@ -12,19 +13,22 @@ namespace PrivTours.Controllers
 {
     public class EmpleadosController : Controller
     {
-        private readonly DbContextPriv _context;
+        private readonly IEmpleadosBusiness _empleadosBusiness;
 
-        public EmpleadosController(DbContextPriv context)
+        public EmpleadosController(IEmpleadosBusiness empleadosBusiness)
         {
-            _context = context;
+            _empleadosBusiness = empleadosBusiness;
         }
 
         // GET: Empleados
         public async Task<IActionResult> Index()
+
         {
-            return View(await _context.Empleados.ToListAsync());
+            return View(await _empleadosBusiness.ObtenerListaEmpleados());
         }
 
+
+        
         // GET: Empleados/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -33,16 +37,16 @@ namespace PrivTours.Controllers
                 return NotFound();
             }
 
-            var empleado = await _context.Empleados
-                .FirstOrDefaultAsync(m => m.EmpleadoId == id);
+            var empleado = await _empleadosBusiness.ObtenerEmpleadoPorId(id.Value);
+                
             if (empleado == null)
             {
                 return NotFound();
             }
-
             return View(empleado);
         }
 
+        
         // GET: Empleados/Create
         public IActionResult Create()
         {
@@ -58,13 +62,20 @@ namespace PrivTours.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(empleado);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _empleadosBusiness.GuardarEmpleado(empleado);
+                    return Json(new { data = "ok" });
+                }
+                catch (Exception)
+                {
+                    return Json(new { data = "error" });
+                }
             }
-            return View(empleado);
+            return Json(new { data = "error" });
         }
 
+        
         // GET: Empleados/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -73,7 +84,7 @@ namespace PrivTours.Controllers
                 return NotFound();
             }
 
-            var empleado = await _context.Empleados.FindAsync(id);
+            var empleado = await _empleadosBusiness.ObtenerEmpleadoPorId(id.Value);
             if (empleado == null)
             {
                 return NotFound();
@@ -90,64 +101,50 @@ namespace PrivTours.Controllers
         {
             if (id != empleado.EmpleadoId)
             {
-                return NotFound();
+                return Json(new { data = "error" });
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(empleado);
-                    await _context.SaveChangesAsync();
+                    await _empleadosBusiness.EditarEmpleado(empleado);
+                    return Json(new { data = "ok" });
+
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception)
                 {
-                    if (!EmpleadoExists(empleado.EmpleadoId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
+                    return Json(new { data = "error" });
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(empleado);
+            return Json(new { data = "error" });
         }
 
+        
         // GET: Empleados/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return Json(new { data = "error", message = "Id no encontrado" });
             }
-
-            var empleado = await _context.Empleados
-                .FirstOrDefaultAsync(m => m.EmpleadoId == id);
-            if (empleado == null)
+            try
             {
-                return NotFound();
+                var empleado = await _empleadosBusiness.ObtenerEmpleadoPorId(id.Value);
+                if (empleado == null)
+
+                    return Json(new { data = "error", message = "Empleado a eliminar no existe" });
+                await _empleadosBusiness.EliminarEmpleado(empleado);
+
+                return Json(new { data = "ok", message = "Empleado " + empleado.Nombre + " fue eliminado correctamente" });
             }
-
-            return View(empleado);
-        }
-
-        // POST: Empleados/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var empleado = await _context.Empleados.FindAsync(id);
-            _context.Empleados.Remove(empleado);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool EmpleadoExists(int id)
-        {
-            return _context.Empleados.Any(e => e.EmpleadoId == id);
+            catch (Exception)
+            {
+                //return RedirectToAction("Error", "Admin");
+                return Json(new { data = "error", message = "Ocurrió un error al eliminar el cliente" });
+            }
         }
     }
+  
 }

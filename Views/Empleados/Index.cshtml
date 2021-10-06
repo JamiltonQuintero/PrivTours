@@ -51,9 +51,9 @@
                                 @Html.DisplayFor(modelItem => item.Nombre)
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.EmpleadoId">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.EmpleadoId">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.EmpleadoId">Delete</a>
+                                <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.EmpleadoId"><i class="fas fa-user-edit"></i>Editar</a> |
+                                <a class="btn btn-success" asp-action="Details" asp-route-id="@item.EmpleadoId"><i class="fas fa-info-circle"></i>Detalle</a> |
+                                <a class="m1-1 btn btn-danger" onclick="eliminar(@item.EmpleadoId, '@item.Nombre');"><i class="fas fa-user-minus"></i>Eliminar</a>
                             </td>
                         </tr>
                     }
@@ -67,8 +67,53 @@
 </div>
 <!-- /.content-wrapper -->
 @section Scripts{
-
-
     <script src="~/js/Tabla.js"></script>
+    function eliminar(id, nombreEmpleado) {
+    Swal.fire({
+    title: '¿Está seguro de eliminar el empleado?',
+    text: id + '-' + nombreEmpleado,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Sí, eliminar!',
+    cancelButtonText: 'Cancelar',
+    reverseButtons: true
+    }).then((result) => {
+    if (result.isConfirmed) {
+    $.ajax({
+    type: "GET",
+    url: '@Url.Action("Delete", "Empleado", new { id = "id" })'.replace("id", encodeURIComponent(id)),
+    contentType: false,
+    processData: false,
+    success: function (result) {
+
+    if (result.data == "ok") {
+    setTimeout(function () {
+    window.location.href = "@Url.Action("Index", "Empleado")";
+    }, 3000);
+    Swal.fire({
+    icon: 'success',
+    title: result.message,
+    showConfirmButton: false,
+    timer: 1500
+    })
+    } else {
+    console.log("ERROR!!");
+    Swal.fire({
+    icon: 'error',
+    title: 'Oops...',
+    text: result.message,
+    })
+    }
+    },
+    error: function (err) {
+    console.log(err.data)
+    }
+    });
+    }
+    })
+    }
+
 }
 

@@ -38,6 +38,7 @@ namespace PrivTours
             services.AddIdentity<UsuarioIdentity, IdentityRole>().AddEntityFrameworkStores<DbContextPriv>();
 
             services.AddScoped<ISolicitudesBusiness, SolicitudesBusiness>();
+            services.AddScoped<IEmpleadosBusiness, EmpleadosBusiness>();
 
             services.Configure<IdentityOptions>(options =>
             {
