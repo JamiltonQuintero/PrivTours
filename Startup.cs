@@ -42,6 +42,8 @@ namespace PrivTours
 
             services.AddScoped<IClientesBusiness, ClientesBusiness>();
             services.AddScoped<IServiciosBusiness, ServiciosBusiness>();
+            services.AddScoped<IAdminBusiness, AdminBusiness>();
+
 
 
             services.Configure<IdentityOptions>(options =>
@@ -95,7 +97,7 @@ namespace PrivTours
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Solicitudes}/{action=Index}/{id?}");
+                    pattern: "{controller=Admin}/{action=Dashboard}/{id?}");
 
             });
         }

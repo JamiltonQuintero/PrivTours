@@ -14,7 +14,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Gestionar cliente</h1>
+                    <h1 class="m-0">Clientes Private Tours</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -37,9 +37,6 @@
                 <thead>
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model.ClienteId)
-                        </th>
-                        <th>
                             @Html.DisplayNameFor(model => model.Nombre)
                         </th>
                         <th>
@@ -51,6 +48,7 @@
                         <th>
                             @Html.DisplayNameFor(model => model.NumDoc)
                         </th>
+                        <th>Estado</th>
                         <th>
                             Acciones
                         </th>
@@ -59,30 +57,38 @@
                 <tbody>
                     @foreach (var cliente in Model)
                     {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelCliente => cliente.ClienteId)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelCliente => cliente.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelCliente => cliente.Email)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelCliente => cliente.Telefono)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelCliente => cliente.NumDoc)
-                        </td>
-                        <td>
-                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@cliente.ClienteId"><i class="fas fa-user-edit"></i>Editar</a> |
-                            <a class="btn btn-success" asp-action="Details" asp-route-id="@cliente.ClienteId"><i class="fas fa-info-circle"></i>Detalle</a> |
-                            <a class="m1-1 btn btn-danger" onclick="eliminar(@cliente.ClienteId, '@cliente.Nombre');"><i class="fas fa-user-minus"></i>Eliminar</a>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelCliente => cliente.Nombre)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelCliente => cliente.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelCliente => cliente.Telefono)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelCliente => cliente.NumDoc)
+                            </td>
+                            @if (cliente.Estado == true)
+                            {
+                                <td>Activo</td>
+                            }
+                            else
+                            {
+                                <td>Inactivo</td>
+                            }
+                            <td>
+
+                                <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@cliente.ClienteId"><i class="fas fa-user-edit"></i></a>
+                                <a class="btn  @(cliente.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@cliente.ClienteId', '@cliente.Nombre', @cliente.Estado.ToString().ToLower());"><i class="fas @(cliente.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
+                                <a class="btn btn-danger" onclick="eliminar('@cliente.ClienteId', '@cliente.Nombre');"><i class="fas fa-user-minus"></i></a>
+                            </td>
+
+                        </tr>
                     }
                 </tbody>
+
             </table>
 
 
@@ -93,12 +99,42 @@
 <!-- /.content-wrapper -->
 @section Scripts{
 
+
     <script src="~/js/Tabla.js"></script>
     <script>
-        function eliminar(id, nombreCliente) {
+
+    @if(TempData["Mensaje"] != null && TempData["Accion"].ToString().Equals("Crear")) { <text>
+
+              Swal.fire({
+                title: "¡Felicitaciones!",
+                type: "success",
+                html: "@TempData["Mensaje"]",
+                icon: 'success',
+                timer: 3000
+              });
+
+             </text>
+    }
+
+    @if (TempData["Mensaje"] != null && TempData["Accion"].ToString().Equals("Editar"))
+    {
+        <text>
+
+            Swal.fire({
+                title: "¡Felicitaciones!",
+                type: "success",
+                html: "@TempData["Mensaje"]",
+                icon: 'success',
+                timer: 3000
+            });
+
+        </text>
+    }
+
+        function eliminar(id, nombreUsuario) {
             Swal.fire({
                 title: '¿Está seguro de eliminar el cliente?',
-                text: id + '-' + nombreCliente,
+                text: nombreUsuario,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -110,7 +146,54 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "GET",
-                        url: '@Url.Action("Delete","Clientes", new { id = "id" })'.replace("id", encodeURIComponent(id)),
+                        url: '@Url.Action("Delete", "Clientes", new { id = "id" })'.replace("id", encodeURIComponent(id)),
+                        contentType: false,
+                        processData: false,
+                        success: function (result) {
+
+                            if (result.data == "ok") {
+                                setTimeout(function () {
+                                    window.location.href = "@Url.Action("Index", "Clientes")";
+                                }, 1500);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: result.message,
+                                    showConfirmButton: false,
+                                    timer: 5000
+                                })
+                            } else {
+                                console.log("ERROR!!");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: result.message,
+                                })
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err.data)
+                        }
+                    });
+                }
+            })
+        }
+
+        function cambiarEstado(id, nombreUsuario, estadoActual) {
+            Swal.fire({
+                title: '¿Está seguro de cambiar estado al cliente?',
+                text: nombreUsuario,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: estadoActual == true ? '#d33' : '#28A745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, '.concat(estadoActual == true ? 'Inactivar' : 'Activar'),
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("CambiarEstado", "Clientes", new { id = "id" })'.replace("id", encodeURIComponent(id)),
                         contentType: false,
                         processData: false,
                         success: function (result) {
@@ -118,12 +201,12 @@
                             if (result.data == "ok") {
                                 setTimeout(function () {
                                     window.location.href = "@Url.Action("Index","Clientes")";
-                                }, 3000);
+                                }, 1500);
                                 Swal.fire({
                                     icon: 'success',
                                     title: result.message,
                                     showConfirmButton: false,
-                                    timer: 1500
+                                    timer: 5000
                                 })
                             } else {
                                 console.log("ERROR!!");

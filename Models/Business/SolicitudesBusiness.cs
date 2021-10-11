@@ -23,17 +23,30 @@ namespace PrivTours.Models.Business
 
         public async Task<IEnumerable<Cliente>> ObtenerListaClientes()
         {
-            return await _dbContext.Clientes.ToListAsync();
+
+            var clientes = await _dbContext.Clientes.ToListAsync();
+
+            var clientesActivos = clientes.FindAll(clientes => clientes.Estado == true);
+
+            return clientesActivos;
         }
      
         public async Task<IEnumerable<Servicio>> ObtenerListaServicios()
         {
-            return await _dbContext.Servicios.ToListAsync();
+            var servicios = await _dbContext.Servicios.ToListAsync();
+
+            var serviciosActivos = servicios.FindAll(servicios => servicios.Estado == true);
+
+            return serviciosActivos;
         }
 
         public async Task<IEnumerable<Empleado>> ObtenerListaEmpleados()
         {
-            return await _dbContext.Empleados.ToListAsync();
+            var empleados = await _dbContext.Empleados.ToListAsync();
+
+            var empleadosActivos = empleados.FindAll(empleado => empleado.Estado == true);
+
+            return empleadosActivos;
         }
 
         
@@ -81,8 +94,5 @@ namespace PrivTours.Models.Business
 
             }
         }
-
-        
-
     }
 }

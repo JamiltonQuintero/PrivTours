@@ -8,7 +8,6 @@
 @section Styles{
 
 }
-
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -20,8 +19,8 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Clientes">Gestión Clientes</a></li>
-                        <li class="breadcrumb-item active">Crear cliente</li>
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Empleado">Gestión Clientes</a></li>
+                        <li class="breadcrumb-item active">Crear Cliente</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -33,82 +32,83 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-6">
-
-                    <form asp-action="Create">
+                    <form method="post" asp-action="Create" id="formulario" name="formulario">
+                        <div asp-validation-summary="All" class="text-danger"></div>
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                         <div class="form-group">
                             <label asp-for="Nombre" class="control-label"></label>
-                            <input asp-for="Nombre" class="form-control" id="nombre" name="nombre" />
+                            <input asp-for="Nombre" class="form-control" />
                             <span asp-validation-for="Nombre" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Apellidos" class="control-label"></label>
-                            <input asp-for="Apellidos" class="form-control" id="apellidos" name="apellidos" />
+                            <input asp-for="Apellidos" class="form-control" />
                             <span asp-validation-for="Apellidos" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Email" class="control-label"></label>
-                            <input asp-for="Email" class="form-control" id="email" name="email" />
+                            <input asp-for="Email" class="form-control" />
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label asp-for="Telefono" class="control-label"></label>
-                            <input asp-for="Telefono" class="form-control" id="telefono" name="telefono" />
+                            <input asp-for="Telefono" class="form-control" />
                             <span asp-validation-for="Telefono" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
                             <label asp-for="TelefonoEmer" class="control-label"></label>
-                            <input asp-for="TelefonoEmer" class="form-control" id="telefonoEmer" name="telefonoEmer" />
+                            <input asp-for="TelefonoEmer" class="form-control"/>
                             <span asp-validation-for="TelefonoEmer" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
                             <label asp-for="Pais" class="control-label"></label>
-                            <input asp-for="Pais" class="form-control" id="telefonoEmer" name="telefonoEmer" />
+                            <input asp-for="Pais" class="form-control" />
                             <span asp-validation-for="Pais" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
                             <label asp-for="IdTipoDoc" class="control-label"></label>
-                            <input asp-for="IdTipoDoc" class="form-control" id="telefonoEmer" name="telefonoEmer" />
+                            <select asp-for="IdTipoDoc" class="form-control">
+                                <option value="1">Cedula</option>
+                                <option value="2">Cedula extranjera</option>
+                                <option value="3">Pasaporte</option>
+                            </select>
                             <span asp-validation-for="IdTipoDoc" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
                             <label asp-for="NumDoc" class="control-label"></label>
-                            <input asp-for="NumDoc" class="form-control" id="telefonoEmer" name="telefonoEmer" />
+                            <input asp-for="NumDoc" class="form-control"/>
                             <span asp-validation-for="NumDoc" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
                             <label asp-for="FechaNac" class="control-label"></label>
-                            <input type=date asp-for="FechaNac" class="form-control" id="telefonoEmer" name="telefonoEmer" />
+                            <input type=date asp-for="FechaNac" class="form-control" />
                             <span asp-validation-for="FechaNac" class="text-danger"></span>
                         </div>
 
                         <div class="form-group">
                             <label asp-for="Notas" class="control-label"></label>
-                            <input asp-for="Notas" class="form-control" id="telefonoEmer" name="telefonoEmer" />
+                            <input asp-for="Notas" class="form-control"/>
                             <span asp-validation-for="Notas" class="text-danger"></span>
                         </div>
 
-                        <div class="form-group">
-                            <label asp-for="Estado" class="control-label"></label>
-                            <input asp-for="Estado" class="form-control" id="telefonoEmer" name="telefonoEmer" />
-                            <span asp-validation-for="Estado" class="text-danger"></span>
-                        </div>
 
-                        <div class="form-group">
-                            <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
+                        <div class="row">
+                            <div>
+                                <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
+                            </div>
                         </div>
                     </form>
-                    <div>
-                        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
-                    </div>
-
                 </div>
-                <!-- /.col-md-6 -->
             </div>
             <!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -120,98 +120,23 @@
 @section Scripts{
 
     <script>
-    function Crear() {
-
-        var isValid = true;
-        if (document.getElementById("nombre").value == '') {
-            $('#nombre').siblings('span.text-danger').text('El nombre es requerido');
-            isValid = false;
-        } else {
-            $('#nombre').siblings('span.text-danger').text('');
-        }
-
-        if (document.getElementById("email").value == '') {
-            $('#email').siblings('span.text-danger').text('El email electrónico  es requerido');
-            isValid = false;
-        } else {
-            if (!validaEmail($('#email').val())) {
-                $('#email').siblings('span.text-danger').text('Email electrónico inválido');
-                isValid = false;
-            } else {
-                $('#email').siblings('span.text-danger').text('');
-            }
-        }
-
-        //if (document.getElementById("direccion").value == '') {
-        //    $('#direccion').siblings('span.text-danger').text('La dirección es requerida');
-        //    isValid = false;
-        //} else {
-        //    $('#direccion').siblings('span.text-danger').text('');
-        //}
-
-        if (isValid) {
-            Swal.fire({ //Mensaje de confirmar
-                title: '¿Desea guardar el cliente?',
+        function Crear() {
+            Swal.fire({
+                title: "Guardar cliente",
+                text: "¿Estás seguro que desea guardar el cliente?",
                 //showDenyButton: true,
                 showCancelButton: true,
-                confirmButtonText: `Guardar`,
-                cancelButtonText: `Cancelar`,
-                reverseButtons: true
+                confirmButtonText: 'Guardar',
+                //denyButtonText: 'No guardar',
             }).then((result) => {
-
-                if (result.isConfirmed) { // si confirmamos
-                    var formData = new FormData(); //se crea el ojeto de tipo formData que va a contener todo lo que vamos a enviar
-                    formData.append("Nombre", document.getElementById("nombre").value);
-                    formData.append("Email", document.getElementById("email").value);
-                    formData.append("Direccion", document.getElementById("direccion").value);
-
-                     $.ajax({
-                            type: "POST",
-                            //url: "../Cargos/CrearCargo",
-                            url: '@Url.Action("Create","Clientes")',
-                            contentType: false,
-                            processData: false,
-                            data: formData,
-                            success: function (result) {
-
-                                if (result.data == "ok") {
-                                    setTimeout(
-                                        function () {
-                                            window.location.href = "@Url.Action("Index","Clientes")";
-                                        }, 2000);
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Cliente guardado',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    })
-                                } else {
-                                    console.log("ERROR!!");
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Oops...',
-                                        text: 'Ocurrió un error al crear el cliente',
-                                    })
-                                }
-                            },
-                            error: function (err) {
-                                console.log(err.data)
-                            }
-                     });
+                if (result.isConfirmed) {
+                    document.getElementById('formulario').submit();
 
                 } else if (result.isDenied) {
-                    Swal.fire('Cliente no guardado', '', 'info')
+                    Swal.fire('¡Empleado no guardado!', '', 'info')
                 }
             })
         }
-
-
-    }
-
-    function validaEmail(email) {
-        var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-        return regex.test(email);
-    }
     </script>
 
 }

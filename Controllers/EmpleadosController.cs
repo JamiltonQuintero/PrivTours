@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using PrivTours.Models.Abstract;
-using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
 
 namespace PrivTours.Controllers
@@ -58,22 +53,28 @@ namespace PrivTours.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmpleadoId,Nombre")] Empleado empleado)
+        public async Task<IActionResult> Create([Bind("EmpleadoId,Nombre,Apellido,Celular,TipoContrato")] Empleado empleado)
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    await _empleadosBusiness.GuardarEmpleado(empleado);
-                    return Json(new { data = "ok" });
-                }
-                catch (Exception)
-                {
-                    return Json(new { data = "error" });
-                }
+            try
+            {
+                empleado.Estado = true;
+                await _empleadosBusiness.GuardarEmpleado(empleado);
+                TempData["Accion"] = "Crear";
+                TempData["Mensaje"] = "Se ha creado correctamente el cliente " + empleado.Nombre;
+                return RedirectToAction("Index");
+                
             }
-            return Json(new { data = "error" });
+            catch (Exception)
+            {
+                return View(empleado);
+            }
+
         }
+
+                return View(empleado);
+    }
 
         
         // GET: Empleados/Edit/5
@@ -97,7 +98,7 @@ namespace PrivTours.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EmpleadoId,Nombre")] Empleado empleado)
+        public async Task<IActionResult> Edit(int id, [Bind("EmpleadoId,Nombre,Apellido,Celular,TipoContrato")] Empleado empleado)
         {
             if (id != empleado.EmpleadoId)
             {
@@ -109,7 +110,9 @@ namespace PrivTours.Controllers
                 try
                 {
                     await _empleadosBusiness.EditarEmpleado(empleado);
-                    return Json(new { data = "ok" });
+                    TempData["Accion"] = "Editar";
+                    TempData["Mensaje"] = "Se ha editado correctamente el empleado " + empleado.Nombre;
+                    return RedirectToAction("Index");
 
                 }
                 catch (Exception)
@@ -145,6 +148,37 @@ namespace PrivTours.Controllers
                 return Json(new { data = "error", message = "Ocurrió un error al eliminar el cliente" });
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CambiarEstado(int? id)
+        {
+            if (id == null)
+            {
+                return Json(new { data = "error", message = "Id no encontrado" });
+            }
+            try
+            {
+                var empleado = await _empleadosBusiness.ObtenerEmpleadoPorId(id.Value);
+                if (empleado == null)
+                    return Json(new { data = "error", message = "Empleado a cambiar estado no existe" });
+                if (empleado.Estado)
+                {
+                    empleado.Estado = false;
+                }
+                else
+                {
+                    empleado.Estado = true;
+                }
+                await _empleadosBusiness.EditarEmpleado(empleado);
+
+                var NuevoEstado = empleado.Estado == true ? "Activado" : "Inactivado";
+                return Json(new { data = "ok", message = "Empleado " + empleado.Nombre + " fue " + NuevoEstado + " correctamente" });
+            }
+            catch (Exception)
+            {
+                return Json(new { data = "error", message = "Ocurrió un error al cambiar estado al usuario" });
+            }
+        }
+
     }
-  
 }

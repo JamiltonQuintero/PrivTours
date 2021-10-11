@@ -54,14 +54,20 @@ namespace PrivTours.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ServicioId,Nombre")] Servicio servicio)
+        public async Task<IActionResult> Create(Servicio servicio)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+
+                    servicio.Estado = true;
                     await _serviciosBusiness.GuardarServicio(servicio);
-                    return Json(new { data = "ok" });
+                    TempData["Accion"] = "Crear";
+                    TempData["Mensaje"] = "Se ha creado correctamente el servicio " + servicio.Nombre;
+                    return RedirectToAction("Index");
+
+
                 }
                 catch (Exception)
                 {
@@ -92,7 +98,7 @@ namespace PrivTours.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ServicioId,Nombre")] Servicio servicio)
+        public async Task<IActionResult> Edit(int id, Servicio servicio)
         {
             if (id != servicio.ServicioId)
             {
@@ -103,8 +109,12 @@ namespace PrivTours.Controllers
             {
                 try
                 {
+
                     await _serviciosBusiness.EditarServicio(servicio);
-                    return Json(new { data = "ok" });
+                    TempData["Accion"] = "Editar";
+                    TempData["Mensaje"] = "Se ha editado correctamente el emplservicioeado " + servicio.Nombre;
+                    return RedirectToAction("Index");
+                    
                 }
                 catch (Exception)
                 {
@@ -136,6 +146,39 @@ namespace PrivTours.Controllers
                 return Json(new { data = "error", message = "Ocurrió un error al eliminar al servicio" });
             }
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> CambiarEstado(int? id)
+        {
+            if (id == null)
+            {
+                return Json(new { data = "error", message = "Id no encontrado" });
+            }
+            try
+            {
+                var servicio = await _serviciosBusiness.ObtenerServicioPorId(id.Value);
+                if (servicio == null)
+                    return Json(new { data = "error", message = "Empleado a cambiar estado no existe" });
+                if (servicio.Estado)
+                {
+                    servicio.Estado = false;
+                }
+                else
+                {
+                    servicio.Estado = true;
+                }
+                await _serviciosBusiness.EditarServicio(servicio);
+
+                var NuevoEstado = servicio.Estado == true ? "Activado" : "Inactivado";
+                return Json(new { data = "ok", message = "Servicio " + servicio.Nombre + " fue " + NuevoEstado + " correctamente" });
+            }
+            catch (Exception)
+            {
+                return Json(new { data = "error", message = "Ocurrió un error al cambiar estado al servicio" });
+            }
+        }
+
     }
 }
 

@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using PrivTours.Models.Abstract;
-using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
 
 namespace PrivTours.Controllers
@@ -55,21 +50,24 @@ namespace PrivTours.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClienteId,Nombre")] Cliente cliente)
+        public async Task<IActionResult> Create(Cliente cliente)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    cliente.Estado = true;
                     await _clientesBusiness.GuardarCliente(cliente);
-                    return Json(new { data = "ok" });
+                    TempData["Accion"] = "Crear";
+                    TempData["Mensaje"] = "Se ha creado correctamente el usuario " + cliente.Nombre;
+                    return RedirectToAction("Index");
                 }
                 catch (Exception)
                 {
-                    return Json(new { data = "error" });
+                    return View(cliente);
                 }
             }
-            return Json(new { data = "error" });
+            return View(cliente);
         }
 
         // GET: Clientes/Edit/5
@@ -93,7 +91,7 @@ namespace PrivTours.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ClienteId,Nombre")] Cliente cliente)
+        public async Task<IActionResult> Edit(int id, Cliente cliente)
         {
             if (id != cliente.ClienteId)
             {
@@ -105,7 +103,10 @@ namespace PrivTours.Controllers
                 try
                 {
                     await _clientesBusiness.EditarCliente(cliente);
-                    return Json(new { data = "ok" });
+                    TempData["Accion"] = "Editar";
+                    TempData["Mensaje"] = "Se ha editado correctamente el cliente " + cliente.Nombre;
+                    return RedirectToAction("Index");
+
                 }
                 catch (Exception)
                 {
@@ -138,6 +139,38 @@ namespace PrivTours.Controllers
                 return Json(new { data = "error", message = "Ocurrió un error al eliminar al cliente" });
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CambiarEstado(int? id)
+        {
+            if (id == null)
+            {
+                return Json(new { data = "error", message = "Id no encontrado" });
+            }
+            try
+            {
+                var cliente = await _clientesBusiness.ObtenerClientePorId(id.Value);
+                if (cliente == null)
+                    return Json(new { data = "error", message = "Cliente a cambiar estado no existe" });
+                if (cliente.Estado)
+                {
+                    cliente.Estado = false;
+                }
+                else
+                {
+                    cliente.Estado = true;
+                }
+                await _clientesBusiness.EditarCliente(cliente);
+
+                var NuevoEstado = cliente.Estado == true ? "Activado" : "Inactivado";
+                return Json(new { data = "ok", message = "Empleado " + cliente.Nombre + " fue " + NuevoEstado + " correctamente" });
+            }
+            catch (Exception)
+            {
+                return Json(new { data = "error", message = "Ocurrió un error al cambiar estado al usuario" });
+            }
+        }
+
     }
 }
 

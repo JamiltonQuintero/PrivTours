@@ -12,12 +12,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Crear cliente</h1>
+                    <h1 class="m-0">Crear empleado</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Clientes">Gestión Clientes</a></li>
-                        <li class="breadcrumb-item active">Crear cliente</li>
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Empleado">Gestión Empleado</a></li>
+                        <li class="breadcrumb-item active">Crear Empleado</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -30,8 +30,16 @@
             <div class="row">
                 <div class="col-lg-6">
 
-                    <form asp-action="Create">
+                    <form method="post" asp-action="Create" id="formulario" name="formulario">
+                        <div asp-validation-summary="All" class="text-danger"></div>
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label asp-for="Nombre" class="control-label"></label>
+                            <input asp-for="Nombre" class="form-control" />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+
                         <div class="form-group">
                             <label asp-for="Apellido" class="control-label"></label>
                             <input asp-for="Apellido" class="form-control" />
@@ -44,21 +52,27 @@
                             <span asp-validation-for="Celular" class="text-danger"></span>
                         </div>
 
-                        <select  name="Tipo de contrato" id="TipoContrato" asp-for="TipoContrato" class="control-label">
-                            <option value="1">Interno</option>
-                            <option value="2">Externo</option>
-                        </select>
 
                         <div class="form-group">
-                            <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
+                            <label asp-for="TipoContrato" class="control-label"></label>
+                            <select asp-for="TipoContrato" class="form-control">
+                                <option value="1">Interno</option>
+                                <option value="2">Externo</option>
+                            </select>
+                            <span asp-validation-for="TipoContrato" class="text-danger"></span>
                         </div>
-                    </form>
-                    <div>
-                        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
-                    </div>
 
+                        <div class="row">
+                            <div>
+                                <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
+                            </div>
+                        </div>                         
+                    </form>                  
                 </div>
-                <!-- /.col-md-6 -->
             </div>
             <!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -70,100 +84,22 @@
 @section Scripts {
 
     <script>
-    function Crear() {
+        function Crear() {
+                Swal.fire({
+                    title: "Guardar empleado",
+                    text: "¿Estás seguro que desea guardar el empleado?",
+                    //showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Guardar',
+                    //denyButtonText: 'No guardar',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('formulario').submit();
 
-        var isValid = true;
-        if (document.getElementById("nombre").value == '') {
-            $('#nombre').siblings('span.text-danger').text('El nombre es requerido');
-            isValid = false;
-        } else {
-            $('#nombre').siblings('span.text-danger').text('');
+                    } else if (result.isDenied) {
+                        Swal.fire('¡Empleado no guardado!', '', 'info')
+                    }
+                })
         }
-
-        if (document.getElementById("apellido").value == '') {
-            $('#apellido').siblings('span.text-danger').text('El apellido es requerido');
-            isValid = false;
-        } else {
-            $('#apellido').siblings('span.text-danger').text('');
-        }
-
-        if (document.getElementById("celular").value == '') {
-            $('#celular').siblings('span.text-danger').text('La dirección es requerida');
-            isValid = false;
-        } else {
-            $('#celular').siblings('span.text-danger').text('');
-        }
-
-        if (document.getElementById("tipoContrato").value == '') {
-            $('#tipoContrato').siblings('span.text-danger').text('La dirección es requerida');
-            isValid = false;
-        } else {
-            $('#tipoContrato').siblings('span.text-danger').text('');
-        }
-
-        if (isValid) {
-            Swal.fire({ //Mensaje de confirmar
-                title: '¿Desea guardar el Empleado?',
-                //showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: `Guardar`,
-                cancelButtonText: `Cancelar`,
-                reverseButtons: true
-            }).then((result) => {
-
-                if (result.isConfirmed) { // si confirmamos
-                    var formData = new FormData(); //se crea el ojeto de tipo formData que va a contener todo lo que vamos a enviar
-                    formData.append("Nombre", document.getElementById("nombre").value);
-                    formData.append("Apellido", document.getElementById("apellido").value);
-                    formData.append("Celular", document.getElementById("celular").value);
-                    formData.append("Tipo de contrato", document.getElementById("tipoContrato").value);
-
-                     $.ajax({
-                            type: "POST",
-                            //url: "../Cargos/CrearCargo",
-                            url: '@Url.Action("Create","Empleados")',
-                            contentType: false,
-                            processData: false,
-                            data: formData,
-                            success: function (result) {
-
-                                if (result.data == "ok") {
-                                    setTimeout(
-                                        function () {
-                                            window.location.href = "@Url.Action("Index","Empleados")";
-                                        }, 2000);
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Empleado guardado',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    })
-                                } else {
-                                    console.log("ERROR!!");
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Oops...',
-                                        text: 'Ocurrió un error al crear el empleado',
-                                    })
-                                }
-                            },
-                            error: function (err) {
-                                console.log(err.data)
-                            }
-                     });
-
-                } else if (result.isDenied) {
-                    Swal.fire('Empleado no guardado', '', 'info')
-                }
-            })
-        }
-
-
-    }
-
-    function validaEmail(email) {
-        var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-        return regex.test(email);
-    }
     </script>
 }

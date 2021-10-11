@@ -14,11 +14,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Gestionar Servicio</h1>
+                    <h1 class="m-0">Servicios Private Tours</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
                         <li class="breadcrumb-item active">Servicios</li>
                     </ol>
                 </div><!-- /.col -->
@@ -32,73 +32,103 @@
             <p>
                 <a class="btn btn-outline-success" asp-action="Create"><i class="fa fa-plus-circle"></i> Crear nuevo servicio</a>
             </p>
-
-            <table class="table" id="tabla">
+            <table id="tabla" class="table">
                 <thead>
                     <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ServicioId)
-                        </th>
+
                         <th>
                             @Html.DisplayNameFor(model => model.Nombre)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Descripcion)
                         </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Restriccion)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Recomendacion)
-                        </th>
-                        <th>
-                            Acciones
-                        </th>
+
+                        <th>Estado</th>
+
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var servicio in Model)
                     {
                         <tr>
-                            <td>
-                                @Html.DisplayFor(modelServicio => servicio.ServicioId)
-                            </td>
+
+
                             <td>
                                 @Html.DisplayFor(modelServicio => servicio.Nombre)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelServicio => servicio.Descripcion)
                             </td>
+
+                            @if (servicio.Estado == true)
+                            {
+                                <td>Activo</td>
+                            }
+                            else
+                            {
+                                <td>Inactivo</td>
+                            }
+
                             <td>
-                                @Html.DisplayFor(modelServicio => servicio.Restriccion)
+
+                                <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@servicio.ServicioId"><i class="fas fa-user-edit"></i></a>
+                                <a class="btn  @(servicio.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@servicio.ServicioId', '@servicio.Nombre', @servicio.Estado.ToString().ToLower());"><i class="fas @(servicio.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
+                                <a class="btn btn-danger" onclick="eliminar('@servicio.ServicioId', '@servicio.Nombre');"><i class="fas fa-user-minus"></i></a>
                             </td>
-                            <td>
-                                @Html.DisplayFor(modelServicio => servicio.Recomendacion)
-                            </td>
-                            <td>
-                                <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@servicio.ServicioId"><i class="fas fa-user-edit"></i>Editar</a> |
-                                <a class="btn btn-success" asp-action="Details" asp-route-id="@servicio.ServicioId"><i class="fas fa-info-circle"></i>Detalle</a> |
-                                <a class="m1-1 btn btn-danger" onclick="eliminar(@servicio.ServicioId, '@servicio.ServicioId');"><i class="fas fa-user-minus"></i>Eliminar</a>
-                            </td>
+
                         </tr>
                     }
                 </tbody>
+
             </table>
+
 
 
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
+    <!-- /.content-wrapper -->
 </div>
-<!-- /.content-wrapper -->
-@section Scripts{
 
+@section Scripts{
     <script src="~/js/Tabla.js"></script>
     <script>
-        function eliminar(id, nombreServicio) {
+
+    @if(TempData["Mensaje"] != null && TempData["Accion"].ToString().Equals("Crear")) { <text>
+
+              Swal.fire({
+                title: "¡Felicitaciones!",
+                type: "success",
+                html: "@TempData["Mensaje"]",
+                icon: 'success',
+                timer: 3000
+              });
+
+             </text>
+    }
+
+
+
+    @if (TempData["Mensaje"] != null && TempData["Accion"].ToString().Equals("Editar"))
+    {
+        <text>
+
             Swal.fire({
-                title: '¿Está seguro de eliminar el Servicio?',
-                text: id + '-' + nombreServicio,
+                title: "¡Felicitaciones!",
+                type: "success",
+                html: "@TempData["Mensaje"]",
+                icon: 'success',
+                timer: 3000
+            });
+
+        </text>
+    }
+
+        function eliminar(id, nombreUsuario) {
+            Swal.fire({
+                title: '¿Está seguro de eliminar el servicio?',
+                text: nombreUsuario,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -110,7 +140,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "GET",
-                        url: '@Url.Action("Delete","Servicios", new { id = "id" })'.replace("id", encodeURIComponent(id)),
+                        url: '@Url.Action("Delete", "Servicios", new { id = "id" })'.replace("id", encodeURIComponent(id)),
                         contentType: false,
                         processData: false,
                         success: function (result) {
@@ -118,12 +148,59 @@
                             if (result.data == "ok") {
                                 setTimeout(function () {
                                     window.location.href = "@Url.Action("Index", "Servicios")";
-                                }, 3000);
+                                }, 1500);
                                 Swal.fire({
                                     icon: 'success',
                                     title: result.message,
                                     showConfirmButton: false,
-                                    timer: 1500
+                                    timer: 5000
+                                })
+                            } else {
+                                console.log("ERROR!!");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: result.message,
+                                })
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err.data)
+                        }
+                    });
+                }
+            })
+        }
+
+        function cambiarEstado(id, nombreUsuario, estadoActual) {
+            Swal.fire({
+                title: '¿Está seguro de cambiar estado al servicio?',
+                text: nombreUsuario,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: estadoActual == true ? '#d33' : '#28A745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, '.concat(estadoActual == true ? 'Inactivar' : 'Activar'),
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("CambiarEstado", "Servicios", new { id = "id" })'.replace("id", encodeURIComponent(id)),
+                        contentType: false,
+                        processData: false,
+                        success: function (result) {
+
+                            if (result.data == "ok") {
+                                setTimeout(function () {
+                                    window.location.href = "@Url.Action("Index","Servicios")";
+                                }, 1500);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: result.message,
+                                    showConfirmButton: false,
+                                    timer: 5000
                                 })
                             } else {
                                 console.log("ERROR!!");

@@ -69,9 +69,15 @@
                                 <span asp-validation-for="RolSeleccionado" class="text-danger"></span>
                             </div>
 
-                            <div class="form-group">
-                                <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
-                            </div>
+                            <div class="row">
+                                <div>
+                                    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
+                                </div>
+                            </div>                      
                         </form>
                     </div>
                 </div>

@@ -3,32 +3,112 @@
 @{
     ViewData["Title"] = "Edit";
 }
-
-<h1>Edit</h1>
-
-<h4>Empleado</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EmpleadoId" />
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+@Html.HiddenFor(u => u.EmpleadoId)
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Editar empleado</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Empleado</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
     </div>
-</div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
 
-<div>
-    <a asp-action="Index">Back to List</a>
+            <hr />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="col-md-6">
+                        <form method="post" asp-action="Edit" id="formulario" name="formulario">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div asp-validation-summary="ModelOnly" class="text-danger">
+                                <!--<input type="hidden" name="Id" id="Id" />-->
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Nombre" class="control-label"></label>
+                                <input asp-for="Nombre" class="form-control" />
+                                <span asp-validation-for="Nombre" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Apellido" class="control-label"></label>
+                                <input asp-for="Apellido" class="form-control" />
+                                <span asp-validation-for="Apellido" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Celular" class="control-label"></label>
+                                <input asp-for="Celular" class="form-control" />
+                                <span asp-validation-for="Celular" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label asp-for="TipoContrato" class="control-label"></label>
+                                <select asp-for="TipoContrato" class="form-control">
+                                    <option value="1">Interno</option>
+                                    <option value="2">Externo</option>
+                                </select>
+                                <span asp-validation-for="TipoContrato" class="text-danger"></span>
+                            </div>
+
+                            <input asp-for="EmpleadoId" class="form-control" style="visibility: hidden" />
+                            <input asp-for="Estado" class="form-control" style="visibility: hidden" />
+                            <div class="row">
+                                <div>
+                                    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
+                                </div>
+
+                            </div>
+                        </form>                        
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+    <!-- /.content-wrapper -->
 </div>
 
 @section Scripts {
+
+    <script>
+
+    function Editar() {
+
+                Swal.fire({
+                    title: "Editar empleado",
+                    text: "¿Estás seguro que desea editar el empleado?",
+                    //showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Guardar',
+                    //denyButtonText: 'No guardar',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('formulario').submit();
+                    } else if (result.isDenied) {
+                        Swal.fire('¡Empleado no editado!', '', 'info')
+                    }
+                })
+       
+    }
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
