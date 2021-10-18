@@ -77,7 +77,7 @@ namespace PrivTours.Models.Business
 
         }
 
-        public async Task GuardarSolicitud(Solicitud solicitud)
+        public async Task<bool> GuardarSolicitud(Solicitud solicitud)
         {
 
             try
@@ -85,14 +85,38 @@ namespace PrivTours.Models.Business
 
                 _dbContext.Add(solicitud);
                 await _dbContext.SaveChangesAsync();
+                return true;
 
             }
             catch (Exception e) 
             {
 
                 Console.WriteLine(e.InnerException.Message);
-
+                return false;
             }
         }
+
+
+        public async Task<Solicitud> ObtenerSolicitudPorId(int id)
+        {
+            return await _dbContext.Solicitudes.FirstOrDefaultAsync(s => s.SolicitudId == id);
+        }
+
+        public async Task<bool> EditarSolicitud(Solicitud solicitud)
+        {
+
+            try
+            {
+                _dbContext.Update(solicitud);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.InnerException.Message);
+                return false;
+            }
+        }
+
     }
 }

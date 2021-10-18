@@ -44,12 +44,19 @@ namespace PrivTours.Controllers
 
             try 
             {
-                await _solicitudesBuseness.GuardarSolicitud(solicitud);
-                return Json(new { status = true });
+                var respuesta =  await _solicitudesBuseness.GuardarSolicitud(solicitud);
+                if(respuesta)
+                {
+                    return Json(new { status = true });
+                } else
+                {
+                    return Json(new { status = false });
+                }
+                
             }
             catch (Exception e)
             {
-                return Json(new { status = true });
+                return Json(new { status = false });
             }
 
         }
@@ -71,5 +78,55 @@ namespace PrivTours.Controllers
             }
 
         }
+
+        public async Task<IActionResult> ObtenerDetalle(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(id.Value);
+
+            if (solicitud == null)
+            {
+                return NotFound();
+            }
+            return Json(new { data = solicitud });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Solicitud solicitud)
+        {
+           
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    
+                    var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud);
+                    if (respuesta)
+                    {
+                        return Json(new { status = true});
+                    }
+                    else
+                    {
+                        return Json(new { status = false });
+                    }
+
+                }
+                catch (Exception)
+                {
+
+                    return Json(new { data = "error" });
+                }
+            }
+            return Json(new { data = "error" });
+        }
+
+
+
+
+
     }
 }
