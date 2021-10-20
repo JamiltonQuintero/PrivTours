@@ -7,6 +7,18 @@
 
 #calendar {
     max-width: 1100px;
-    margin: 40px auto;
+    margin-left: 200px;
     padding: 0 10px;
+}
+
+#external-events {
+    left: 20px;
+    top: 20px;
+    width: fit-content;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background: #eee;
+    text-align: left;
+    height: fit-content;
+
 }

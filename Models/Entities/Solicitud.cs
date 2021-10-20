@@ -43,5 +43,7 @@ namespace PrivTours.Models.Entities
         public int ServicioId { get; set; }
         public virtual Servicio Servicio { get; set; }
 
+        public byte EstadoSoliciud { get; set; }
+
     }
 }

@@ -34,6 +34,50 @@ namespace PrivTours.Controllers
             return View();
         }
 
+        public async Task<IActionResult> ObtenerListaClientes()
+
+        {
+            try
+            {
+                var clientes = await _solicitudesBuseness.ObtenerListaClientes();
+                return Json(new { status = true, data = clientes });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
+
+        public async Task<IActionResult> ObtenerListaEmpleados()
+
+        {
+           try
+            {
+                var empleados = await _solicitudesBuseness.ObtenerListaEmpleados();
+                return Json(new { status = true, data = empleados });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
+
+        public async Task<IActionResult> ObtenerListaServicios()
+
+        {
+            try
+            {
+                var servicios = await _solicitudesBuseness.ObtenerListaServicios();
+                return Json(new { status = true, data = servicios });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
 
         public async Task<IActionResult> Guardar(Solicitud solicitud)
         {
@@ -61,14 +105,79 @@ namespace PrivTours.Controllers
 
         }
 
-
         public async Task<IActionResult> Listar()
         {
 
             try
             {
-
                 var solicitudes = await _solicitudesBuseness.ObtenerListaSolicitudes();
+
+                return Json(new { status = true, data = solicitudes });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
+
+        public async Task<IActionResult> ObtenerListaSolicitudesPorCliente(int clienteId)
+        {
+
+            try
+            {
+
+                var solicitudes = await _solicitudesBuseness.ObtenerListaSolicitudesPorCliente(clienteId);
+
+                return Json(new { status = true, data = solicitudes });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
+
+
+        public async Task<IActionResult> ObtenerListaSolicitudesPorEmpleado(int empleadoId)
+        {
+
+            try
+            {
+
+                var solicitudes = await _solicitudesBuseness.ObtenerListaSolicitudesPorEmpleado(empleadoId);
+
+                return Json(new { status = true, data = solicitudes });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
+
+        public async Task<IActionResult> ObtenerListaSolicitudesPorServicio(int servicioId)
+        {
+
+            try
+            {
+
+                var solicitudes = await _solicitudesBuseness.ObtenerListaSolicitudesPorServicio(servicioId);
+
+                return Json(new { status = true, data = solicitudes });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
+
+        public async Task<IActionResult> ObtenerListaSolicitudesPorEstado(byte estado)
+        {
+            try
+            {
+                var solicitudes = await _solicitudesBuseness.ObtenerListaSolicitudesPorEstado(estado);
 
                 return Json(new { status = true, data = solicitudes });
             }
@@ -123,10 +232,6 @@ namespace PrivTours.Controllers
             }
             return Json(new { data = "error" });
         }
-
-
-
-
 
     }
 }

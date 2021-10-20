@@ -10,249 +10,285 @@
 
 <div class="content-header">
     <div class="container-fluid">
-
-
         <div class="intro-y box">
 
-            <div id='loading'>loading...</div>
-            <div id="calendar">
+            <div class="row">
+                <div id='external-events'>
+                    <h4>Buscar por: </h4>
 
+                    <div id='external-events-list'>
+                        <select class="form-control input w-full border mt-2 flex-1" id="TipoDeBusqueda">
+                            <option value="1">Todos</option>
+                            <option value="2">Empleado</option>
+                            <option value="3">Cliente</option>
+                            <option value="4">Servicio</option>
+                            <option value="5">Estado Solicitud</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <br />
+                        <label>Seleccione en valor de la busqueda</label>
+                        <select class="form-control input w-full border mt-2 flex-1" id="TipoDeBusquedaSeleccionado">
+                            <option value="0">Seleccione</option>
+                        </select>
+                    </div>
+                    <br />
+                    <button type="button" class="btn btn-primary align-content-center" onclick="filtar()">Aplicar filtro</button>
+                </div>
+
+                    <div id='loading'>loading...</div>
+                    <div class="col 10" id="calendar">
+                    </div>
+                </div>
             </div>
+
+
+            <!-- Modal Detalle-->
+
+            <div class="modal" id="modalSolicitudDetalle">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Detalle Solicitud</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form id="formularioSolicitudEditar">
+
+                                <div class="row">
+
+                                    <div class="col 6">
+
+                                        <div class="form group">
+                                            <label asp-for="FechaInicio" class="control-label"></label>
+                                            <input asp-for="FechaInicio" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaInicioD" />
+                                            <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                                        </div>
+
+                                        <br />
+
+
+                                        <div class="form group">
+                                            <label asp-for="HoraInicio" class="control-label"></label>
+                                            <input asp-for="HoraInicio" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraInicioD" />
+                                            <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col 6">
+
+                                        <div class="form group">
+                                            <label asp-for="FechaFin" class="control-label"></label>
+                                            <input asp-for="FechaFin" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaFinD" />
+                                            <span asp-validation-for="FechaFin" class="text-danger"></span>
+                                        </div>
+
+                                        <br />
+
+                                        <div class="form group">
+                                            <label asp-for="HoraFinal" class="control-label"></label>
+                                            <input asp-for="HoraFinal" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraFinalD" />
+                                            <span asp-validation-for="HoraFinal" class="text-danger"></span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <br />
+                                <br />
+
+                                <div class="row">
+
+                                    <div class="col 6 ">
+
+                                        <div class="form group">
+                                            <label asp-for="Cliente" class="control-label"></label>
+                                            <select asp-for="ClienteId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Clientes" id="ClienteD">
+                                                <option>Seleccione</option>
+                                            </select>
+                                            <span asp-validation-for="Cliente" class="text-danger"></span>
+                                        </div>
+
+                                        <br />
+
+
+                                        <div class="form group">
+                                            <label asp-for="Empleado" class="control-label"></label>
+                                            <select asp-for="EmpleadoId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Empleados" id="EmpleadoD">
+                                                <option>Seleccione</option>
+                                            </select>
+                                            <span asp-validation-for="Empleado" class="text-danger"></span>
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <div class="col 6">
+
+                                        <div class="form group">
+                                            <label asp-for="Servicio" class="control-label"></label>
+                                            <select asp-for="ServicioId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Servicios" id="ServicioD">
+                                                <option>Seleccione</option>
+                                            </select>
+                                            <span asp-validation-for="Servicio" class="text-danger"></span>
+                                        </div>
+
+                                        <br />
+
+                                        <div class="form group">
+                                            <label asp-for="Descripcion" class="control-label"></label>
+                                            <textarea asp-for="Descripcion" class="form-control input w-full border mt-2 flex-1" id="DescripcionD"></textarea>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                    <div>
+                                        <div class="form group">
+                                            <label>Estado Actual solicitud</label>
+                                            <select asp-for="EstadoSoliciud" class="form-control input w-full border mt-2 flex-1" id="SolicitudEstadoD">
+                                                <option value="1">RESERVADO</option>
+                                                <option value="2">EN PROCESO</option>
+                                                <option value="3">VENCIDO</option>
+                                                <option value="4">CANCELADO</option>
+                                                <option value="5">FINALIZADO EMPLEADO</option>
+                                                <option value="6">FINALIZADO ADMINISTRADOR</option>
+                                            </select>
+                                            <span asp-validation-for="Servicio" class="text-danger"></span>
+                                        </div>
+
+                                    </div>
+                                <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="SolicitudIdD" />
+                            </form><!-- Fin formulario-->
+                        </div>
+          
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary" onclick="editar()">Editar</button>
+                        </div>
+                    </div>
+                </div>
+            </div><!--Fin Modal Detalle-->
+            <!-- Modal Crear -->
+            <div class="modal" id="modalCrearSoliciutd">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Crear una nueva solicitud</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+
+
+                            <form id="formularioSolicitud">
+
+                                <div class="row">
+
+                                    <div class="col 6">
+
+                                        <div class="form group">
+                                            <label asp-for="FechaInicio" class="control-label"></label>
+                                            <input asp-for="FechaInicio" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaInicio" />
+                                            <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                                        </div>
+
+                                        <br />
+
+
+                                        <div class="form group">
+                                            <label asp-for="HoraInicio" class="control-label"></label>
+                                            <input asp-for="HoraInicio" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraInicio" />
+                                            <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col 6">
+
+                                        <div class="form group">
+                                            <label asp-for="FechaFin" class="control-label"></label>
+                                            <input asp-for="FechaFin" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaFin" />
+                                            <span asp-validation-for="FechaFin" class="text-danger"></span>
+                                        </div>
+
+                                        <br />
+
+                                        <div class="form group">
+                                            <label asp-for="HoraFinal" class="control-label"></label>
+                                            <input asp-for="HoraFinal" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraFinal" />
+                                            <span asp-validation-for="HoraFinal" class="text-danger"></span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <br />
+                                <br />
+
+                                <div class="row">
+
+                                    <div class="col 6 ">
+
+                                        <div class="form group">
+                                            <label asp-for="Cliente" class="control-label"></label>
+                                            <select asp-for="ClienteId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Clientes" id="Cliente">
+                                                <option value="0">Seleccione</option>
+                                            </select>
+                                            <span asp-validation-for="Cliente" class="text-danger"></span>
+                                        </div>
+
+                                        <br />
+
+
+                                        <div class="form group">
+                                            <label asp-for="Empleado" class="control-label"></label>
+                                            <select asp-for="EmpleadoId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Empleados" id="Empleado">
+                                                <option value="0">Seleccione</option>
+                                            </select>
+                                            <span asp-validation-for="Empleado" class="text-danger"></span>
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <div class="col 6">
+
+                                        <div class="form group">
+                                            <label asp-for="Servicio" class="control-label"></label>
+                                            <select asp-for="ServicioId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Servicios" id="Servicio">
+                                                <option value="0">Seleccione</option>
+                                            </select>
+                                            <span asp-validation-for="Servicio" class="text-danger"></span>
+                                        </div>
+
+                                        <br />
+
+                                        <div class="form group">
+
+                                            <label asp-for="Descripcion" class="control-label"></label>
+                                            <textarea asp-for="Descripcion" class="form-control input w-full border mt-2 flex-1" id="Descripcion"></textarea>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form><!-- Fin formulario-->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary" onclick="guardar()">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- Fin Modal Crear-->
         </div>
-
-        <!-- Modal Detalle-->
-
-        <div class="modal" id="modalSolicitudDetalle">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Detalle Solicitud</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-
-                        <form id="formularioSolicitudEditar">
-
-                            <div class="row">
-
-                                <div class="col 6">
-
-                                    <div class="form group">
-                                        <label asp-for="FechaInicio" class="control-label"></label>
-                                        <input asp-for="FechaInicio" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaInicioD"/>
-                                        <span asp-validation-for="FechaInicio" class="text-danger"></span>
-                                    </div>
-
-                                    <br />
-
-
-                                    <div class="form group">
-                                        <label asp-for="HoraInicio" class="control-label"></label>
-                                        <input asp-for="HoraInicio" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraInicioD"/>
-                                        <span asp-validation-for="HoraInicio" class="text-danger"></span>
-                                    </div>
-                                </div>
-
-                                <div class="col 6">
-
-                                    <div class="form group">
-                                        <label asp-for="FechaFin" class="control-label"></label>
-                                        <input asp-for="FechaFin" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaFinD"/>
-                                        <span asp-validation-for="FechaFin" class="text-danger"></span>
-                                    </div>
-
-                                    <br />
-
-                                    <div class="form group">
-                                        <label asp-for="HoraFinal" class="control-label"></label>
-                                        <input asp-for="HoraFinal" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraFinalD"/>
-                                        <span asp-validation-for="HoraFinal" class="text-danger"></span>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <br />
-                            <br />
-
-                            <div class="row">
-
-                                <div class="col 6 ">
-
-                                    <div class="form group">
-                                        <label asp-for="Cliente" class="control-label"></label>
-                                        <select asp-for="ClienteId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Clientes" id="ClienteD">
-                                            <option>Seleccione</option>
-                                        </select>
-                                        <span asp-validation-for="Cliente" class="text-danger"></span>
-                                    </div>
-
-                                    <br />
-
-
-                                    <div class="form group">
-                                        <label asp-for="Empleado" class="control-label"></label>
-                                        <select asp-for="EmpleadoId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Empleados" id="EmpleadoD">
-                                            <option>Seleccione</option>
-                                        </select>
-                                        <span asp-validation-for="Empleado" class="text-danger"></span>
-                                    </div>
-
-
-                                </div>
-
-
-                                <div class="col 6">
-
-                                    <div class="form group">
-                                        <label asp-for="Servicio" class="control-label"></label>
-                                        <select asp-for="ServicioId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Servicios" id="ServicioD">
-                                            <option>Seleccione</option>
-                                        </select>
-                                        <span asp-validation-for="Servicio" class="text-danger"></span>
-                                    </div>
-
-                                    <br />
-
-                                    <div class="form group">
-
-                                        <label asp-for="Descripcion" class="control-label"></label>
-                                        <textarea asp-for="Descripcion" class="form-control input w-full border mt-2 flex-1" id="DescripcionD"></textarea>
-                                    </div>
-
-                                    <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="SolicitudIdD"/>
-
-                                </div>
-                            </div>
-                        </form><!-- Fin formulario-->
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary" onclick="editar()">Editar</button>
-                    </div>
-                </div>
-            </div>
-        </div><!--Fin Modal Detalle-->
-
-
-        <!-- Modal Crear -->
-        <div class="modal" id="modalCrearSoliciutd">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Crear una nueva solicitud</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-
-
-
-                        <form id="formularioSolicitud">
-
-                            <div class="row">
-
-                                <div class="col 6">
-
-                                    <div class="form group">
-                                        <label asp-for="FechaInicio" class="control-label"></label>
-                                        <input asp-for="FechaInicio" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaInicio" />
-                                        <span asp-validation-for="FechaInicio" class="text-danger"></span>
-                                    </div>
-
-                                    <br />
-
-
-                                    <div class="form group">
-                                        <label asp-for="HoraInicio" class="control-label"></label>
-                                        <input asp-for="HoraInicio" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraInicio" />
-                                        <span asp-validation-for="HoraInicio" class="text-danger"></span>
-                                    </div>
-                                </div>
-
-                                <div class="col 6">
-
-                                    <div class="form group">
-                                        <label asp-for="FechaFin" class="control-label"></label>
-                                        <input asp-for="FechaFin" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaFin" />
-                                        <span asp-validation-for="FechaFin" class="text-danger"></span>
-                                    </div>
-
-                                    <br />
-
-                                    <div class="form group">
-                                        <label asp-for="HoraFinal" class="control-label"></label>
-                                        <input asp-for="HoraFinal" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraFinal" />
-                                        <span asp-validation-for="HoraFinal" class="text-danger"></span>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <br />
-                            <br />
-
-                            <div class="row">
-
-                                <div class="col 6 ">
-
-                                    <div class="form group">
-                                        <label asp-for="Cliente" class="control-label"></label>
-                                        <select asp-for="ClienteId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Clientes" id="Cliente">
-                                            <option value="0">Seleccione</option>
-                                        </select>
-                                        <span asp-validation-for="Cliente" class="text-danger"></span>
-                                    </div>
-
-                                    <br />
-
-
-                                    <div class="form group">
-                                        <label asp-for="Empleado" class="control-label"></label>
-                                        <select asp-for="EmpleadoId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Empleados" id="Empleado">
-                                            <option value="0">Seleccione</option>
-                                        </select>
-                                        <span asp-validation-for="Empleado" class="text-danger"></span>
-                                    </div>
-
-
-                                </div>
-
-
-                                <div class="col 6">
-
-                                    <div class="form group">
-                                        <label asp-for="Servicio" class="control-label"></label>
-                                        <select asp-for="ServicioId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Servicios" id="Servicio">
-                                            <option value="0">Seleccione</option>
-                                        </select>
-                                        <span asp-validation-for="Servicio" class="text-danger"></span>
-                                    </div>
-
-                                    <br />
-
-                                    <div class="form group">
-
-                                        <label asp-for="Descripcion" class="control-label"></label>
-                                        <textarea asp-for="Descripcion" class="form-control input w-full border mt-2 flex-1" id="Descripcion"></textarea>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </form><!-- Fin formulario-->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary" onclick="guardar()">Guardar</button>
-                    </div>
-                </div>
-            </div>
-        </div><!-- Fin Modal Crear-->
-    </div>
 </div>
 </div>
 
@@ -268,8 +304,10 @@
         $(function () {
             calendario();
             listar();
+            start();
         })
 
+  
     </script>
 
 }

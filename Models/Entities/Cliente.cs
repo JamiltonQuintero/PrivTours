@@ -38,7 +38,7 @@ namespace PrivTours.Models.Entities
         public int IdTipoDoc { get; set; }
 
         [DisplayName("Numero de documento")]
-        public int NumDoc { get; set; }
+        public string NumDoc { get; set; }
 
         [DataType(DataType.DateTime)]
         [DisplayName("Fecha de nacimiento")]

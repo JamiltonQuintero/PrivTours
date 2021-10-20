@@ -250,8 +250,8 @@ namespace PrivTours.Migrations
                     b.Property<string>("Notas")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NumDoc")
-                        .HasColumnType("int");
+                    b.Property<string>("NumDoc")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Pais")
                         .HasColumnType("nvarchar(max)");
@@ -275,15 +275,18 @@ namespace PrivTours.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Apellido")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Celular")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Estado")
                         .HasColumnType("bit");
 
                     b.Property<string>("Nombre")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TipoContrato")
@@ -302,18 +305,22 @@ namespace PrivTours.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Descripcion")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Estado")
                         .HasColumnType("bit");
 
                     b.Property<string>("Nombre")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Recomendacion")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Restriccion")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ServicioId");
@@ -332,10 +339,14 @@ namespace PrivTours.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Descripcion")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EmpleadoId")
                         .HasColumnType("int");
+
+                    b.Property<byte>("EstadoSoliciud")
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime>("FechaFin")
                         .HasColumnType("datetime2");
@@ -344,9 +355,11 @@ namespace PrivTours.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("HoraFinal")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HoraInicio")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ServicioId")

@@ -23,7 +23,6 @@ namespace PrivTours.Controllers
         }
 
 
-        
         // GET: Empleados/Details/5
         public async Task<IActionResult> Details(int? id)
         {

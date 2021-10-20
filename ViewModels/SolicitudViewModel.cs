@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PrivTours.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,13 +17,15 @@ namespace PrivTours.ViewModels
         public string Descripcion { get; set; }
 
         public int ClienteId { get; set; }
-        public string NombreCliente { set; get; }
+        public virtual Cliente Cliente { get; set; }
 
         public int EmpleadoId { get; set; }
-        public string NombreEmpleado { set; get; }
-         
+        public virtual Empleado Empleado { get; set; }
+
         public int ServicioId { get; set; }
-        public string NombreServicio{ set; get; }
+        public virtual Servicio Servicio { get; set; }
+
+        public byte EstadoSoliciud { get; set; }
 
 
     }
