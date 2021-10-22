@@ -61,7 +61,7 @@ namespace PrivTours.Controllers
                 empleado.Estado = true;
                 await _empleadosBusiness.GuardarEmpleado(empleado);
                 TempData["Accion"] = "Crear";
-                TempData["Mensaje"] = "Se ha creado correctamente el cliente " + empleado.Nombre;
+                TempData["Mensaje"] = "El empleado "+empleado.Nombre+ " ha sido creado correctamente.";
                 return RedirectToAction("Index");
                 
             }
@@ -110,7 +110,7 @@ namespace PrivTours.Controllers
                 {
                     await _empleadosBusiness.EditarEmpleado(empleado);
                     TempData["Accion"] = "Editar";
-                    TempData["Mensaje"] = "Se ha editado correctamente el empleado " + empleado.Nombre;
+                    TempData["Mensaje"] = "El empleado " + empleado.Nombre+ " ha sido editado correctamente.";
                     return RedirectToAction("Index");
 
                 }
@@ -139,7 +139,7 @@ namespace PrivTours.Controllers
                     return Json(new { data = "error", message = "Empleado a eliminar no existe" });
                 await _empleadosBusiness.EliminarEmpleado(empleado);
 
-                return Json(new { data = "ok", message = "Empleado " + empleado.Nombre + " fue eliminado correctamente" });
+                return Json(new { data = "ok", message = "El empleado " + empleado.Nombre + " fue eliminado correctamente" });
             }
             catch (Exception)
             {

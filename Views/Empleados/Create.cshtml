@@ -62,15 +62,15 @@
                             <span asp-validation-for="TipoContrato" class="text-danger"></span>
                         </div>
 
-                        <div class="row">
+                        <div class="row col-12">
                             <div>
                                 <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
                             </div>
                             <br />
-                            <div class="form-group">
+                            <div class="form-group col-8">
                                 <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
                             </div>
-                        </div>                         
+                        </div>
                     </form>                  
                 </div>
             </div>
@@ -87,7 +87,7 @@
         function Crear() {
                 Swal.fire({
                     title: "Guardar empleado",
-                    text: "¿Estás seguro que desea guardar el empleado?",
+                    text: "¿Estás seguro de que deseas guardar al empleado?",
                     //showDenyButton: true,
                     showCancelButton: true,
                     confirmButtonText: 'Guardar',

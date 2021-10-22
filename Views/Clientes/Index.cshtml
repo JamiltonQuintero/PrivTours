@@ -18,7 +18,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
                         <li class="breadcrumb-item active">Clientes</li>
                     </ol>
                 </div><!-- /.col -->
@@ -133,13 +133,13 @@
 
         function eliminar(id, nombreUsuario) {
             Swal.fire({
-                title: '¿Está seguro de eliminar el cliente?',
+                title: '¿Estás seguro de eliminar al cliente?',
                 text: nombreUsuario,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, eliminar!',
+                confirmButtonText: 'Sí, ¡eliminar!',
                 cancelButtonText: 'Cancelar',
                 reverseButtons: true
             }).then((result) => {
@@ -180,7 +180,7 @@
 
         function cambiarEstado(id, nombreUsuario, estadoActual) {
             Swal.fire({
-                title: '¿Está seguro de cambiar estado al cliente?',
+                title: '¿Estás seguro de cambiar el estado del cliente?',
                 text: nombreUsuario,
                 icon: 'warning',
                 showCancelButton: true,

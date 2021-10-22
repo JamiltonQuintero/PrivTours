@@ -59,7 +59,7 @@ namespace PrivTours.Controllers
                     cliente.Estado = true;
                     await _clientesBusiness.GuardarCliente(cliente);
                     TempData["Accion"] = "Crear";
-                    TempData["Mensaje"] = "Se ha creado correctamente el usuario " + cliente.Nombre;
+                    TempData["Mensaje"] = "El cliente " + cliente.Nombre + " ha sido creado correctamente.";
                     return RedirectToAction("Index");
                 }
                 catch (Exception)
@@ -104,7 +104,7 @@ namespace PrivTours.Controllers
                 {
                     await _clientesBusiness.EditarCliente(cliente);
                     TempData["Accion"] = "Editar";
-                    TempData["Mensaje"] = "Se ha editado correctamente el cliente " + cliente.Nombre;
+                    TempData["Mensaje"] = "El cliente " + cliente.Nombre+ " ha sido editado correctamente";
                     return RedirectToAction("Index");
 
                 }
@@ -132,7 +132,7 @@ namespace PrivTours.Controllers
                     return Json(new { data = "error", message = "Cliente a eliminar no existe" });
                 await _clientesBusiness.EliminarCliente(cliente);
 
-                return Json(new { data = "ok", message = "Cliente " + cliente.Nombre + " fue eliminado correctamente" });
+                return Json(new { data = "ok", message = "El cliente " + cliente.Nombre + " fue eliminado correctamente" });
             }
             catch (Exception)
             {
@@ -151,7 +151,7 @@ namespace PrivTours.Controllers
             {
                 var cliente = await _clientesBusiness.ObtenerClientePorId(id.Value);
                 if (cliente == null)
-                    return Json(new { data = "error", message = "Cliente a cambiar estado no existe" });
+                    return Json(new { data = "error", message = "El cliente al que intentas cambiar su estado no existe" });
                 if (cliente.Estado)
                 {
                     cliente.Estado = false;
@@ -163,11 +163,11 @@ namespace PrivTours.Controllers
                 await _clientesBusiness.EditarCliente(cliente);
 
                 var NuevoEstado = cliente.Estado == true ? "Activado" : "Inactivado";
-                return Json(new { data = "ok", message = "Empleado " + cliente.Nombre + " fue " + NuevoEstado + " correctamente" });
+                return Json(new { data = "ok", message = "El cliente " + cliente.Nombre + " fue " + NuevoEstado + " correctamente" });
             }
             catch (Exception)
             {
-                return Json(new { data = "error", message = "Ocurrió un error al cambiar estado al usuario" });
+                return Json(new { data = "error", message = "Ocurrió un error al cambiar estado del cliente" });
             }
         }
 

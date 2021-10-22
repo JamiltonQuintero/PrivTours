@@ -26,11 +26,10 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-
             <hr />
             <div class="row">
-                <div class="col-md-4">
-                    <div class="col-md-6">
+                <div class="col-md-6">
+                    <div class="col-md-8">
                         <form method="post" asp-action="Edit" id="formulario" name="formulario">
                             <div asp-validation-summary="All" class="text-danger"></div>
                             <div asp-validation-summary="ModelOnly" class="text-danger">
@@ -65,23 +64,24 @@
                                 <span asp-validation-for="TipoContrato" class="text-danger"></span>
                             </div>
 
-                            <input asp-for="EmpleadoId" class="form-control" style="visibility: hidden" />
-                            <input asp-for="Estado" class="form-control" style="visibility: hidden" />
-                            <div class="row">
+                            <input asp-for="EmpleadoId" class="form-control" style="display: none;" />
+                            <input asp-for="Estado" class="form-control" style="display: none;" />
+
+                            <div class="row col-4">
                                 <div>
                                     <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
                                 </div>
                                 <br />
-                                <div class="form-group">
+                                <div class="form-group col-2">
                                     <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
                                 </div>
 
                             </div>
-                        </form>                        
+                        </form>
                     </div>
                 </div>
-            </div>
-        </div><!-- /.container-fluid -->
+                </div>
+            </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
     <!-- /.content-wrapper -->
@@ -95,7 +95,7 @@
 
                 Swal.fire({
                     title: "Editar empleado",
-                    text: "¿Estás seguro que desea editar el empleado?",
+                    text: "¿Estás seguro de que deseas editar al empleado?",
                     //showDenyButton: true,
                     showCancelButton: true,
                     confirmButtonText: 'Guardar',
