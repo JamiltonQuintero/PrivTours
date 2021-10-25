@@ -1,5 +1,7 @@
-﻿using PrivTours.Models.Abstract;
+﻿using Microsoft.EntityFrameworkCore;
+using PrivTours.Models.Abstract;
 using PrivTours.Models.DAL;
+using PrivTours.Models.Entities;
 using PrivTours.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -32,6 +34,8 @@ namespace PrivTours.Models.Business
 
             return reporte;
         }
+
+
 
     }
 }

@@ -1,8 +1,12 @@
-﻿
+﻿@model IEnumerable<PrivTours.ViewModels.RolViewModel>
 
 
+@{
+    ViewData["Title"] = "Index";
+}
 
 @section Styles{
+
 }
 
 <!-- Content Wrapper. Contains page content -->
@@ -12,13 +16,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Confoguracion Private Tours</h1>
+                    <h1 class="m-0">Configuración Private Tours</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Configuracion
-                        </li>
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                        <li class="breadcrumb-item active">Configuración</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -26,23 +29,141 @@
     </div>
     <!-- /.content-header -->
     <!-- Main content -->
+
     <div class="content">
         <div class="container-fluid">
-            <p>
-                <a class="btn btn-outline-success" asp-action="Create"><i class="fa fa-plus-circle"></i> Crear nuevo Rol</a>
-            </p>
+            <div class="row">
+                <p>
+                    <a class="btn btn-outline-success" asp-action="CrearRol"><i class="fa fa-plus-circle"></i> Crear nuevo rol</a>
+                </p>
 
-            <h1>Roles</h1>
+                <p>
+                    <a class="btn btn-outline-success" asp-action="AsignarPermisos"><i class="fa fa-plus-circle"></i> Asignar Permisos</a>
+                </p>
+            </div>
 
+            <table id="tabla" class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.NombreRol)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Permisos)
+                        </th>
 
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var rol in Model)
+                    {
+                        var sel = rol.DetallePermiso.Count > 0 ? "" : "disabled";
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => rol.NombreRol)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => rol.TextoPermisos)
+                        </td>
+                        <td>
+                            <a class="btn btn-secondary" asp-action="EditarRol" asp-route-id="@rol.Id"><i class="fas fa-user-edit"></i> Editar</a> |
+
+                            <a class="m1-1 btn btn-danger" onclick="return confirm('¿Desea eliminar el Rol?')" asp-action="EliminarRol" asp-route-id="@rol.Id"><i class="fas fa-user-minus"></i> Eliminar</a> |
+
+                            <button @sel class="btn btn-secondary" onclick="editarPermisos('@rol.Id');"><i class="fas fa-user-edit"></i> Editar Permisos</button> |
+
+                            <button @sel class="btn btn-danger" onclick="eliminar('@rol.Id', '@rol.NombreRol');"><i class="fas fa-user-minus"></i>Eliminar Permisos</button>
+
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
+
 @section Scripts{
+    <script src="~/js/tabla.js"></script>
 
+    <script>
 
-    <script src="~/js/Tabla.js"></script>
+        @if (TempData["Mensaje"] != null && TempData["Accion"].ToString().Equals("CrearRol"))
+            {
+
+            <text>
+
+                Swal.fire({
+
+                    title: "Felicitaciones",
+                    type: "success",
+                    html: "@TempData["Mensaje"]"
+
+                });
+
+            </text>
+
+            }
+
+        function eliminar(roleIdentityId, nombreRol) {
+            Swal.fire({
+                title: '¿Está seguro de eliminar el Rol?',
+                text: nombreRol,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("EliminarPermisos", "Roles")',
+                        contentType: false,
+                        processData: false,
+                        data: jQuery.param({ roleIdentityId: roleIdentityId}),
+                        success: function (result) {
+
+                            if (result.status) {
+                                setTimeout(function () {
+                                    window.location.href = "@Url.Action("Index", "Roles")";
+                                }, 1500);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: result.message,
+                                    showConfirmButton: false,
+                                    timer: 5000
+                                })
+                            } else {
+                                console.log("ERROR!!");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: result.message,
+                                })
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err.data)
+                        }
+                    });
+                }
+            })
+        }
+
+        function editarPermisos(roleIdentityId) {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("EditarPermisos", "Roles")',
+                        data: jQuery.param({ roleIdentityId: roleIdentityId }),
+                        dataType: 'json'
+                    });            
+        }
+
+    </script>
 }
-

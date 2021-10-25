@@ -28,6 +28,10 @@ namespace PrivTours.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
@@ -44,6 +48,8 @@ namespace PrivTours.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityRole");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -267,6 +273,28 @@ namespace PrivTours.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("PrivTours.Models.Entities.DetallePermiso", b =>
+                {
+                    b.Property<int>("DetallePermisoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("PermisoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RoleIdentityId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("DetallePermisoId");
+
+                    b.HasIndex("PermisoId");
+
+                    b.HasIndex("RoleIdentityId");
+
+                    b.ToTable("DetallePermisos");
+                });
+
             modelBuilder.Entity("PrivTours.Models.Entities.Empleado", b =>
                 {
                     b.Property<int>("EmpleadoId")
@@ -295,6 +323,21 @@ namespace PrivTours.Migrations
                     b.HasKey("EmpleadoId");
 
                     b.ToTable("Empleados");
+                });
+
+            modelBuilder.Entity("PrivTours.Models.Entities.Permiso", b =>
+                {
+                    b.Property<int>("PermisoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PermisoId");
+
+                    b.ToTable("Permisos");
                 });
 
             modelBuilder.Entity("PrivTours.Models.Entities.Servicio", b =>
@@ -376,6 +419,13 @@ namespace PrivTours.Migrations
                     b.ToTable("Solicitudes");
                 });
 
+            modelBuilder.Entity("PrivTours.Models.Entities.RoleIdentity", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
+
+                    b.HasDiscriminator().HasValue("RoleIdentity");
+                });
+
             modelBuilder.Entity("PrivTours.Models.Entities.UsuarioIdentity", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
@@ -444,6 +494,19 @@ namespace PrivTours.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PrivTours.Models.Entities.DetallePermiso", b =>
+                {
+                    b.HasOne("PrivTours.Models.Entities.Permiso", "Permiso")
+                        .WithMany("DetallePermiso")
+                        .HasForeignKey("PermisoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrivTours.Models.Entities.RoleIdentity", "RoleIdentity")
+                        .WithMany("DetallePermiso")
+                        .HasForeignKey("RoleIdentityId");
                 });
 
             modelBuilder.Entity("PrivTours.Models.Entities.Solicitud", b =>

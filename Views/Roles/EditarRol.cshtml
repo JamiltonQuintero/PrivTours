@@ -1,0 +1,68 @@
+﻿@model PrivTours.ViewModels.EditarRolViewModel
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Usuarios</h1>
+                    <p>
+                        <a asp-action="CrearUsuario" asp-controller="Usuarios">Crear nuevo usuario</a>
+                    </p>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                        <li class="breadcrumb-item active">Usuarios</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <div class="content">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <form method="post" class="mt-3">
+                        <div class="form-group row">
+                            <label asp-for="Id" class="col-sm-2 col-form-label"></label>
+                            <div class="col-sm-10">
+                                <input asp-for="Id" disabled class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label asp-for="NombreRol" class="col-sm-2 col-form-label"></label>
+                            <div class="col-sm-10">
+                                <input asp-for="NombreRol" class="form-control">
+                                <span asp-validation-for="NombreRol" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div asp-validation-summary="All" class="text-danger"></div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <button type="submit" class="btn btn-primary">Actualizar</button>
+                                <a asp-action="ListarRoles" class="btn btn-primary">Cancelar</a>
+                            </div>
+                        </div>
+
+                        <div class="card">
+     
+                            <div class="card-footer">
+                                <a href="#" class="btn btn-primary" style="width:auto">Agregar usuarios</a>
+                                <a href="#" class="btn btn-primary" style="width:auto">Eliminar usuarios</a>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
-﻿using PrivTours.ViewModels;
+﻿using PrivTours.Models.Entities;
+using PrivTours.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,5 @@ namespace PrivTours.Models.Abstract
     public interface IAdminBusiness
     {
         ReporteDashboardViewModel ReporteDashboar();
-
     }
 }

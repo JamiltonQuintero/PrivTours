@@ -44,7 +44,7 @@ namespace PrivTours
             services.AddScoped<IServiciosBusiness, ServiciosBusiness>();
             services.AddScoped<IAdminBusiness, AdminBusiness>();
 
-
+            services.AddScoped<IRolBusiness, RolBusiness>();
 
             services.Configure<IdentityOptions>(options =>
             {

@@ -16,6 +16,28 @@
 		<None Include="Views\Clientes\Details.cshtml" />
 		<None Include="Views\Clientes\Edit.cshtml" />
 		<None Include="Views\Clientes\Index.cshtml" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\mixins\_buttons.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\mixins\_inputs.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\mixins\_vendor-prefixes.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_buttons.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_card.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_checkboxes.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_colors.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_footers.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_inputs-size.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_inputs.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_misc.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_mixins.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_navs-pagination.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_radios.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_responsive.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_ripples.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_shadows.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_tooltips.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_typography.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_variables.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_variables_bootstrap.scss" />
+		<None Include="wwwroot\css\material-bootstrap-wizard\_wizard-card.scss" />
 
 	</ItemGroup>
 
@@ -30,10 +52,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

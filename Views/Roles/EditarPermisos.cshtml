@@ -1,0 +1,146 @@
+﻿@model PrivTours.ViewModels.EditarPermisoViewModel
+
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+@section Styles{
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Editar Permisos</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Roles">Gestión Permisos</a></li>
+                        <li class="breadcrumb-item active">Editar Permisos</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6">
+
+                    <form method="post" asp-action="AsignarPermisos" id="formulario" name="formulario">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <input asp-for="RoleIdentityId" class="form-control" style="visibility: hidden" id="rol" />
+
+                        <div class="form group">
+                            <label asp-for="Permisos" class="control-label"></label>
+                            <select asp-for="Permisos" id="choices-multiple-remove-button" placeholder="Select los permisos" multiple>
+                                @foreach (var r in Model.Permisos)
+                                {
+
+                                    var sel = Model.PermisosSeleccionados.Where(ps => ps.PermisoId == r.PermisoId).Count() > 0 ? true : false;
+                                    <option value="@r.PermisoId" selected=@sel>@r.Nombre </option>
+                                }
+                            </select>
+
+                        </div>
+
+                        <div class="row">
+                            <div>
+                                <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+@section Scripts{
+
+    <script>
+
+        $(document).ready(function () {
+            var multipleCancelButton = new Choices('#choices-multiple-remove-button', {   
+              removeItemButton: true,
+            });
+
+            
+        });
+
+        function Crear() {
+            Swal.fire({
+                title: "Guardar permisos",
+                text: "¿Estás seguro que desea guardar los permisos?",
+                //showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                //denyButtonText: 'No guardar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+ 
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("EditarPermisos", "Roles")',
+                        dataType: 'json',
+                        data: jQuery.param({ roleIdentityId: document.getElementById("rol").value,
+                                             permisos: $('#choices-multiple-remove-button').val()}),
+                            success: function (result) {
+                                if (result.status) {
+                                    setTimeout(
+                                        function () {
+                                            window.location.href = "@Url.Action("Index","Roles")";
+                                        }, 2000);
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Permisos guardados',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
+                                } else {
+                                    console.log("ERROR!!");
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: 'Ocurrió un error al guardar los permisos',
+                                    })
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err.data)
+                            }
+                     });
+
+                } else if (result.isDenied) {
+                    Swal.fire('¡Permisos no guardados!', '', 'info')
+                }
+            })
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
+}
+
+
+
+
+

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PrivTours.Models.Abstract;
+using Microsoft.AspNetCore.Identity;
+using PrivTours.ViewModels;
 
 namespace PrivTours.Controllers
 {
@@ -22,5 +24,6 @@ namespace PrivTours.Controllers
             var reporte = _iAdminBusiness.ReporteDashboar();
             return View(reporte);
         }
+
     }
 }

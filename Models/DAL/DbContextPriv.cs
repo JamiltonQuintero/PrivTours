@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PrivTours.Models.Entities;
 using System;
@@ -23,6 +24,10 @@ namespace PrivTours.Models.DAL
         public DbSet<Solicitud> Solicitudes { get; set; }
 
         public DbSet<UsuarioIdentity> UsuariosIdentity { get; set; }
+        public DbSet<Permiso> Permisos { get; set; }
+        public DbSet<RoleIdentity> RolesIdentity { get; set; }
+        public DbSet<DetallePermiso> DetallePermisos { get; set; }
+
 
     }
 }

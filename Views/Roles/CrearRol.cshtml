@@ -1,0 +1,92 @@
+﻿@model PrivTours.ViewModels.RolViewModel
+
+@{
+    ViewData["Title"] = "Crear";
+}
+
+@section Styles{
+
+}
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Crear Rol</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                        <li class="breadcrumb-item active">Crear rol</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <div class="content">
+
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-lg-11 align-self-center">
+                                   
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form method="post" asp-action="CrearRol" id="formulario" name="formulario">
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-group">
+                                    <label asp-for="NombreRol" class="control-label"></label>
+                                    <input asp-for="NombreRol" class="form-control" />
+                                    <span asp-validation-for="NombreRol" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="button" value="Guardar" class="btn btn-primary" onclick="guardarRol()" />
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div>
+                        <a asp-action="Index">Volver</a>
+                    </div>
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+@section Scripts {
+
+    <script>
+        function guardarRol() {
+
+            Swal.fire({
+                title: "Guardar rol",
+                text: "¿Estás seguro que desea guardar el rol?",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                denyButtonText: 'No guardar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('formulario').submit();
+
+                } else if (result.isDenied) {
+                    Swal.fire('¡rol no guardado!', '', 'info')
+                }
+            })
+        }
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
