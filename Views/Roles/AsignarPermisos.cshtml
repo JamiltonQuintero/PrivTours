@@ -39,20 +39,15 @@
                         <div asp-validation-summary="All" class="text-danger"></div>
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                        <div class="form group">
-                            <label asp-for="RoleIdentity" class="control-label"></label>
-                            <select asp-for="RoleIdentityId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Roles" id="rol">
-                                <option value="0">Seleccione</option>
-                            </select>
-                            <span asp-validation-for="RoleIdentity" class="text-danger"></span>
-                        </div>
 
                         <div class="form group">
                             <label asp-for="Permisos" class="control-label"></label>
-                            <select asp-items="ViewBag.Permisos" asp-for="Permisos" id="choices-multiple-remove-button" placeholder="Select los permisos" multiple>
+                            <select asp-items="ViewBag.Permisos" asp-for="Permisos" id="choices-multiple-remove-button" placeholder="Seleccione los permisos" multiple>
                             </select>
                             <span asp-validation-for="Permisos" class="text-danger"></span>
                         </div>
+
+                        <input value="@ViewBag.RoleIdentity" class="form-control" style="visibility: hidden" id="rol" />
 
                         <div class="row">
                             <div>

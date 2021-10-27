@@ -123,6 +123,15 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a asp-action="Index" asp-controller="Tareas" class="nav-link">
+                        <i class="fas fa-briefcase"></i>
+                        <p>
+                            Tareas
+                        </p>
+                    </a>
+                </li>
+
                 @if (SignInManager.IsSignedIn(User))
                 {
                     <li class="nav-item">

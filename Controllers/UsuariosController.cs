@@ -25,7 +25,7 @@ namespace PrivTours.Controllers
             _roleManager = roleManager;
         }
 
-        //[Authorize(Roles = "Administrador,Secretaria")]
+        
         public async Task<IActionResult> Index()
         {
             var usuarios = await _userManager.Users.ToListAsync();

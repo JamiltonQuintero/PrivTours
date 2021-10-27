@@ -194,23 +194,9 @@ namespace PrivTours.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> AsignarPermisos()
+        public async Task<IActionResult> AsignarPermisos(string id)
         {
-            var roles = await _roleManager.Roles.ToListAsync();
-            var listarolesViewModel = new List<RolViewModel>();
-
-            foreach (var rol in roles)
-            {
-                var rolViewModel = new RolViewModel()
-                {
-                    Id = rol.Id,
-                    NombreRol = rol.Name
-                };
-
-                listarolesViewModel.Add(rolViewModel);
-            }
-
-            ViewData["Roles"] = new SelectList(listarolesViewModel, "Id", "NombreRol");
+            ViewData["RoleIdentity"] = id;
             ViewData["Permisos"] = new SelectList(await _iRolBusiness.ObtenerListaPermisos(), "PermisoId", "Nombre");
             return View();
         }
@@ -237,12 +223,12 @@ namespace PrivTours.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditarPermisos(string roleIdentityId)
+        public async Task<IActionResult> EditarPermisos(string id)
         {
 
                 var permisos = await _iRolBusiness.ObtenerListaPermisos();
 
-                var PermisosDetalle = await _iRolBusiness.ObtenerPermisosPorRolId(roleIdentityId);
+                var PermisosDetalle = await _iRolBusiness.ObtenerPermisosPorRolId(id);
                 var PermisosSeleccionados = new List<Permiso>();
                 foreach (DetallePermiso element in PermisosDetalle)
                 {

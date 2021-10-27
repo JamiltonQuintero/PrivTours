@@ -1,10 +1,8 @@
-﻿@model IEnumerable<PrivTours.Models.Entities.Empleado>
+﻿@model IEnumerable<PrivTours.ViewModels.UsuarioViewModel>
 
 @{
     ViewData["Title"] = "Index";
 }
-
-
 @section Styles{
 }
 
@@ -20,7 +18,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Empleados</li>
+                        <li class="breadcrumb-item active">Usuarios</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -31,65 +29,57 @@
     <div class="content">
         <div class="container-fluid">
             <p>
-                <a class="btn btn-outline-success" asp-action="Create"><i class="fa fa-plus-circle"></i> Crear nuevo empleado</a>
+                <a class="btn btn-outline-success" asp-action="Crearusuario"><i class="fa fa-plus-circle"></i> Crear nuevo empleado</a>
             </p>
             <table id="tabla" class="table">
                 <thead>
                     <tr>
 
                         <th>
+                            @Html.DisplayNameFor(model => model.Documento)
+                        </th>
+                        <th>
                             @Html.DisplayNameFor(model => model.Nombre)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Apellido)
+                            @Html.DisplayNameFor(model => model.Email)
                         </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.TipoContrato)
-                        </th>
-
+                        <th>Rol</th>
                         <th>Estado</th>
-
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var empleado in Model)
+                    @foreach (var usuario in Model)
                     {
-                    <tr>
+                        <tr>
 
-                        <td>
-                            @Html.DisplayFor(modelUsuario => empleado.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelUsuario => empleado.Apellido)
-                        </td>
+                            <td>
+                                @Html.DisplayFor(modelUsuario => usuario.Documento)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelUsuario => usuario.Nombre)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelUsuario => usuario.Email)
+                            </td>
 
-                        @if (empleado.TipoContrato == 1)
-                        {
-                            <td>Interno</td>
-                        }
-                        else if(empleado.TipoContrato == 2)
-                        {
-                            <td>Externo</td>
-                        }
+                            @if (usuario.Estado == true)
+                            {
+                                <td>Activo</td>
+                            }
+                            else
+                            {
+                                <td>Inactivo</td>
+                            }
+                            <td>
 
-                        @if (empleado.Estado == true)
-                        {
-                            <td>Activo</td>
-                        }
-                        else
-                        {
-                            <td>Inactivo</td>
-                        }
+                                <a class="btn btn-secondary" asp-action="Editar" asp-route-id="@usuario.Id"><i class="fas fa-user-edit"></i></a>
+                                <a class="btn  @(@usuario.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@usuario.Id', '@usuario.Nombre', @usuario.Estado.ToString().ToLower());"><i class="fas @(@usuario.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
+                                <a class="btn btn-danger" onclick="eliminar('@usuario.Id', '@usuario.Nombre');"><i class="fas fa-user-minus"></i></a>
+                            </td>
 
-                        <td>
-
-                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@empleado.EmpleadoId"><i class="fas fa-user-edit"></i></a>
-                            <a class="btn  @(empleado.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@empleado.EmpleadoId', '@empleado.Nombre', @empleado.Estado.ToString().ToLower());"><i class="fas @(empleado.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
-                            <a class="btn btn-danger" onclick="eliminar('@empleado.EmpleadoId', '@empleado.Nombre');"><i class="fas fa-user-minus"></i></a>
-                        </td>
-
-                    </tr>
+                        </tr>
                     }
                 </tbody>
 
@@ -152,15 +142,15 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "GET",
-                        url: '@Url.Action("Delete", "Empleados", new { id = "id" })'.replace("id", encodeURIComponent(id)),
+                        url: '@Url.Action("Delete","Usuarios", new { id = "id" })'.replace("id", encodeURIComponent(id)),
                         contentType: false,
                         processData: false,
                         success: function (result) {
 
                             if (result.data == "ok") {
                                 setTimeout(function () {
-                                    window.location.href = "@Url.Action("Index", "Empleados")";
-                                }, 1500);
+                                    window.location.href = "@Url.Action("Index","Empleados")";
+                                }, 3000);
                                 Swal.fire({
                                     icon: 'success',
                                     title: result.message,
@@ -199,7 +189,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         type: "GET",
-                        url: '@Url.Action("CambiarEstado", "Empleados", new { id = "id" })'.replace("id", encodeURIComponent(id)),
+                        url: '@Url.Action("CambiarEstado","Empleados", new { id = "id" })'.replace("id", encodeURIComponent(id)),
                         contentType: false,
                         processData: false,
                         success: function (result) {
@@ -207,7 +197,7 @@
                             if (result.data == "ok") {
                                 setTimeout(function () {
                                     window.location.href = "@Url.Action("Index","Empleados")";
-                                }, 1500);
+                                }, 3000);
                                 Swal.fire({
                                     icon: 'success',
                                     title: result.message,
@@ -232,4 +222,3 @@
         }
     </script>
 }
-

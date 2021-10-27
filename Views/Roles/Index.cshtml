@@ -37,9 +37,6 @@
                     <a class="btn btn-outline-success" asp-action="CrearRol"><i class="fa fa-plus-circle"></i> Crear nuevo rol</a>
                 </p>
 
-                <p>
-                    <a class="btn btn-outline-success" asp-action="AsignarPermisos"><i class="fa fa-plus-circle"></i> Asignar Permisos</a>
-                </p>
             </div>
 
             <table id="tabla" class="table">
@@ -59,6 +56,7 @@
                     @foreach (var rol in Model)
                     {
                         var sel = rol.DetallePermiso.Count > 0 ? "" : "disabled";
+                        var sel2 = rol.DetallePermiso.Count > 0 ? "disabled" : "";
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => rol.NombreRol)
@@ -67,13 +65,15 @@
                             @Html.DisplayFor(modelItem => rol.TextoPermisos)
                         </td>
                         <td>
-                            <a class="btn btn-secondary" asp-action="EditarRol" asp-route-id="@rol.Id"><i class="fas fa-user-edit"></i> Editar</a> |
+                            <a class="btn btn-secondary" asp-action="EditarRol" asp-route-id="@rol.Id"><i class="fas fa-user-edit"></i> Editar Rol</a> |
 
-                            <a class="m1-1 btn btn-danger" onclick="return confirm('¿Desea eliminar el Rol?')" asp-action="EliminarRol" asp-route-id="@rol.Id"><i class="fas fa-user-minus"></i> Eliminar</a> |
+                            <a class="m1-1 btn btn-danger" onclick="return confirm('¿Desea eliminar el Rol?')" asp-action="EliminarRol" asp-route-id="@rol.Id"><i class="fas fa-user-minus"></i> Eliminar Rol</a> |
 
-                            <button @sel class="btn btn-secondary" onclick="editarPermisos('@rol.Id');"><i class="fas fa-user-edit"></i> Editar Permisos</button> |
+                            <a asp-action="EditarPermisos" asp-route-id="@rol.Id" class="btn btn-secondary @sel"><i class="fas fa-user-edit"></i> Editar Permisos</a> |
 
-                            <button @sel class="btn btn-danger" onclick="eliminar('@rol.Id', '@rol.NombreRol');"><i class="fas fa-user-minus"></i>Eliminar Permisos</button>
+                            <a class="btn btn-danger @sel" onclick="eliminar('@rol.Id', '@rol.NombreRol');"><i class="fas fa-user-minus"></i> Eliminar Permisos</a> |
+
+                            <a class="btn btn-success @sel2" asp-action="AsignarPermisos" asp-route-id="@rol.Id"><i class="fa fa-plus-circle"></i> Asignar Permisos</a>
 
                         </td>
                     </tr>
