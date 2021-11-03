@@ -138,7 +138,29 @@ namespace PrivTours.Controllers
             return View(_roleManager.Roles);
         }
 
-        
+
+        public async Task<IActionResult> EliminarRol(string roleIdentityId)
+        {
+
+            try
+            {
+                var rol = await _roleManager.FindByIdAsync(roleIdentityId);
+                if (rol == null)
+                {
+                    ViewData["Error"] = $"El rol con id {roleIdentityId} no se encontró";
+                    return View("NotFound");
+                }
+                await _roleManager.DeleteAsync(rol);
+                return Json(new { status = true });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
+
+
         public async Task<IActionResult> EditarRol(string id)
         {
             var rol = await _roleManager.FindByIdAsync(id);
@@ -153,14 +175,6 @@ namespace PrivTours.Controllers
                 NombreRol = rol.Name
             };
 
-            foreach (var usuario in _userManager.Users.ToList())
-            {
-                if (await _userManager.IsInRoleAsync(usuario, rol.Name))
-                {
-                    editarRolViewModel.Usuarios.Add(usuario.UserName);
-                }
-
-            }
             return View(editarRolViewModel);
         }
 

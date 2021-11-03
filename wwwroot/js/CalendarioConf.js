@@ -23,8 +23,21 @@ function calendario() {
         },
 
         dateClick: function (info) {
-            $("#FechaInicio").val(info.dateStr);
-            $("#modalCrearSoliciutd").modal();
+            var now = new Date();
+            if (info.date.setHours(0, 0, 0, 0) < now.setHours(0, 0, 0, 0)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Recuerde que no puede seleccionar dias anteriores a la fecha actual.',
+                    showConfirmButton: false,
+                    timer: 2500
+                })
+            }
+            else {
+                $("#FechaInicio").val(info.dateStr);
+                $("#modalCrearSoliciutd").modal();
+                
+            }
+            
         },
 
         eventClick: function (info) {

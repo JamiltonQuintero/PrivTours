@@ -324,6 +324,12 @@
 
         });
 
+        var today = new Date().toISOString().split('T')[0];
+        $("#FechaInicioD").attr('min', today);
+        $("#FechaInicio").attr('min', today);
+        $("#FechaFinD").attr('min', today);
+        $("#FechaFin").attr('min', today);
+
     </script>
 
     <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>

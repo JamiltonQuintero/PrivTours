@@ -65,9 +65,10 @@
                             @Html.DisplayFor(modelItem => rol.TextoPermisos)
                         </td>
                         <td>
+                            
                             <a class="btn btn-secondary" asp-action="EditarRol" asp-route-id="@rol.Id"><i class="fas fa-user-edit"></i> Editar Rol</a> |
 
-                            <a class="m1-1 btn btn-danger" onclick="return confirm('¿Desea eliminar el Rol?')" asp-action="EliminarRol" asp-route-id="@rol.Id"><i class="fas fa-user-minus"></i> Eliminar Rol</a> |
+                            <a class="btn btn-danger" onclick="eliminarRol('@rol.Id', '@rol.NombreRol');"><i class="fas fa-user-minus"></i> Eliminar Rol</a> |
 
                             <a asp-action="EditarPermisos" asp-route-id="@rol.Id" class="btn btn-secondary @sel"><i class="fas fa-user-edit"></i> Editar Permisos</a> |
 
@@ -107,6 +108,56 @@
             </text>
 
             }
+
+
+          function eliminarRol(roleIdentityId, nombreRol) {
+            Swal.fire({
+                title: '¿Está seguro de eliminar el Rol?',
+                text: nombreRol,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, eliminar!',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "GET",
+                        url: '@Url.Action("EliminarRol", "Roles")',
+                        contentType: false,
+                        processData: false,
+                        data: jQuery.param({ roleIdentityId: roleIdentityId}),
+                        success: function (result) {
+
+                            if (result.status) {
+                                setTimeout(function () {
+                                    window.location.href = "@Url.Action("Index", "Roles")";
+                                }, 1500);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: result.message,
+                                    showConfirmButton: false,
+                                    timer: 5000
+                                })
+                            } else {
+                                console.log("ERROR!!");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: result.message,
+                                })
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err.data)
+                        }
+                    });
+                }
+            })
+        }
+
 
         function eliminar(roleIdentityId, nombreRol) {
             Swal.fire({
@@ -162,7 +213,7 @@
                         url: '@Url.Action("EditarPermisos", "Roles")',
                         data: jQuery.param({ roleIdentityId: roleIdentityId }),
                         dataType: 'json'
-                    });            
+                    });
         }
 
     </script>
