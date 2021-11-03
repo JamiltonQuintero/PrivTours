@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace PrivTours.Models.Entities
 {
-    [Table("Servicios")]
+ 
     public class Servicio
     {
  

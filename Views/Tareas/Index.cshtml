@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PrivTours.Models.Entities.Empleado>
+﻿@model IEnumerable<PrivTours.ViewModels.SolicitudViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -30,74 +30,36 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-            <p>
-                <a class="btn btn-outline-success" asp-action="Create"><i class="fa fa-plus-circle"></i> Crear nuevo empleado</a>
-            </p>
-            <table id="tabla" class="table">
-                <thead>
-                    <tr>
+       
+            @foreach (var tarea in Model)
+            {
+            <div class="card">
+                <h3 class="card-header">Solicitud #@tarea.SolicitudId</h3>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h5 class="card-title">@tarea.Cliente.Nombre @tarea.Cliente.Apellidos</h5>
+                            <h5 class="card-text">@tarea.HoraInicio</h5>
 
-                        <th>
-                            @Html.DisplayNameFor(model => model.Nombre)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Apellido)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.TipoContrato)
-                        </th>
+                        </div>
+                        <div class="col-sm-4">
+                            <h5 class="card-title">@tarea.Servicio.Nombre</h5>
+                            <p class="card-text">@tarea.Descripcion</p>
 
-                        <th>Estado</th>
+                        </div>
 
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var empleado in Model)
-                    {
-                    <tr>
+                        <div class="col-sm-4">
+                            <h5 class="card-title">@tarea.FechaInicio : @tarea.HoraInicio</h5>
+                            <h5 class="card-text">@tarea.HoraFinal : @tarea.HoraFinal</h5>
 
-                        <td>
-                            @Html.DisplayFor(modelUsuario => empleado.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelUsuario => empleado.Apellido)
-                        </td>
+                        </div>
+                    </div>
+                        <a href="#" class="btn btn-primary">ir a solicitude # @tarea.SolicitudId</a>
+                    </div>
+                </div>
+                }
 
-                        @if (empleado.TipoContrato == 1)
-                        {
-                            <td>Interno</td>
-                        }
-                        else if(empleado.TipoContrato == 2)
-                        {
-                            <td>Externo</td>
-                        }
-
-                        @if (empleado.Estado == true)
-                        {
-                            <td>Activo</td>
-                        }
-                        else
-                        {
-                            <td>Inactivo</td>
-                        }
-
-                        <td>
-
-                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@empleado.EmpleadoId"><i class="fas fa-user-edit"></i></a>
-                            <a class="btn  @(empleado.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@empleado.EmpleadoId', '@empleado.Nombre', @empleado.Estado.ToString().ToLower());"><i class="fas @(empleado.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
-                            <a class="btn btn-danger" onclick="eliminar('@empleado.EmpleadoId', '@empleado.Nombre');"><i class="fas fa-user-minus"></i></a>
-                        </td>
-
-                    </tr>
-                    }
-                </tbody>
-
-            </table>
-
-
-
-        </div><!-- /.container-fluid -->
+            </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
     <!-- /.content-wrapper -->

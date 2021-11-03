@@ -75,6 +75,14 @@ namespace PrivTours.Models.Business
             return solicitudes;
 
         }
+
+        public async Task<List<Solicitud>> ObtenerListaSolicitudesSVM()
+        {
+            var solicitudes = await _dbContext.Solicitudes.ToListAsync();
+
+            return solicitudes;
+
+        }
         public async Task<List<SolicitudViewModel>> ObtenerListaSolicitudesPorCliente(int clienteId)
         {
 
