@@ -206,8 +206,6 @@ namespace PrivTours.Controllers
         {
             try
             {
-
-
                 RolViewModel rolViewModel = new RolViewModel
                 {
                     RoleIdentityId = roleIdentityId,

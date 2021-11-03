@@ -29,7 +29,7 @@
     <div class="content">
         <div class="container-fluid">
             <p>
-                <a class="btn btn-outline-success" asp-action="Crearusuario"><i class="fa fa-plus-circle"></i> Crear nuevo empleado</a>
+                <a class="btn btn-outline-success" asp-action="Create"><i class="fa fa-plus-circle"></i> Crear nuevo empleado</a>
             </p>
             <table id="tabla" class="table">
                 <thead>
@@ -44,7 +44,7 @@
                         <th>
                             @Html.DisplayNameFor(model => model.Email)
                         </th>
-                        <th>Rol</th>
+                        <th>Tipo de contrato</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -52,34 +52,43 @@
                 <tbody>
                     @foreach (var usuario in Model)
                     {
-                        <tr>
+                    <tr>
 
-                            <td>
-                                @Html.DisplayFor(modelUsuario => usuario.Documento)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelUsuario => usuario.Nombre)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelUsuario => usuario.Email)
-                            </td>
+                        <td>
+                            @Html.DisplayFor(modelUsuario => usuario.Documento)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelUsuario => usuario.Nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelUsuario => usuario.Email)
+                        </td>
 
-                            @if (usuario.Estado == true)
-                            {
-                                <td>Activo</td>
-                            }
-                            else
-                            {
-                                <td>Inactivo</td>
-                            }
-                            <td>
+                        @if (usuario.TipoContrato == 1)
+                        {
+                            <td>Interno</td>
+                        }
+                        else
+                        {
+                            <td> Externo</td>
+                        }
 
-                                <a class="btn btn-secondary" asp-action="Editar" asp-route-id="@usuario.Id"><i class="fas fa-user-edit"></i></a>
-                                <a class="btn  @(@usuario.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@usuario.Id', '@usuario.Nombre', @usuario.Estado.ToString().ToLower());"><i class="fas @(@usuario.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
-                                <a class="btn btn-danger" onclick="eliminar('@usuario.Id', '@usuario.Nombre');"><i class="fas fa-user-minus"></i></a>
-                            </td>
+                        @if (usuario.Estado == true)
+                        {
+                            <td>Activo</td>
+                        }
+                        else
+                        {
+                            <td>Inactivo</td>
+                        }
+                        <td>
 
-                        </tr>
+                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@usuario.Id"><i class="fas fa-user-edit"></i></a>
+                            <a class="btn  @(@usuario.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@usuario.Id', '@usuario.Nombre', @usuario.Estado.ToString().ToLower());"><i class="fas @(@usuario.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
+                            <a class="btn btn-danger" onclick="eliminar('@usuario.Id', '@usuario.Nombre');"><i class="fas fa-user-minus"></i></a>
+                        </td>
+
+                    </tr>
                     }
                 </tbody>
 

@@ -43,6 +43,7 @@ namespace PrivTours.Models.Business
 
         public async Task<IEnumerable<Empleado>> ObtenerListaEmpleados()
         {
+
             var empleados = await _dbContext.Empleados.ToListAsync();
 
             var empleadosActivos = empleados.FindAll(empleado => empleado.Estado == true);
@@ -99,30 +100,41 @@ namespace PrivTours.Models.Business
                 return  solicitudesPorCliente;
 
         }
-
-        public async Task<List<SolicitudViewModel>> ObtenerListaSolicitudesPorEmpleado(int empleadoId)
+        
+        public async Task<List<SolicitudViewModel>> ObtenerListaSolicitudesPorEmpleado(string id)
         {
+            List<SolicitudViewModel> solicitudes = new List<SolicitudViewModel>();
+            var detalleSolicitudEmpleado = await _dbContext.DetalleSolicitudEmpleados.ToListAsync();         
+            var empleadoUser = await _dbContext.UsuariosIdentity.FirstOrDefaultAsync(s => s.Id == id);
+            foreach (DetalleSolicitudEmpleado d in detalleSolicitudEmpleado)
+            {
 
-            List<SolicitudViewModel> solicitudes = await _dbContext.Solicitudes.Join(
-                _dbContext.Empleados,
-                c => c.EmpleadoId,
-                e => e.EmpleadoId,
-                (s, e) => new SolicitudViewModel
+                if (d.UsuarioIdentityId == id)
                 {
-                    SolicitudId = s.SolicitudId,
-                    FechaInicio = s.FechaInicio,
-                    FechaFin = s.FechaFin,
-                    Descripcion = s.Descripcion,
-                    HoraInicio = s.HoraInicio,
-                    HoraFinal = s.HoraFinal,
-                    EmpleadoId = e.EmpleadoId,
-                    Empleado = e
+                    var solicitud = await _dbContext.Solicitudes.FirstOrDefaultAsync(s => s.SolicitudId == d.SolicitudId);
+                    if (solicitud != null)
+                    {
+                        var empleado = new Empleado
+                        {
+                            Nombre = empleadoUser.Nombre,
+                            Apellido = empleadoUser.Apellido,
+                        };
+                        var svm = new SolicitudViewModel
+                        {
+                            SolicitudId = solicitud.SolicitudId,
+                            FechaInicio = solicitud.FechaInicio,
+                            FechaFin = solicitud.FechaFin,
+                            Descripcion = solicitud.Descripcion,
+                            HoraInicio = solicitud.HoraInicio,
+                            HoraFinal = solicitud.HoraFinal,
+                            Empleado = empleado
+                        };
+                        solicitudes.Add(svm);
+                    }
                 }
-                ).ToListAsync();
+            } 
 
-            var solicitudesPorEmpleado = solicitudes.FindAll(empleado => empleado.EmpleadoId == empleadoId);
-
-            return solicitudesPorEmpleado;
+            return solicitudes;
 
         }
 
@@ -177,27 +189,63 @@ namespace PrivTours.Models.Business
         }
 
 
-        public async Task<bool> GuardarSolicitud(Solicitud solicitud)
+        public async Task<bool> GuardarSolicitud(Solicitud solicitud, string[] empleados)
         {
+                using (var transaction = _dbContext.Database.BeginTransaction())
+                {
+                    try
+                    {
 
-            try
-            {
-                solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.RESERVADO;
-                _dbContext.Add(solicitud);
-                await _dbContext.SaveChangesAsync();
-                return true;
+                        solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.RESERVADO;
+                        _dbContext.Add(solicitud);
+                        await _dbContext.SaveChangesAsync();
 
-            }
-            catch (Exception e) 
-            {
+                        foreach (string e in empleados)
+                        {
+                            DetalleSolicitudEmpleado detalleSolicitudEmpleado = new DetalleSolicitudEmpleado
+                            {
+                                SolicitudId = solicitud.SolicitudId,
+                                UsuarioIdentityId = e
+                            };
+                            _dbContext.Add(detalleSolicitudEmpleado);
+                        }
+                        await _dbContext.SaveChangesAsync();
+                        transaction.Commit();
+                        return true;
 
-                Console.WriteLine(e.InnerException.Message);
-                return false;
-            }
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        Console.WriteLine(e.InnerException.Message);
+                        return false;
+                    }
+                }
         }
 
+        public async Task<HashSet<int>> ObtenerSolicitudesPorEmpleadosSeleccionados(string[] empleados)
+        {
 
-        public async Task<Solicitud> ObtenerSolicitudPorId(int id)
+            List<SolicitudViewModel> solicitudes = new List<SolicitudViewModel>();
+            HashSet<int> listaSolicitudes = new HashSet<int>();
+            var detalleSolicitudEmpleado = await _dbContext.DetalleSolicitudEmpleados.ToListAsync();
+            foreach (DetalleSolicitudEmpleado d in detalleSolicitudEmpleado)
+            {
+                foreach (string e in empleados)
+                {
+                    if (d.UsuarioIdentityId == e)
+                    {
+                        listaSolicitudes.Add(d.SolicitudId);
+                    }
+                }
+
+            }
+
+            return listaSolicitudes;
+
+        }
+
+            public async Task<Solicitud> ObtenerSolicitudPorId(int id)
         {
             return await _dbContext.Solicitudes.FirstOrDefaultAsync(s => s.SolicitudId == id);
         }
@@ -216,6 +264,15 @@ namespace PrivTours.Models.Business
                 Console.WriteLine(e.InnerException.Message);
                 return false;
             }
+        }
+
+        public async Task<List<DetalleSolicitudEmpleado>> ObtenerDetalleEmpleadoPorSolicitudId(int solicitudId)
+        {
+
+               var detalle = await _dbContext.DetalleSolicitudEmpleados.ToListAsync();
+                
+                return detalle.FindAll(d => d.SolicitudId == solicitudId);
+            
         }
 
     }

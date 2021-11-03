@@ -50,6 +50,7 @@ namespace PrivTours.ViewModels
         public List<string> Rol { get; set; }
         public string RolSeleccionado { get; set; }
 
+        public int TipoContrato { get; set; }
         public Boolean Estado { get; set; }
 
     }

@@ -44,30 +44,81 @@ function guardar() {
     let formularioSolicitud = $("#formularioSolicitud").serialize();
 
     $.ajax({
-        url: '/Solicitudes/Guardar',
-        type: 'post',
+        url: '/Solicitudes/ObtenerSolicitudesValidadndoDisponibilidad',
+        type: 'get',
         data: formularioSolicitud,
         dataType: 'json'
     }).done(function (respuesta) {
-
         if (respuesta.status) {
-            $("#modalCrearSoliciutd").modal('hide');
-            listar();
-            $("#FechaInicio").val(moment("").format("YYYY-MM-DD"));
-            $("#HoraInicio").val(0);
-            $("#FechaFin").val(moment("").format("YYYY-MM-DD"));
-            $("#HoraFinal").val(0);
-            $("#Cliente").val(0);
-            $("#Empleado").val(0);
-            $("#Servicio").val(0);
-            $("#Descripcion").val("");
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Solicitud de servicio guardada',
-                showConfirmButton: false,
-                timer: 1500
-            })
+            var continuar = true;
+            var empleadosNoDisponibles = "";
+            respuesta.data.map(function (e) {
+  
+                var start = moment(e.fechaInicio).format("YYYY-MM-DD") + " " + e.horaInicio;
+                var end = moment(e.fechaFin).format("YYYY-MM-DD") + " " + e.horaFinal;
+
+                
+                var startNew = moment($("#FechaInicio").val()).format("YYYY-MM-DD") + " " + $("#HoraInicio").val();
+                var endNew = moment($("#FechaFin").val()).format("YYYY-MM-DD") + " " + $("#HoraFinal").val();
+               
+                const test = moment(startNew).isBetween(start, end);
+                const test2 = moment(endNew).isBetween(start, end);
+                
+                if (test || test2) { 
+                    empleadosNoDisponibles = e.empleadosNombres
+                    continuar = false;
+                }
+
+            });
+
+            if (continuar) {
+                $.ajax({
+                    url: '/Solicitudes/Guardar',
+                    type: 'post',
+                    data: formularioSolicitud,
+                    dataType: 'json'
+                }).done(function (guardar) {
+
+                    if (guardar.status) {
+                        $("#modalCrearSoliciutd").modal('hide');
+                        listar();
+                        $("#FechaInicio").val(moment("").format("YYYY-MM-DD"));
+                        $("#HoraInicio").val(0);
+                        $("#FechaFin").val(moment("").format("YYYY-MM-DD"));
+                        $("#HoraFinal").val(0);
+                        $("#Cliente").val(0);
+                        $('#choices-multiple-remove-button').val(0);
+                        $("#Servicio").val(0);
+                        $("#Descripcion").val("");
+                        $("#SolicitudId").val(0);
+                        $("#SolicitudEstado").val(0);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Solicitud de servicio guardada',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    } else {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No fue posible guardar la solicitud. Por favor intente nuevamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: empleadosNoDisponibles + ' no se encuentran disponibles, por favor verifica la disponibilidad',
+                    showConfirmButton: false,
+                    timer: 9000
+                })
+            }
+
         } else {
 
             Swal.fire({
@@ -78,6 +129,8 @@ function guardar() {
             })
         }
     })
+
+  
 }//fin Guardar
 
 function editar() {
@@ -98,7 +151,7 @@ function editar() {
             $("#FechaFinD").val(moment("").format("YYYY-MM-DD"));
             $("#HoraFinalD").val(0);
             $("#ClienteD").val(0);
-            $("#EmpleadoD").val(0);
+            $('#choices-multiple-remove-button').val(0);
             $("#ServicioD").val(0);
             $("#DescripcionD").val("");
             $("#SolicitudIdD").val(0);
@@ -134,7 +187,7 @@ function eliminar() {
 function obtenerServicioPorId(id) {
     $.ajax({
         //url: '@Url.Action("Solicitudes","ObtenerDetalle", new { id = "id" })'.replace("id", encodeURIComponent(id)),
-        url: '/Solicitudes/ObtenerDetalle/',
+        url: '/Solicitudes/ObtenerDetalle',
         data: jQuery.param({ id: id}),
         type: 'get',
         dataType: 'json',
@@ -145,11 +198,22 @@ function obtenerServicioPorId(id) {
             $("#FechaFinD").val(moment(respuesta.data.fechaFin).format("YYYY-MM-DD"));
             $("#HoraFinalD").val(respuesta.data.horaFinal);
             $("#ClienteD").val(respuesta.data.clienteId);
-            $("#EmpleadoD").val(respuesta.data.empleadoId);
+            //$("#choices-multiple-remove-button-d").val(respuesta.data.empleados);
             $("#ServicioD").val(respuesta.data.servicioId);
             $("#DescripcionD").val(respuesta.data.descripcion);
             $("#SolicitudIdD").val(respuesta.data.solicitudId);
             $("#SolicitudEstadoD").val(respuesta.data.estadoSoliciud);
+            
+            respuesta.data.empleados.forEach(function (valor, indice, array) {
+               // $('#choices-multiple-remove-button' + '[value = ' + valor + ']').attr('selected', 'true');
+                //$('#choices-multiple-remove-button-d [value=' + valor + ']').attr('selected', true);   
+                $("#choices-multiple-remove-button-d")
+                    .find("option:contains('" + valor + "')")
+                    .attr("selected", "selected");
+            });
+
+           // $("#choices-multiple-remove-button-d").multiSelect('reload');  
+
             
 
         }
@@ -212,7 +276,7 @@ async function filtroSeleccionado(tipoFiltro) {
                 $('#TipoDeBusquedaSeleccionado').find('option').remove().end()
                 newOptionsSelect = '';
                 respuesta.data.forEach(empleado => {
-                    newOptionsSelect = newOptionsSelect + '<option value="' + empleado.empleadoId + '">' + empleado.nombre + '</option>';
+                    newOptionsSelect = newOptionsSelect + '<option value="' + empleado.id + '">' + empleado.nombre + '</option>';
                 })
                 $('#TipoDeBusquedaSeleccionado').append(newOptionsSelect);
             }
@@ -278,7 +342,7 @@ function filtar() {
     } else if (this.filtro == "2") {
         $.ajax({
             url: '/Solicitudes/ObtenerListaSolicitudesPorEmpleado/',
-            data: jQuery.param({ empleadoId: document.getElementById('TipoDeBusquedaSeleccionado').value }),
+            data: jQuery.param({ id: document.getElementById('TipoDeBusquedaSeleccionado').value }),
             type: 'get',
             dataType: 'json',
         }).done(function (respuesta) {
@@ -286,7 +350,7 @@ function filtar() {
                 let data = [];
                 respuesta.data.map(function (e) {
                     console.log(e)
-                    var titulo = 'Empleado: ' + e.empleado.nombre + ' ' + e.empleado.apellido + ', Celular: ' + e.empleado.celular;
+                    var titulo = 'Empleado: ' + e.empleado.nombre + ' ' + e.empleado.apellido;
                     data.push({
                         id: e.solicitudId,
                         title: titulo,

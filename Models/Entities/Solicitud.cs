@@ -37,13 +37,10 @@ namespace PrivTours.Models.Entities
         public int ClienteId { get; set; }
         public virtual Cliente Cliente { get; set; }
 
-        public int EmpleadoId { get; set; }
-        public virtual Empleado Empleado { get; set; }
-
         public int ServicioId { get; set; }
         public virtual Servicio Servicio { get; set; }
 
         public byte EstadoSoliciud { get; set; }
-
+        public ICollection<DetalleSolicitudEmpleado> DetalleSolicitudEmpleado { get; set; }
     }
 }

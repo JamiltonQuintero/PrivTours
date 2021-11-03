@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-
+using System.Collections.Generic;
 
 namespace PrivTours.Models.Entities
 {
@@ -9,6 +9,7 @@ namespace PrivTours.Models.Entities
         public string Apellido { get; set; }
         public string Documento { get; set; }
         public string Telefono { get; set; }
-
+        public int TipoContrato { get; set; }
+        public ICollection<DetalleSolicitudEmpleado> DetalleSolicitudEmpleado { get; set; }
     }
 }

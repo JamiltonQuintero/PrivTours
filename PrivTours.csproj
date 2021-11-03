@@ -10,6 +10,8 @@
 		<Compile Remove="Migrations\20210922192516_BD.Designer.cs" />
 		<Compile Remove="Migrations\20211010033436_se cambia estado clientes.cs" />
 		<Compile Remove="Migrations\20211010033436_se cambia estado clientes.Designer.cs" />
+		<Content Remove="Views\Empleados\Delete.cshtml" />
+		<Content Remove="Views\Empleados\Details.cshtml" />
 
 		<None Include="Views\Clientes\Create.cshtml" />
 		<None Include="Views\Clientes\Delete.cshtml" />

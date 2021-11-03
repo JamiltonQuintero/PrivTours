@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PrivTours.Models.Abstract;
@@ -19,21 +20,38 @@ namespace PrivTours.Controllers
 
 
         private readonly ISolicitudesBusiness _solicitudesBuseness;
-
-        public SolicitudesController(ISolicitudesBusiness solicitudesBuseness)
+        private readonly UserManager<UsuarioIdentity> _userManager;
+        public SolicitudesController(UserManager<UsuarioIdentity> userManager, ISolicitudesBusiness solicitudesBuseness)
         {
             _solicitudesBuseness = solicitudesBuseness;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> Index()
         {
+            var usuarios = await _userManager.Users.ToListAsync();
+            var listaUsuarios = new List<UsuarioIdentity>();
+
+            foreach (var usuario in usuarios)
+            {
+                var rol = await ObtenerRolUsuario(usuario);
+                if ("Empleado".Equals(rol[0]))
+                {
+
+                    listaUsuarios.Add(usuario);
+                }
+            }
 
             ViewData["Clientes"] = new SelectList(await _solicitudesBuseness.ObtenerListaClientes(), "ClienteId", "Nombre");
-            ViewData["Empleados"] = new SelectList(await _solicitudesBuseness.ObtenerListaEmpleados(), "EmpleadoId", "Nombre");
+            ViewData["Empleados"] = new SelectList(listaUsuarios, "Id", "Nombre");
             ViewData["Servicios"] = new SelectList(await _solicitudesBuseness.ObtenerListaServicios(), "ServicioId", "Nombre");
+
             return View();
         }
-
+        private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
+        {
+            return new List<string>(await _userManager.GetRolesAsync(usuario));
+        }
         public async Task<IActionResult> ObtenerListaClientes()
 
         {
@@ -49,13 +67,27 @@ namespace PrivTours.Controllers
 
         }
 
+
         public async Task<IActionResult> ObtenerListaEmpleados()
 
         {
            try
             {
-                var empleados = await _solicitudesBuseness.ObtenerListaEmpleados();
-                return Json(new { status = true, data = empleados });
+
+                var usuarios = await _userManager.Users.ToListAsync();
+                var listaUsuarios = new List<UsuarioIdentity>();
+
+                foreach (var usuario in usuarios)
+                {
+                    var rol = await ObtenerRolUsuario(usuario);
+                    if ("Empleado".Equals(rol[0]) && usuario.LockoutEnd == null)
+                    {
+
+                        listaUsuarios.Add(usuario);
+                    }
+                }
+
+                return Json(new { status = true, data = listaUsuarios });
             }
             catch (Exception e)
             {
@@ -79,7 +111,7 @@ namespace PrivTours.Controllers
 
         }
 
-        public async Task<IActionResult> Guardar(Solicitud solicitud)
+        public async Task<IActionResult> Guardar(SolicitudViewModel solicitudViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -88,21 +120,93 @@ namespace PrivTours.Controllers
 
             try 
             {
-                var respuesta =  await _solicitudesBuseness.GuardarSolicitud(solicitud);
-                if(respuesta)
+                Solicitud solicitud = new Solicitud
                 {
-                    return Json(new { status = true });
-                } else
-                {
-                    return Json(new { status = false });
+                    FechaInicio = solicitudViewModel.FechaInicio,
+                    FechaFin = solicitudViewModel.FechaFin,
+                    HoraInicio = solicitudViewModel.HoraInicio,
+                    HoraFinal = solicitudViewModel.HoraFinal,
+                    Descripcion = solicitudViewModel.Descripcion,
+                    ClienteId = solicitudViewModel.ClienteId,
+                    ServicioId = solicitudViewModel.ServicioId,
+                    EstadoSoliciud = solicitudViewModel.EstadoSoliciud,               
+                };
+
+                    var respuesta = await _solicitudesBuseness.GuardarSolicitud(solicitud, solicitudViewModel.Empleados);
+                    if (respuesta)
+                    {
+                        return Json(new { status = true });
+                    }
+                    else
+                    {
+                        return Json(new { status = false });
+                    }                
                 }
-                
-            }
             catch (Exception e)
             {
                 return Json(new { status = false });
             }
 
+        }
+
+        public async Task<IActionResult> ObtenerSolicitudesValidadndoDisponibilidad(SolicitudViewModel solicitudViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { status = false });
+            }
+
+            try
+            {
+
+                var lIdsSolicitudes = await _solicitudesBuseness.ObtenerSolicitudesPorEmpleadosSeleccionados(solicitudViewModel.Empleados);
+                var lSolicitudes = new List<SolicitudViewModel>();
+
+
+                foreach (int i in lIdsSolicitudes)
+                {
+                    var soli = await _solicitudesBuseness.ObtenerSolicitudPorId(i);
+                    var count = 0;
+                    var textonNombres = "";
+                    var texto = "";
+                        
+                    foreach (var e in soli.DetalleSolicitudEmpleado)
+                    {
+                        count++;
+                        var usuario = await _userManager.FindByIdAsync(e.UsuarioIdentityId);
+                        texto = usuario.Nombre + usuario.Apellido;
+                        if (soli.DetalleSolicitudEmpleado.Count == count)
+                        {
+                           
+                            textonNombres += texto + " ";
+                        }
+                        else
+                        {
+                            textonNombres += texto + ", ";
+                        }
+                    }
+                    
+                    SolicitudViewModel solicitud = new SolicitudViewModel
+                    {
+                        FechaInicio = soli.FechaInicio,
+                        FechaFin = soli.FechaFin,
+                        HoraInicio = soli.HoraInicio,
+                        HoraFinal = soli.HoraFinal,
+                        Descripcion = soli.Descripcion,
+                        ClienteId = soli.ClienteId,
+                        ServicioId = soli.ServicioId,
+                        EstadoSoliciud = soli.EstadoSoliciud,
+                        EmpleadosNombres = textonNombres
+                    };
+                    lSolicitudes.Add(solicitud);
+                }
+                return Json(new { status = true, data = lSolicitudes });
+
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
         }
 
         public async Task<IActionResult> Listar()
@@ -138,14 +242,14 @@ namespace PrivTours.Controllers
 
         }
 
-
-        public async Task<IActionResult> ObtenerListaSolicitudesPorEmpleado(int empleadoId)
+        
+        public async Task<IActionResult> ObtenerListaSolicitudesPorEmpleado(string id)
         {
 
             try
             {
 
-                var solicitudes = await _solicitudesBuseness.ObtenerListaSolicitudesPorEmpleado(empleadoId);
+                var solicitudes = await _solicitudesBuseness.ObtenerListaSolicitudesPorEmpleado(id);
 
                 return Json(new { status = true, data = solicitudes });
             }
@@ -201,7 +305,33 @@ namespace PrivTours.Controllers
             {
                 return NotFound();
             }
-            return Json(new { data = solicitud });
+
+            var detalleEmpleados = await _solicitudesBuseness.ObtenerDetalleEmpleadoPorSolicitudId(solicitud.SolicitudId);
+            var empleadosPorSolicitud = new List<string>();
+            foreach (DetalleSolicitudEmpleado d in detalleEmpleados)
+            {
+                var usuario = await _userManager.FindByIdAsync(d.UsuarioIdentityId);
+                if (usuario != null)
+                {
+                    empleadosPorSolicitud.Add(usuario.Id);
+                }
+
+            }
+
+            SolicitudViewModel solicitudVM = new SolicitudViewModel
+            {
+                FechaInicio = solicitud.FechaInicio,
+                FechaFin = solicitud.FechaFin,
+                HoraInicio = solicitud.HoraInicio,
+                HoraFinal = solicitud.HoraFinal,
+                Descripcion = solicitud.Descripcion,
+                ClienteId = solicitud.ClienteId,
+                ServicioId = solicitud.ServicioId,
+                EstadoSoliciud = solicitud.EstadoSoliciud,
+                Empleados = empleadosPorSolicitud.ToArray()
+            };
+
+            return Json(new { data = solicitudVM });
         }
 
         [HttpPost]

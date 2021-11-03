@@ -284,6 +284,7 @@ namespace PrivTours.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("RoleIdentityId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("DetallePermisoId");
@@ -293,6 +294,29 @@ namespace PrivTours.Migrations
                     b.HasIndex("RoleIdentityId");
 
                     b.ToTable("DetallePermisos");
+                });
+
+            modelBuilder.Entity("PrivTours.Models.Entities.DetalleSolicitudEmpleado", b =>
+                {
+                    b.Property<int>("DetalleSolicitudEmpleadoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("SolicitudId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioIdentityId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("DetalleSolicitudEmpleadoId");
+
+                    b.HasIndex("SolicitudId");
+
+                    b.HasIndex("UsuarioIdentityId");
+
+                    b.ToTable("DetalleSolicitudEmpleados");
                 });
 
             modelBuilder.Entity("PrivTours.Models.Entities.Empleado", b =>
@@ -385,9 +409,6 @@ namespace PrivTours.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EmpleadoId")
-                        .HasColumnType("int");
-
                     b.Property<byte>("EstadoSoliciud")
                         .HasColumnType("tinyint");
 
@@ -411,8 +432,6 @@ namespace PrivTours.Migrations
                     b.HasKey("SolicitudId");
 
                     b.HasIndex("ClienteId");
-
-                    b.HasIndex("EmpleadoId");
 
                     b.HasIndex("ServicioId");
 
@@ -441,6 +460,9 @@ namespace PrivTours.Migrations
 
                     b.Property<string>("Telefono")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TipoContrato")
+                        .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("UsuarioIdentity");
                 });
@@ -506,7 +528,24 @@ namespace PrivTours.Migrations
 
                     b.HasOne("PrivTours.Models.Entities.RoleIdentity", "RoleIdentity")
                         .WithMany("DetallePermiso")
-                        .HasForeignKey("RoleIdentityId");
+                        .HasForeignKey("RoleIdentityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PrivTours.Models.Entities.DetalleSolicitudEmpleado", b =>
+                {
+                    b.HasOne("PrivTours.Models.Entities.Solicitud", "Solicitud")
+                        .WithMany("DetalleSolicitudEmpleado")
+                        .HasForeignKey("SolicitudId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrivTours.Models.Entities.UsuarioIdentity", "UsuarioIdentity")
+                        .WithMany("DetalleSolicitudEmpleado")
+                        .HasForeignKey("UsuarioIdentityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PrivTours.Models.Entities.Solicitud", b =>
@@ -514,12 +553,6 @@ namespace PrivTours.Migrations
                     b.HasOne("PrivTours.Models.Entities.Cliente", "Cliente")
                         .WithMany()
                         .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PrivTours.Models.Entities.Empleado", "Empleado")
-                        .WithMany()
-                        .HasForeignKey("EmpleadoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

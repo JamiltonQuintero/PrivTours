@@ -34,7 +34,7 @@ namespace PrivTours.Controllers
             foreach (var usuario in usuarios)
             {
                 var rol = await ObtenerRolUsuario(usuario);
-                if ("Empleado".Equals(rol))
+                if ("Empleado".Equals(rol[0]))
                 {
                     var usuarioViewModel = new UsuarioViewModel()
                     {
@@ -58,15 +58,15 @@ namespace PrivTours.Controllers
 
         //[Authorize(Roles = "Administrador")]
         [HttpGet]
-        public async Task<IActionResult> Crearusuario()
+        public IActionResult Create()
         {
-            ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+            ViewData["Rol"] = "Empleado";
             return View();
         }
 
         // [Authorize(Roles = "Administrador")]
         [HttpPost]
-        public async Task<IActionResult> Crearusuario(UsuarioViewModel usuarioViewModel)
+        public async Task<IActionResult> Create(UsuarioViewModel usuarioViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -79,6 +79,7 @@ namespace PrivTours.Controllers
                     Apellido = usuarioViewModel.Apellido,
                     Documento = usuarioViewModel.Documento,
                     Telefono = usuarioViewModel.Telefono,
+                    TipoContrato = usuarioViewModel.TipoContrato,
                     EmailConfirmed = true
                 };
 
@@ -91,7 +92,7 @@ namespace PrivTours.Controllers
                         usuario.Id = await _userManager.GetUserIdAsync(usuario);
                         await _userManager.AddToRoleAsync(usuario, usuarioViewModel.RolSeleccionado);
                         TempData["Accion"] = "Crear";
-                        TempData["Mensaje"] = "Se ha creado correctamente el usuario " + usuario.Nombre;
+                        TempData["Mensaje"] = "Se ha creado correctamente el empleado " + usuario.Nombre;
                         return RedirectToAction("Index");
                     }
 
@@ -102,18 +103,18 @@ namespace PrivTours.Controllers
                 }
                 catch (Exception)
                 {
-                    ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+                    ViewData["Rol"] = "Empleado";
                     return View(usuarioViewModel);
                 }
 
             }
-            ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+            ViewData["Rol"] = "Empleado";
             return View(usuarioViewModel);
         }
 
         // [Authorize(Roles = "Administrador")]
         // GET: Usuarios/Edit/5
-        public async Task<IActionResult> Editar(string id)
+        public async Task<IActionResult> Edit(string id)
         {
 
             if (id == null)
@@ -137,10 +138,11 @@ namespace PrivTours.Controllers
                 Email = usuario.Email,
                 Telefono = usuario.Telefono,
                 Password = usuario.PasswordHash,
+                TipoContrato = usuario.TipoContrato,
                 ConfirmarPassword = usuario.PasswordHash,
                 RolSeleccionado = RolesUsuario.Count == 0 ? "" : RolesUsuario.First()
             };
-            ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+            ViewData["Rol"] = "Empleado";
             return View(usuarioViewModel);
         }
 
@@ -150,7 +152,7 @@ namespace PrivTours.Controllers
         // [Authorize(Roles = "Administrador")]
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar(string id, [Bind("Id,Nombre,Apellido,Documento,Email,Telefono,RolSeleccionado")] UsuarioViewModel usuarioViewModel)
+        public async Task<IActionResult> Editar(string id, UsuarioViewModel usuarioViewModel)
         {
 
             if (id != usuarioViewModel.Id)
@@ -171,6 +173,7 @@ namespace PrivTours.Controllers
                     usuario.Apellido = usuarioViewModel.Apellido;
                     usuario.Documento = usuarioViewModel.Documento;
                     usuario.Telefono = usuarioViewModel.Telefono;
+                    usuario.TipoContrato = usuarioViewModel.TipoContrato;
 
                     var RolesUsuario = await ObtenerRolUsuario(usuario);
                     if (!RolesUsuario.Any())
@@ -207,15 +210,15 @@ namespace PrivTours.Controllers
             {
                 var usuario = await _userManager.FindByIdAsync(id);
                 if (usuario == null)
-                    return Json(new { data = "error", message = "Usuario a eliminar no existe" });
+                    return Json(new { data = "error", message = "Empleado a eliminar no existe" });
 
                 await _userManager.DeleteAsync(usuario);
 
-                return Json(new { data = "ok", message = "Usuario " + usuario.Nombre + " fue eliminado correctamente" });
+                return Json(new { data = "ok", message = "Empleado " + usuario.Nombre + " fue eliminado correctamente" });
             }
             catch (Exception)
             {
-                return Json(new { data = "error", message = "Ocurrió un error al eliminar el usuario" });
+                return Json(new { data = "error", message = "Ocurrió un error al eliminar el empleado" });
             }
         }
 
@@ -230,7 +233,7 @@ namespace PrivTours.Controllers
             {
                 var usuario = await _userManager.FindByIdAsync(id);
                 if (usuario == null)
-                    return Json(new { data = "error", message = "Usuario a cambiar estado no existe" });
+                    return Json(new { data = "error", message = "Empleado a cambiar estado no existe" });
 
                 if (usuario.LockoutEnd == null)
                 {
@@ -242,11 +245,11 @@ namespace PrivTours.Controllers
                 }
                 await _userManager.SetLockoutEndDateAsync(usuario, usuario.LockoutEnd);
                 var NuevoEstado = usuario.LockoutEnd == null ? "Activado" : "Inactivado";
-                return Json(new { data = "ok", message = "Usuario " + usuario.Nombre + " fue " + NuevoEstado + " correctamente" });
+                return Json(new { data = "ok", message = "Empleado " + usuario.Nombre + " fue " + NuevoEstado + " correctamente" });
             }
             catch (Exception)
             {
-                return Json(new { data = "error", message = "Ocurrió un error al cambiar estado al usuario" });
+                return Json(new { data = "error", message = "Ocurrió un error al cambiar estado al empleado" });
             }
         }
 

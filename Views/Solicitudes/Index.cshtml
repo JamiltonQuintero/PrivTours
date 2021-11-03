@@ -1,41 +1,42 @@
-﻿@model PrivTours.Models.Entities.Solicitud
+﻿@model PrivTours.ViewModels.SolicitudViewModel
 
 
 @section Styles{
     <link href="~/lib/fullcalendar/main.css" rel="stylesheet" />
     <link href="~/css/RenderizarCalendario.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
 }
 
 <div class="content-wrapper">
 
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="intro-y box">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="intro-y box">
 
-            <div class="row">
-                <div id='external-events'>
-                    <h4>Buscar por: </h4>
+                <div class="row">
+                    <div id='external-events'>
+                        <h4>Buscar por: </h4>
 
-                    <div id='external-events-list'>
-                        <select class="form-control input w-full border mt-2 flex-1" id="TipoDeBusqueda">
-                            <option value="1">Todos</option>
-                            <option value="2">Empleado</option>
-                            <option value="3">Cliente</option>
-                            <option value="4">Servicio</option>
-                            <option value="5">Estado Solicitud</option>
-                        </select>
-                    </div>
+                        <div id='external-events-list'>
+                            <select class="form-control input w-full border mt-2 flex-1" id="TipoDeBusqueda">
+                                <option value="1">Todos</option>
+                                <option value="2">Empleado</option>
+                                <option value="3">Cliente</option>
+                                <option value="4">Servicio</option>
+                                <option value="5">Estado Solicitud</option>
+                            </select>
+                        </div>
 
-                    <div>
+                        <div>
+                            <br />
+                            <label>Seleccione en valor de la busqueda</label>
+                            <select class="form-control input w-full border mt-2 flex-1" id="TipoDeBusquedaSeleccionado">
+                                <option value="0">Seleccione</option>
+                            </select>
+                        </div>
                         <br />
-                        <label>Seleccione en valor de la busqueda</label>
-                        <select class="form-control input w-full border mt-2 flex-1" id="TipoDeBusquedaSeleccionado">
-                            <option value="0">Seleccione</option>
-                        </select>
+                        <button type="button" class="btn btn-primary align-content-center" onclick="filtar()">Aplicar filtro</button>
                     </div>
-                    <br />
-                    <button type="button" class="btn btn-primary align-content-center" onclick="filtar()">Aplicar filtro</button>
-                </div>
 
                     <div id='loading'>loading...</div>
                     <div class="col 10" id="calendar">
@@ -117,11 +118,11 @@
 
 
                                         <div class="form group">
-                                            <label asp-for="Empleado" class="control-label"></label>
-                                            <select asp-for="EmpleadoId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Empleados" id="EmpleadoD">
-                                                <option>Seleccione</option>
+                                            <label asp-for="Empleados" class="control-label"></label>
+
+                                            <select asp-items="ViewBag.Empleados" asp-for="Empleados" id="choices-multiple-remove-button-d" placeholder="Seleccione los empleados" multiple>
                                             </select>
-                                            <span asp-validation-for="Empleado" class="text-danger"></span>
+                                            <span asp-validation-for="Empleados" class="text-danger"></span>
                                         </div>
 
 
@@ -148,25 +149,25 @@
                                     </div>
                                 </div>
 
-                                    <div>
-                                        <div class="form group">
-                                            <label>Estado Actual solicitud</label>
-                                            <select asp-for="EstadoSoliciud" class="form-control input w-full border mt-2 flex-1" id="SolicitudEstadoD">
-                                                <option value="1">RESERVADO</option>
-                                                <option value="2">EN PROCESO</option>
-                                                <option value="3">VENCIDO</option>
-                                                <option value="4">CANCELADO</option>
-                                                <option value="5">FINALIZADO EMPLEADO</option>
-                                                <option value="6">FINALIZADO ADMINISTRADOR</option>
-                                            </select>
-                                            <span asp-validation-for="Servicio" class="text-danger"></span>
-                                        </div>
-
+                                <div>
+                                    <div class="form group">
+                                        <label>Estado Actual solicitud</label>
+                                        <select asp-for="EstadoSoliciud" class="form-control input w-full border mt-2 flex-1" id="SolicitudEstadoD">
+                                            <option value="1">RESERVADO</option>
+                                            <option value="2">EN PROCESO</option>
+                                            <option value="3">VENCIDO</option>
+                                            <option value="4">CANCELADO</option>
+                                            <option value="5">FINALIZADO EMPLEADO</option>
+                                            <option value="6">FINALIZADO ADMINISTRADOR</option>
+                                        </select>
+                                        <span asp-validation-for="Servicio" class="text-danger"></span>
                                     </div>
+
+                                </div>
                                 <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="SolicitudIdD" />
                             </form><!-- Fin formulario-->
                         </div>
-          
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                             <button type="button" class="btn btn-primary" onclick="editar()">Editar</button>
@@ -247,14 +248,13 @@
                                         <br />
 
 
-                                        <div class="form group">
-                                            <label asp-for="Empleado" class="control-label"></label>
-                                            <select asp-for="EmpleadoId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Empleados" id="Empleado">
-                                                <option value="0">Seleccione</option>
-                                            </select>
-                                            <span asp-validation-for="Empleado" class="text-danger"></span>
-                                        </div>
 
+                                        <div class="form group">
+                                            <label asp-for="Empleados" class="control-label"></label>
+                                            <select asp-items="ViewBag.Empleados" asp-for="Empleados" id="choices-multiple-remove-button" placeholder="Seleccione los empleados" multiple>
+                                            </select>
+                                            <span asp-validation-for="Empleados" class="text-danger"></span>
+                                        </div>
 
                                     </div>
 
@@ -289,7 +289,7 @@
                 </div>
             </div><!-- Fin Modal Crear-->
         </div>
-</div>
+    </div>
 </div>
 
 @section Scripts {
@@ -307,7 +307,25 @@
             start();
         })
 
-  
+        $(document).ready(function () {
+
+            var multipleCancelButton = new Choices('#choices-multiple-remove-button-d', {
+                removeItemButton: true,
+            });
+
+        });
+
+
+        $(document).ready(function () {
+
+            var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+                removeItemButton: true,
+            });
+
+        });
+
     </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
 
 }

@@ -22,8 +22,12 @@ namespace PrivTours.ViewModels
         public int EmpleadoId { get; set; }
         public virtual Empleado Empleado { get; set; }
 
+        public string[] Empleados { get; set; }
+        public string EmpleadosNombres { get; set; }
         public int ServicioId { get; set; }
         public virtual Servicio Servicio { get; set; }
+
+        public List<UsuarioIdentity> EmpleadosSeleccionados { get; set; }
 
         public byte EstadoSoliciud { get; set; }
 
