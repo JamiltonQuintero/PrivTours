@@ -38,24 +38,35 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-4">
-                            <h5 class="card-title">@tarea.Cliente.Nombre @tarea.Cliente.Apellidos</h5>
-                            <h5 class="card-text">@tarea.HoraInicio</h5>
+                            <h4 class="card-subtitle mb-2 text-muted">Nombre cliente :  </h4>
+                            <p>@tarea.Cliente.Nombre @tarea.Cliente.Apellidos</p>
+                            <h4 class="card-subtitle mb-2 text-muted">Telefono cliente</h4>
+                            <p>@tarea.Cliente.Telefono</p>
 
                         </div>
                         <div class="col-sm-4">
-                            <h5 class="card-title">@tarea.Servicio.Nombre</h5>
-                            <p class="card-text">@tarea.Descripcion</p>
+                            <h4 class="card-subtitle mb-2 text-muted">Nombre servicio :  </h4>
+                            <p>@tarea.Servicio.Nombre</p>
+                            <h4 class="card-subtitle mb-2 text-muted">Descripcion servicio :  </h4>
+                            <p>@tarea.Descripcion</p>
 
                         </div>
 
                         <div class="col-sm-4">
-                            <h5 class="card-title">@tarea.FechaInicio : @tarea.HoraInicio</h5>
-                            <h5 class="card-text">@tarea.HoraFinal : @tarea.HoraFinal</h5>
+                            <h4 class="card-subtitle mb-2 text-muted">Fecha inicio:</h4>
+                            <p>@tarea.FechaInicio : @tarea.HoraInicio</p>
+                            <h4 class="card-subtitle mb-2 text-muted">Fecha Fin:</h4>
+                            <p>@tarea.HoraFinal : @tarea.HoraFinal</p>
 
                         </div>
                     </div>
-                        <a href="#" class="btn btn-primary">ir a solicitude # @tarea.SolicitudId</a>
+                    <div class="row-cols-3">
+
+                        <a href="#" class="btn btn-danger">Cancelar tarea</a>
+                        <a href="#" class="btn btn-primary">Terminar tarea</a>
+
                     </div>
+                </div>
                 </div>
                 }
 
