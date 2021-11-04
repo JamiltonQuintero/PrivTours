@@ -196,41 +196,6 @@ namespace PrivTours.Models.Business
             return solicitudesPorEstado;
         }
 
-
-        public async Task<bool> GuardarSolicitud(Solicitud solicitud, string[] empleados)
-        {
-                using (var transaction = _dbContext.Database.BeginTransaction())
-                {
-                    try
-                    {
-
-                        solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.RESERVADO;
-                        _dbContext.Add(solicitud);
-                        await _dbContext.SaveChangesAsync();
-
-                        foreach (string e in empleados)
-                        {
-                            DetalleSolicitudEmpleado detalleSolicitudEmpleado = new DetalleSolicitudEmpleado
-                            {
-                                SolicitudId = solicitud.SolicitudId,
-                                UsuarioIdentityId = e
-                            };
-                            _dbContext.Add(detalleSolicitudEmpleado);
-                        }
-                        await _dbContext.SaveChangesAsync();
-                        transaction.Commit();
-                        return true;
-
-                    }
-                    catch (Exception e)
-                    {
-                        transaction.Rollback();
-                        Console.WriteLine(e.InnerException.Message);
-                        return false;
-                    }
-                }
-        }
-
         public async Task<HashSet<int>> ObtenerSolicitudesPorEmpleadosSeleccionados(string[] empleados)
         {
 
@@ -258,19 +223,86 @@ namespace PrivTours.Models.Business
             return await _dbContext.Solicitudes.FirstOrDefaultAsync(s => s.SolicitudId == id);
         }
 
-        public async Task<bool> EditarSolicitud(Solicitud solicitud)
+        public async Task<bool> EditarSolicitud(Solicitud solicitud, string[] empleados)
         {
 
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                try
+                {
+
+                    _dbContext.Update(solicitud);
+                    await _dbContext.SaveChangesAsync();
+
+                    foreach (string e in empleados)
+                    {
+                        DetalleSolicitudEmpleado detalleSolicitudEmpleado = new DetalleSolicitudEmpleado
+                        {
+                            SolicitudId = solicitud.SolicitudId,
+                            UsuarioIdentityId = e
+                        };
+                        _dbContext.Add(detalleSolicitudEmpleado);
+                    }
+                    await _dbContext.SaveChangesAsync();
+                    transaction.Commit();
+                    return true;
+
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine(e.InnerException.Message);
+                    return false;
+                }
+            }
+
+        }
+
+        public async Task<bool> EditarSolicitudEstado(Solicitud solicitud)
+        {
             try
             {
-                _dbContext.Update(solicitud);
+                 _dbContext.Update(solicitud);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                Console.WriteLine(e.InnerException.Message);
                 return false;
+            }
+        }
+
+        public async Task<bool> GuardarSolicitud(Solicitud solicitud, string[] empleados)
+        {
+            using (var transaction = _dbContext.Database.BeginTransaction())
+            {
+                try
+                {
+
+                    solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.RESERVADO;
+                    _dbContext.Add(solicitud);
+                    await _dbContext.SaveChangesAsync();
+
+                    foreach (string e in empleados)
+                    {
+                        DetalleSolicitudEmpleado detalleSolicitudEmpleado = new DetalleSolicitudEmpleado
+                        {
+                            SolicitudId = solicitud.SolicitudId,
+                            UsuarioIdentityId = e
+                        };
+                        _dbContext.Add(detalleSolicitudEmpleado);
+                    }
+                    await _dbContext.SaveChangesAsync();
+                    transaction.Commit();
+                    return true;
+
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine(e.InnerException.Message);
+                    return false;
+                }
             }
         }
 
@@ -281,6 +313,25 @@ namespace PrivTours.Models.Business
                 
                 return detalle.FindAll(d => d.SolicitudId == solicitudId);
             
+        }
+
+        public async Task<bool> EliminarDetallesEmpleadosPorId(int id)
+        {
+            try
+            {
+                var detalle = await _dbContext.DetalleSolicitudEmpleados.ToListAsync();
+                detalle = detalle.FindAll(d => d.SolicitudId == id);
+                foreach (DetalleSolicitudEmpleado i in detalle)
+                {
+                    _dbContext.Remove(i);
+                }
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
 
     }

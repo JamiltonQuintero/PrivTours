@@ -31,6 +31,8 @@ namespace PrivTours.ViewModels
 
         public byte EstadoSoliciud { get; set; }
 
+        public string Rol { get; set; }
+
 
     }
 }

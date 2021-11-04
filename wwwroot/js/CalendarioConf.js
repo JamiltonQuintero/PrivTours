@@ -101,7 +101,7 @@ function guardar() {
                         $("#FechaFin").val(moment("").format("YYYY-MM-DD"));
                         $("#HoraFinal").val(0);
                         $("#Cliente").val(0);
-                        $('#choices-multiple-remove-button').val(0);
+                        $('#choices-multiple-remove-button').val([]);
                         $("#Servicio").val(0);
                         $("#Descripcion").val("");
                         $("#SolicitudId").val(0);
@@ -164,7 +164,7 @@ function editar() {
             $("#FechaFinD").val(moment("").format("YYYY-MM-DD"));
             $("#HoraFinalD").val(0);
             $("#ClienteD").val(0);
-            $('#choices-multiple-remove-button').val(0);
+            $('#choices-multiple-remove-button-d').val([]);
             $("#ServicioD").val(0);
             $("#DescripcionD").val("");
             $("#SolicitudIdD").val(0);

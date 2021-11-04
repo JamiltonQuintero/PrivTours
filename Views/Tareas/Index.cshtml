@@ -15,12 +15,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Empleados Private Tours</h1>
+                    <h1 class="m-0">Tareas Private Tours</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Empleados</li>
+                        <li class="breadcrumb-item active">Tareas</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -56,14 +56,13 @@
                             <h4 class="card-subtitle mb-2 text-muted">Fecha inicio:</h4>
                             <p>@tarea.FechaInicio : @tarea.HoraInicio</p>
                             <h4 class="card-subtitle mb-2 text-muted">Fecha Fin:</h4>
-                            <p>@tarea.HoraFinal : @tarea.HoraFinal</p>
+                            <p>@tarea.FechaFin : @tarea.HoraFinal</p>
 
                         </div>
                     </div>
                     <div class="row-cols-3">
-
-                        <a href="#" class="btn btn-danger">Cancelar tarea</a>
-                        <a href="#" class="btn btn-primary">Terminar tarea</a>
+                        <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 1, '@tarea.Rol', '@tarea.Servicio.Nombre');" class="btn btn-danger">Cancelar tarea</a>
+                        <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 2, '@tarea.Rol', '@tarea.Servicio.Nombre');" class="btn btn-primary">Terminar tarea</a>
 
                     </div>
                 </div>
@@ -80,65 +79,40 @@
     <script src="~/js/Tabla.js"></script>
     <script>
 
-    @if(TempData["Mensaje"] != null && TempData["Accion"].ToString().Equals("Crear")) { <text>
-
-              Swal.fire({
-                title: "¡Felicitaciones!",
-                type: "success",
-                html: "@TempData["Mensaje"]",
-                icon: 'success',
-                timer: 3000
-              });
-
-             </text>
-    }
-
-
-
-    @if (TempData["Mensaje"] != null && TempData["Accion"].ToString().Equals("Editar"))
-    {
-        <text>
-
+        function cambiarEstadoSolicitud(id, tipo, rol, nombreServicio) {
+            var textoTerminarCancelar = "";
+            if (tipo == 1) {
+                textoTerminarCancelar = "CANCELAR"
+            } else {
+                textoTerminarCancelar = "TERMINAR"
+            }
             Swal.fire({
-                title: "¡Felicitaciones!",
-                type: "success",
-                html: "@TempData["Mensaje"]",
-                icon: 'success',
-                timer: 3000
-            });
-
-        </text>
-    }
-
-        function eliminar(id, nombreUsuario) {
-            Swal.fire({
-                title: '¿Está seguro de eliminar el empleado?',
-                text: nombreUsuario,
+                title: '¿Está seguro de ' + textoTerminarCancelar + ' la solicitud?',
+                text: nombreServicio,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, eliminar!',
+                confirmButtonText: 'Sí, ' + textoTerminarCancelar+' !',
                 cancelButtonText: 'Cancelar',
                 reverseButtons: true
             }).then((result) => {
-                if (result.isConfirmed) {
+                if (result.status) {
                     $.ajax({
-                        type: "GET",
-                        url: '@Url.Action("Delete", "Empleados", new { id = "id" })'.replace("id", encodeURIComponent(id)),
-                        contentType: false,
-                        processData: false,
+                        type: "POST",
+                        url: '@Url.Action("CambiarEstadoSolicitud", "Tareas")',
+                        data: jQuery.param({ id: id, tipo: tipo, rol: rol}),
                         success: function (result) {
 
-                            if (result.data == "ok") {
+                            if (result.status) {
                                 setTimeout(function () {
-                                    window.location.href = "@Url.Action("Index", "Empleados")";
+                                    window.location.href = "@Url.Action("Index", "Tareas")";
                                 }, 1500);
                                 Swal.fire({
                                     icon: 'success',
                                     title: result.message,
                                     showConfirmButton: false,
-                                    timer: 5000
+                                    timer: 2500
                                 })
                             } else {
                                 console.log("ERROR!!");
@@ -157,52 +131,6 @@
             })
         }
 
-        function cambiarEstado(id, nombreUsuario, estadoActual) {
-            Swal.fire({
-                title: '¿Está seguro de cambiar estado al empleado?',
-                text: nombreUsuario,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: estadoActual == true ? '#d33' : '#28A745',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, '.concat(estadoActual == true ? 'Inactivar' : 'Activar'),
-                cancelButtonText: 'Cancelar',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: "GET",
-                        url: '@Url.Action("CambiarEstado", "Empleados", new { id = "id" })'.replace("id", encodeURIComponent(id)),
-                        contentType: false,
-                        processData: false,
-                        success: function (result) {
-
-                            if (result.data == "ok") {
-                                setTimeout(function () {
-                                    window.location.href = "@Url.Action("Index","Empleados")";
-                                }, 1500);
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: result.message,
-                                    showConfirmButton: false,
-                                    timer: 5000
-                                })
-                            } else {
-                                console.log("ERROR!!");
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Oops...',
-                                    text: result.message,
-                                })
-                            }
-                        },
-                        error: function (err) {
-                            console.log(err.data)
-                        }
-                    });
-                }
-            })
-        }
     </script>
 }
 

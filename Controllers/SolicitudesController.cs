@@ -111,44 +111,6 @@ namespace PrivTours.Controllers
 
         }
 
-        public async Task<IActionResult> Guardar(SolicitudViewModel solicitudViewModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Json(new { status = false });
-            }
-
-            try 
-            {
-                Solicitud solicitud = new Solicitud
-                {
-                    FechaInicio = solicitudViewModel.FechaInicio,
-                    FechaFin = solicitudViewModel.FechaFin,
-                    HoraInicio = solicitudViewModel.HoraInicio,
-                    HoraFinal = solicitudViewModel.HoraFinal,
-                    Descripcion = solicitudViewModel.Descripcion,
-                    ClienteId = solicitudViewModel.ClienteId,
-                    ServicioId = solicitudViewModel.ServicioId,
-                    EstadoSoliciud = solicitudViewModel.EstadoSoliciud,               
-                };
-
-                    var respuesta = await _solicitudesBuseness.GuardarSolicitud(solicitud, solicitudViewModel.Empleados);
-                    if (respuesta)
-                    {
-                        return Json(new { status = true });
-                    }
-                    else
-                    {
-                        return Json(new { status = false });
-                    }                
-                }
-            catch (Exception e)
-            {
-                return Json(new { status = false });
-            }
-
-        }
-
         public async Task<IActionResult> ObtenerSolicitudesValidadndoDisponibilidad(SolicitudViewModel solicitudViewModel)
         {
             if (!ModelState.IsValid)
@@ -320,6 +282,7 @@ namespace PrivTours.Controllers
 
             SolicitudViewModel solicitudVM = new SolicitudViewModel
             {
+                SolicitudId = solicitud.SolicitudId,
                 FechaInicio = solicitud.FechaInicio,
                 FechaFin = solicitud.FechaFin,
                 HoraInicio = solicitud.HoraInicio,
@@ -335,15 +298,27 @@ namespace PrivTours.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Solicitud solicitud)
+        public async Task<IActionResult> Edit(SolicitudViewModel solicitudViewModel)
         {
            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    
-                    var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud);
+                    Solicitud solicitud = new Solicitud
+                    {
+                        SolicitudId = solicitudViewModel.SolicitudId,
+                        FechaInicio = solicitudViewModel.FechaInicio,
+                        FechaFin = solicitudViewModel.FechaFin,
+                        HoraInicio = solicitudViewModel.HoraInicio,
+                        HoraFinal = solicitudViewModel.HoraFinal,
+                        Descripcion = solicitudViewModel.Descripcion,
+                        ClienteId = solicitudViewModel.ClienteId,
+                        ServicioId = solicitudViewModel.ServicioId,
+                        EstadoSoliciud = solicitudViewModel.EstadoSoliciud,
+                    };
+                    var response = await _solicitudesBuseness.EliminarDetallesEmpleadosPorId(solicitud.SolicitudId);
+                    var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud, solicitudViewModel.Empleados);
                     if (respuesta)
                     {
                         return Json(new { status = true});
@@ -361,6 +336,44 @@ namespace PrivTours.Controllers
                 }
             }
             return Json(new { data = "error" });
+        }
+
+        public async Task<IActionResult> Guardar(SolicitudViewModel solicitudViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { status = false });
+            }
+
+            try
+            {
+                Solicitud solicitud = new Solicitud
+                {                   
+                    FechaInicio = solicitudViewModel.FechaInicio,
+                    FechaFin = solicitudViewModel.FechaFin,
+                    HoraInicio = solicitudViewModel.HoraInicio,
+                    HoraFinal = solicitudViewModel.HoraFinal,
+                    Descripcion = solicitudViewModel.Descripcion,
+                    ClienteId = solicitudViewModel.ClienteId,
+                    ServicioId = solicitudViewModel.ServicioId,
+                    EstadoSoliciud = solicitudViewModel.EstadoSoliciud,
+                };
+
+                var respuesta = await _solicitudesBuseness.GuardarSolicitud(solicitud, solicitudViewModel.Empleados);
+                if (respuesta)
+                {
+                    return Json(new { status = true });
+                }
+                else
+                {
+                    return Json(new { status = false });
+                }
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
         }
 
     }

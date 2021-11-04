@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PrivTours.Models.Abstract;
 using PrivTours.Models.Entities;
+using PrivTours.Models.Enums;
 using PrivTours.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -30,10 +31,21 @@ namespace PrivTours.Controllers
         // GET: TareasController
         public async Task<ActionResult> Index()
         {
+            var solicitudesActivas = new List<Solicitud>();
             var solicitudes = await _solicitudesBuseness.ObtenerListaSolicitudesSVM();
+
+            foreach (Solicitud solicitud in solicitudes)
+            {
+                if (solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.RESERVADO ||
+                    solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.EN_PROCESO)
+                {
+                    solicitudesActivas.Add(solicitud);
+                }
+            }
+
             var lSolicitudes = new List<SolicitudViewModel>();
 
-            foreach (var solicitud in solicitudes)
+            foreach (var solicitud in solicitudesActivas)
             {
                 var cliente = await _clientesBusiness.ObtenerClientePorId(solicitud.ClienteId);
                 var servicio = await _serviciosBusiness.ObtenerServicioPorId(solicitud.ServicioId);
@@ -60,73 +72,47 @@ namespace PrivTours.Controllers
             return new List<string>(await _userManager.GetRolesAsync(usuario));
         }
 
-        // GET: TareasController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: TareasController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: TareasController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> CambiarEstadoSolicitud(int id, int tipo, string rol)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+
+                var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(id);
+
+                if(tipo == 1)
+                {
+                    solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.CANCELADO;
+                }else
+                {
+                    if (rol == "ADMINISTRADOR")
+                    {
+                        solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.FINALIZADO_ADMIN;
+                    } else if(rol == "EMPLEADO")
+                    {
+                        solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.FINALIZADO_EMPLEADO;
+                    }
+                }
+
+                var respuesta = await _solicitudesBuseness.EditarSolicitudEstado(solicitud);
+                if (respuesta)
+                {
+                    return Json(new { status = true });
+                }
+                else
+                {
+                    return Json(new { status = false });
+                }
+
             }
-            catch
+            catch (Exception)
             {
-                return View();
+
+                return Json(new { data = "error" });
             }
+
+
         }
 
-        // GET: TareasController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: TareasController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: TareasController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: TareasController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }
