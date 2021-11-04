@@ -64,10 +64,9 @@
                                 <span asp-validation-for="TipoContrato" class="text-danger"></span>
                             </div>
 
-                            <input asp-for="EmpleadoId" class="form-control" style="display: none;" />
-                            <input asp-for="Estado" class="form-control" style="display: none;" />
-
-                            <div class="row col-4">
+                            @*<input asp-for="EmpleadoId" class="form-control" style="visibility: hidden" />*@
+                            <input asp-for="Estado" class="form-control" style="visibility: hidden" />
+                            <div class="row">
                                 <div>
                                     <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
                                 </div>
