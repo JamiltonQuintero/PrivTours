@@ -104,18 +104,17 @@
 @section Scripts {
 
     <script>
-        function guardarUsuario() {
-            Swal.fire({
-                title: "Guardar empleado",
-                text: "¿Estás seguro que desea guardar el empleado?",
-                //showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: 'Guardar',
-                //denyButtonText: 'No guardar',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    console.log("confirmado");
-                    document.getElementById('formulario').submit();
+        function Crear() {
+                Swal.fire({
+                    title: "Guardar empleado",
+                    text: "¿Estás seguro que desea guardar el empleado?",
+                    //showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Guardar',
+                    //denyButtonText: 'No guardar',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('formulario').submit();
 
                 } else if (result.isDenied) {
                     Swal.fire('¡Empleado no guardado!', '', 'info')
