@@ -5,76 +5,129 @@
 
 }
 
+
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Log in</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="~/adminlte/plugins/fontawesome-free/css/all.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="~/adminlte/dist/css/adminlte.min.css">
+    <link href="~/css/Login.css" rel="stylesheet" />
 </head>
 <body class="hold-transition login-page">
-    <div class="login-box">
-        <div class="login-logo">
-        </div>
-        <div class="card">
-            <div class="card-body login-card-body">
-                <p class="login-box-msg">Iniciar Sesión</p>
 
-                <form method="post" asp-action="Login">
+    <div id="login-page">
+        <div class="login">
+            <div class='console-container'><span id='text'></span><div class='console-underscore' id='console'>&#95;</div></div>
+            <h1 class="login-title">PRIVTOURS</h1>
+            <h3 class="login-title">Login</h3>
+            <p class="notice">Inicie sesión para acceder al sistema</p>
+            <form class="form-login" method="post" asp-action="Login">
+                <label for="email">E-mail</label>
+                <div class="input-email">
+                    <i class="fas fa-envelope icon"></i>
                     <span asp-validation-for="Email" class="text-danger small"></span>
-                    <div class="input-group mb-3">
-                        <input asp-for="Email" class="form-control" placeholder="email" />
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
-                            </div>
+                    <input asp-for="Email" class="form-control" placeholder="Email" type="email" name="email" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
                         </div>
                     </div>
+                </div>
+                <label for="password">Password</label>
+                <div class="input-password">
+                    <i class="fas fa-lock icon"></i>
                     <span asp-validation-for="Password" class="text-danger small"></span>
-                    <div class="input-group mb-3">
-                        <input asp-for="Password" class="form-control" placeholder="password" />
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
+                    <input asp-for="Password" class="form-control" type="password" name="password" placeholder="Password" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="icheck-primary">
-                                <label asp-for="RecordarMe">
-                                    <input asp-for="RecordarMe" />
-                                    @Html.DisplayNameFor(m => m.RecordarMe)
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
-                    </div>
+                </div>
+                <div asp-validation-summary="All" class="text-danger small"></div>
+                <div class="checkbox">
 
-                    <div>
-                        <a asp-action="RecuperarContrasena">Olvidé la contraseña</a>
-                    </div>
+                    <label asp-for="RecordarMe" for="remember">
+                        <input asp-for="RecordarMe" type="checkbox" name="remember">
+                        @Html.DisplayNameFor(m => m.RecordarMe)
+                    </label>
+                </div>
+                <button type="submit"><i class="fas fa-door-"></i> Ingresar</button>
+            </form>
+            <a asp-action="RecuperarContrasena">Olvidé la contraseña</a>
+            <div class="created">
 
-                    <div asp-validation-summary="All" class="text-danger small"></div>
-                </form>
+                <p>
+                    Created by
+                    <a href="https://github.com/blendyvillamizar">Blendy Villamizar</a>
+                    <a href="https://github.com/andresgd7">Carlos Gomez</a>
+                    <a href="https://github.com/JamiltonQuintero">Jamilton Quintero</a>
+                </p>
             </div>
+        </div>
+
+        <div class="background">          
         </div>
     </div>
 
 
+
+
 </body>
 </html>
+
+<script>
+
+    consoleText(['Guidance that meets your expectations.' , '¡Viajar por Colombia nunca fue tan fácil!', '“CUIDA DE LOS DEMÁS CUIDANDO DE TI MISMO”.'], 'text', ['tomato', 'rebeccapurple', 'lightblue']);
+
+    function consoleText(words, id, colors) {
+        if (colors === undefined) colors = ['#fff'];
+        var visible = true;
+        var con = document.getElementById('console');
+        var letterCount = 1;
+        var x = 1;
+        var waiting = false;
+        var target = document.getElementById(id)
+        target.setAttribute('style', 'color:' + colors[0])
+        window.setInterval(function () {
+
+            if (letterCount === 0 && waiting === false) {
+                waiting = true;
+                target.innerHTML = words[0].substring(0, letterCount)
+                window.setTimeout(function () {
+                    var usedColor = colors.shift();
+                    colors.push(usedColor);
+                    var usedWord = words.shift();
+                    words.push(usedWord);
+                    x = 1;
+                    target.setAttribute('style', 'color:' + colors[0])
+                    letterCount += x;
+                    waiting = false;
+                }, 1000)
+            } else if (letterCount === words[0].length + 1 && waiting === false) {
+                waiting = true;
+                window.setTimeout(function () {
+                    x = -1;
+                    letterCount += x;
+                    waiting = false;
+                }, 1000)
+            } else if (waiting === false) {
+                target.innerHTML = words[0].substring(0, letterCount)
+                letterCount += x;
+            }
+        }, 120)
+        window.setInterval(function () {
+            if (visible === true) {
+                con.className = 'console-underscore hidden'
+                visible = false;
+
+            } else {
+                con.className = 'console-underscore'
+
+                visible = true;
+            }
+        }, 400)
+    }
+
+</script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>

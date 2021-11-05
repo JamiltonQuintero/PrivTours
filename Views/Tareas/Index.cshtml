@@ -65,9 +65,9 @@
 
                         <div class="col-sm-3" id="botones">
                             <div class="order-column">
-                                <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 3, '@tarea.Rol', '@tarea.Servicio.Nombre');" class="btn btn-success">Iniciar tarea</a>
-                                <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 1, '@tarea.Rol', '@tarea.Servicio.Nombre');" class="btn btn-danger">Cancelar tarea</a>
-                                <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 2, '@tarea.Rol', '@tarea.Servicio.Nombre');" class="btn btn-primary">Terminar tarea</a>
+                                <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 3, '@tarea.Servicio.Nombre');" class="btn btn-success">Iniciar tarea</a>
+                                <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 1, '@tarea.Servicio.Nombre');" class="btn btn-danger">Cancelar tarea</a>
+                                <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 2, '@tarea.Servicio.Nombre');" class="btn btn-primary">Terminar tarea</a>
 
                             </div>
                             
@@ -87,7 +87,7 @@
     <script src="~/js/Tabla.js"></script>
     <script>
 
-        function cambiarEstadoSolicitud(id, tipo, rol, nombreServicio) {
+        function cambiarEstadoSolicitud(id, tipo, nombreServicio) {
             var textoTerminarCancelar = "";
             if (tipo == 1) {
                 textoTerminarCancelar = "CANCELAR"
@@ -107,11 +107,11 @@
                 cancelButtonText: 'Cancelar',
                 reverseButtons: true
             }).then((result) => {
-                if (result.status) {
+                if (result.isConfirmed) {
                     $.ajax({
                         type: "POST",
                         url: '@Url.Action("CambiarEstadoSolicitud", "Tareas")',
-                        data: jQuery.param({ id: id, tipo: tipo, rol: rol}),
+                        data: jQuery.param({ id: id, tipo: tipo}),
                         success: function (result) {
 
                             if (result.status) {

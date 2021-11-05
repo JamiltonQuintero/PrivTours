@@ -146,6 +146,28 @@ namespace PrivTours.Models.Business
 
         }
 
+        public async Task<List<Solicitud>> ObtenerListaSolicitudesPorEmpleadoTareas(string id)
+        {
+            var solicitudes = new List<Solicitud>();
+            var detalleSolicitudEmpleado = await _dbContext.DetalleSolicitudEmpleados.ToListAsync();
+            var empleadoUser = await _dbContext.UsuariosIdentity.FirstOrDefaultAsync(s => s.Id == id);
+            foreach (DetalleSolicitudEmpleado d in detalleSolicitudEmpleado)
+            {
+
+                if (d.UsuarioIdentityId == id)
+                {
+                    var solicitud = await _dbContext.Solicitudes.FirstOrDefaultAsync(s => s.SolicitudId == d.SolicitudId);
+                    if (solicitud != null)
+                    {
+                        solicitudes.Add(solicitud);
+                    }
+                }
+            }
+
+            return solicitudes;
+
+        }
+
         public async Task<List<SolicitudViewModel>> ObtenerListaSolicitudesPorServicio(int servicioId)
         {
 

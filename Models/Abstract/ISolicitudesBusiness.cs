@@ -16,6 +16,7 @@ namespace PrivTours.Models.Abstract
         Task<List<SolicitudViewModel>> ObtenerListaSolicitudesPorServicio(int servicioId);
         Task<List<SolicitudViewModel>> ObtenerListaSolicitudesPorEstado(byte estado);
         Task<HashSet<int>> ObtenerSolicitudesPorEmpleadosSeleccionados(string[] empleados);
+        Task<List<Solicitud>> ObtenerListaSolicitudesPorEmpleadoTareas(string id);
         Task<List<Solicitud>> ObtenerListaSolicitudesSVM();
         Task<IEnumerable<Empleado>> ObtenerListaEmpleados();
         Task<IEnumerable<Servicio>> ObtenerListaServicios();
