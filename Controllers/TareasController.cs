@@ -83,7 +83,7 @@ namespace PrivTours.Controllers
                 if(tipo == 1)
                 {
                     solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.CANCELADO;
-                }else
+                }else if(tipo == 2)
                 {
                     if (rol == "ADMINISTRADOR")
                     {
@@ -92,6 +92,9 @@ namespace PrivTours.Controllers
                     {
                         solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.FINALIZADO_EMPLEADO;
                     }
+                }else
+                {
+                    solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.EN_PROCESO;
                 }
 
                 var respuesta = await _solicitudesBuseness.EditarSolicitudEstado(solicitud);
