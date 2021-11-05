@@ -44,6 +44,7 @@ namespace PrivTours.Controllers
                         Documento = usuario.Documento,
                         Telefono = usuario.Telefono,
                         Email = usuario.Email,
+                        TipoContrato = usuario.TipoContrato,
                         Estado = usuario.LockoutEnd == null
                     };
                     listaUsuariosViewModel.Add(usuarioViewModel);
@@ -146,27 +147,17 @@ namespace PrivTours.Controllers
             return View(usuarioViewModel);
         }
 
-        // POST: Clientes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // [Authorize(Roles = "Administrador")]
+
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar(string id, UsuarioViewModel usuarioViewModel)
+        public async Task<IActionResult> Editar(UsuarioViewModel usuarioViewModel)
         {
-
-            if (id != usuarioViewModel.Id)
-            {
-                return Json(new { data = "Error" });
-            }
-
             ModelState.Remove("Password");
             ModelState.Remove("ConfirmarPassword");
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var usuario = await _userManager.FindByIdAsync(id);
+                    var usuario = await _userManager.FindByIdAsync(usuarioViewModel.Id);
 
                     usuario.Email = usuarioViewModel.Email;
                     usuario.Nombre = usuarioViewModel.Nombre;
@@ -187,16 +178,19 @@ namespace PrivTours.Controllers
                     }
 
                     await _userManager.UpdateAsync(usuario);
-                    return Json(new { data = "ok" });
+                    TempData["Accion"] = "Editar";
+                    TempData["Mensaje"] = "Se ha editado correctamente el empleado " + usuario.Nombre;
+                    return RedirectToAction("Index");
 
                 }
                 catch (Exception e)
                 {
-
-                    return Json(new { data = e.Message });
+                    TempData["Accion"] = "EditarError";
+                    TempData["Mensaje"] = "Lo sentimos, no fue posible editar el empleado" + usuarioViewModel.Nombre;
+                    return RedirectToAction("Index");
                 }
             }
-            return Json(new { data = "error" });
+            return View(usuarioViewModel);
         }
         // GET: Clientes/Delete/5
         //[Authorize(Roles = "Administrador")]

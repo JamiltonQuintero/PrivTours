@@ -44,7 +44,7 @@
                         <th>
                             @Html.DisplayNameFor(model => model.Email)
                         </th>
-
+                        <th>Tipo de contrato</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -60,12 +60,15 @@
                         <td>
                             @Html.DisplayFor(modelUsuario => usuario.Nombre)
                         </td>
+                        <td>
+                            @Html.DisplayFor(modelUsuario => usuario.Email)
+                        </td>
 
                         @if (usuario.TipoContrato == 1)
                         {
                             <td>Interno</td>
                         }
-                        else if(usuario.TipoContrato == 2)
+                        else if (usuario.TipoContrato == 2)
                         {
                             <td> Externo</td>
                         }
@@ -125,6 +128,21 @@
             Swal.fire({
                 title: "¡Felicitaciones!",
                 type: "success",
+                html: "@TempData["Mensaje"]",
+                icon: 'success',
+                timer: 3000
+            });
+
+        </text>
+    }
+
+            @if (TempData["Mensaje"] != null && TempData["Accion"].ToString().Equals("EditarError"))
+    {
+        <text>
+
+            Swal.fire({
+                title: "¡Lo sentimos!",
+                type: "error",
                 html: "@TempData["Mensaje"]",
                 icon: 'success',
                 timer: 3000
