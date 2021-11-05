@@ -30,8 +30,8 @@
 
             <hr />
             <div class="row">
-                <div class="col-md-4">
-                    <div class="col-md-6">
+                <div class="col-md-6">
+                    <div class="col-md-8">
                         <form method="post" asp-action="Editar" id="formulario" name="formulario">
                             <div asp-validation-summary="All" class="text-danger"></div>
                             <div asp-validation-summary="ModelOnly" class="text-danger">
@@ -69,22 +69,18 @@
                                 <span asp-validation-for="RolSeleccionado" class="text-danger"></span>
                             </div>
 
-                            <div class="row">
+                            <div class="row col-4">
                                 <div>
                                     <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
                                 </div>
                                 <br />
-                                <div class="form-group">
+                                <div class="form-group col-2">
                                     <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
                                 </div>
-                            </div>                      
+                            </div>
                         </form>
                     </div>
                 </div>
-            </div>
-
-            <div>
-                <a asp-action="Index">Volver</a>
             </div>
         </div><!-- /.container-fluid -->
     </div>

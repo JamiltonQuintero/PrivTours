@@ -29,8 +29,8 @@
 
             <hr />
             <div class="row">
-                <div class="col-md-4">
-                    <div class="col-md-6">
+                <div class="col-md-6">
+                    <div class="col-md-8">
                         <form method="post" asp-action="Edit" id="formulario" name="formulario">
                             <div asp-validation-summary="All" class="text-danger"></div>
                             <div asp-validation-summary="ModelOnly" class="text-danger">
@@ -58,15 +58,15 @@
                                 <span asp-validation-for="Recomendacion" class="text-danger"></span>
                             </div>
 
-                            <input asp-for="ServicioId" class="form-control" style="visibility: hidden" />
-                            <input asp-for="Estado" class="form-control" style="visibility: hidden" />
+                            <input asp-for="ServicioId" class="form-control" style="display: none;" />
+                            <input asp-for="Estado" class="form-control" style="display: none;" />
 
-                            <div class="row">
+                            <div class="row col-4">
                                 <div>
                                     <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
                                 </div>
                                 <br />
-                                <div class="form-group">
+                                <div class="form-group col-2">
                                     <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
                                 </div>
 
@@ -74,8 +74,8 @@
                         </form>
                     </div>
                 </div>
-            </div>
-        </div><!-- /.container-fluid -->
+                </div>
+            </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
     <!-- /.content-wrapper -->

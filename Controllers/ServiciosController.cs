@@ -112,7 +112,7 @@ namespace PrivTours.Controllers
 
                     await _serviciosBusiness.EditarServicio(servicio);
                     TempData["Accion"] = "Editar";
-                    TempData["Mensaje"] = "Se ha editado correctamente el emplservicioeado " + servicio.Nombre;
+                    TempData["Mensaje"] = "Se ha editado correctamente el servicioeado " + servicio.Nombre;
                     return RedirectToAction("Index");
                     
                 }

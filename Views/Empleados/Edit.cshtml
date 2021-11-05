@@ -27,7 +27,6 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-
             <hr />
             <div class="row">
                 <div class="col-md-4">
@@ -73,22 +72,22 @@
                                 <span asp-validation-for="TipoContrato" class="text-danger"></span>
                             </div>
 
-                            <input asp-for="RolSeleccionado" class="form-control" style="visibility: hidden" />
-
+                            @*<input asp-for="EmpleadoId" class="form-control" style="visibility: hidden" />*@
+                            <input asp-for="Estado" class="form-control" style="visibility: hidden" />
                             <div class="row">
                                 <div>
                                     <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
                                 </div>
                                 <br />
-                                <div class="form-group">
+                                <div class="form-group col-2">
                                     <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
-            </div>
-        </div><!-- /.container-fluid -->
+                </div>
+            </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
     <!-- /.content-wrapper -->
@@ -99,91 +98,21 @@
 
     function Editar() {
 
-        var isValid = true;
-        if (document.getElementById("Nombre").value == '') {
-            $('#Nombre').siblings('span.text-danger').text('El nombre es requerido');
-            isValid = false;
-        } else {
-            $('#Nombre').siblings('span.text-danger').text('');
-        }
-        if (document.getElementById("Email").value == '') {
-            $('#Email').siblings('span.text-danger').text('El correo electrónico  es requerido');
-            isValid = false;
-        } else {
-            if (!validaEmail($('#Email').val())) {
-                $('#Email').siblings('span.text-danger').text('Correo electrónico inválido');
-                isValid = false;
-            } else {
-                $('#Email').siblings('span.text-danger').text('');
-            }
-        }
-
-
-        if (isValid) {
-            Swal.fire({ //Mensaje de confirmar
-                title: '¿Desea editar el empleado?',
-                //showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: `Editar`,
-                cancelButtonText: `Cancelar`,
-                reverseButtons: true
-            }).then((result) => {
-
-                if (result.isConfirmed) { // si confirmamos
-                    var formData = new FormData(); //se crea el objeto de tipo formData que va a contener todo lo que vamos a enviar
-                    formData.append("Id", document.getElementById("Id").value);
-                    formData.append("Nombre", document.getElementById("Nombre").value);
-                    formData.append("Email", document.getElementById("Email").value);
-                    formData.append("Apellido", document.getElementById("Apellido").value);
-                    formData.append("Documento", document.getElementById("Documento").value);
-                    formData.append("Telefono", document.getElementById("Telefono").value);
-                    formData.append("RolSeleccionado", document.getElementById("RolSeleccionado").value);
-                    formData.append("TipoContrato", document.getElementById("TipoContrato").value);
-                     $.ajax({
-                            type: "POST",
-                            url: '@Url.Action("Editar","Empleados")',
-                            contentType: false,
-                            processData: false,
-                            data: formData,
-                            success: function (result) {
-
-                                if (result.data == "ok") {
-                                    setTimeout(
-                                        function () {
-                                            window.location.href = "@Url.Action("Index","Empleados")";
-                                        }, 2000);
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Empleado editado',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    })
-                                } else {
-                                    console.log("ERROR!!")
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Oops...',
-                                        text: 'Ocurrió un error al editar el empleados',
-                                    })
-                                }
-                            },
-                            error: function (err) {
-                                console.log(err.data)
-                            }
-                     });
-
-                } else if (result.isDenied) {
-                    Swal.fire('Empleado no editado', '', 'info')
-                }
-            })
-        }
-
-
-    }
-
-    function validaEmail(email) {
-        var regex = /^([a-zA-Z0-9_.+-])+\@@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-        return regex.test(email);
+                Swal.fire({
+                    title: "Editar empleado",
+                    text: "¿Estás seguro que desea editar el empleado?",
+                    //showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Guardar',
+                    //denyButtonText: 'No guardar',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('formulario').submit();
+                    } else if (result.isDenied) {
+                        Swal.fire('¡Empleado no editado!', '', 'info')
+                    }
+                })
+       
     }
     </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

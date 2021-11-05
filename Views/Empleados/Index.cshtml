@@ -44,7 +44,7 @@
                         <th>
                             @Html.DisplayNameFor(model => model.Email)
                         </th>
-                        <th>Tipo de contrato</th>
+
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -60,15 +60,12 @@
                         <td>
                             @Html.DisplayFor(modelUsuario => usuario.Nombre)
                         </td>
-                        <td>
-                            @Html.DisplayFor(modelUsuario => usuario.Email)
-                        </td>
 
                         @if (usuario.TipoContrato == 1)
                         {
                             <td>Interno</td>
                         }
-                        else
+                        else if(usuario.TipoContrato == 2)
                         {
                             <td> Externo</td>
                         }
@@ -138,7 +135,7 @@
 
         function eliminar(id, nombreUsuario) {
             Swal.fire({
-                title: '¿Está seguro de eliminar el empleado?',
+                title: '¿Estás seguro de eliminar al empleado?',
                 text: nombreUsuario,
                 icon: 'warning',
                 showCancelButton: true,
@@ -185,7 +182,7 @@
 
         function cambiarEstado(id, nombreUsuario, estadoActual) {
             Swal.fire({
-                title: '¿Está seguro de cambiar estado al empleado?',
+                title: '¿Estás seguro de cambiar estado del empleado?',
                 text: nombreUsuario,
                 icon: 'warning',
                 showCancelButton: true,
