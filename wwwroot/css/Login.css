@@ -9,7 +9,7 @@
 .console-container {
     font-family: Khula;
     font-size: 4em;
-    text-align: center;
+    text-align: inherit;
     height: 300px;
     width: 700px;
     display: block;
@@ -17,8 +17,7 @@
     color: white;
     top: 0;
     bottom: 0;
-    left: 0;
-    right: 0;
+    right: 2px;
     margin: auto;
 }
 

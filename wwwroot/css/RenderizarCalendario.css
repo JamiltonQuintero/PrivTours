@@ -7,12 +7,11 @@
 
 #calendar {
     max-width: 1100px;
-    margin-left: 200px;
+    margin-left: 30px;
     padding: 0 10px;
 }
 
 #external-events {
-    left: 20px;
     top: 20px;
     width: fit-content;
     padding: 10px;
@@ -20,5 +19,4 @@
     background: #eee;
     text-align: left;
     height: fit-content;
-
 }

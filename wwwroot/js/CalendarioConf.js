@@ -17,10 +17,7 @@ function calendario() {
         weekNumbers: true,
         navLinks: true,
         dayMaxEvents: true,
-        loading: function (bool) {
-            document.getElementById('loading').style.display =
-                bool ? 'block' : 'none';
-        },
+  
 
         dateClick: function (info) {
             var now = new Date();
