@@ -1,6 +1,8 @@
 ﻿using PrivTours.Models.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,10 +12,17 @@ namespace PrivTours.ViewModels
     {
 
         public int SolicitudId { get; set; }
+        [DisplayName("Fecha de inicio")]
+        [Required(ErrorMessage = "{0} is required")]
+        [DataType(DataType.Date)]
         public DateTime FechaInicio { get; set; }
+        [DisplayName("Fecha de fin")]
+        [Required(ErrorMessage = "{0} is required")]
+        [DataType(DataType.Date)]
         public DateTime FechaFin { get; set; }
-        public string HoraInicio { get; set; }
-        public string HoraFinal { get; set; }
+
+        [DisplayName("Descripción de de la solicitud")]
+        [Required(ErrorMessage = "{0} is required")]
         public string Descripcion { get; set; }
 
         public int ClienteId { get; set; }
@@ -32,6 +41,26 @@ namespace PrivTours.ViewModels
         public byte EstadoSoliciud { get; set; }
 
         public string Rol { get; set; }
+
+        public int TareaId { get; set; }
+        [DisplayName("Fecha de fin tarea")]
+        [Required(ErrorMessage = "{0} is required")]
+        [DataType(DataType.Date)]
+        public DateTime FechaInicioTarea { get; set; }
+        [DisplayName("Fecha de fin tarea")]
+        [Required(ErrorMessage = "{0} is required")]
+        [DataType(DataType.Date)]
+        public DateTime FechaFinTarea { get; set; }
+        [DisplayName("Descripción tarea")]
+        [Required(ErrorMessage = "{0} is required")]
+        public string DescripcionTarea { get; set; }
+
+        public string UsuarioIdentityId { get; set; }
+        [DisplayName("Empleado")]
+        public virtual UsuarioIdentity UsuarioIdentity { get; set; }
+
+        public int OperacionId { get; set; }
+        public virtual Operacion Operacion { get; set; }
 
 
     }

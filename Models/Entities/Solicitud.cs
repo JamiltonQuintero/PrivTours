@@ -41,6 +41,6 @@ namespace PrivTours.Models.Entities
         public virtual Servicio Servicio { get; set; }
 
         public byte EstadoSoliciud { get; set; }
-        public ICollection<DetalleSolicitudEmpleado> DetalleSolicitudEmpleado { get; set; }
+        public ICollection<Tarea> Tarea { get; set; }
     }
 }

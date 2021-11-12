@@ -22,11 +22,12 @@ namespace PrivTours.Models.DAL
         public DbSet<Servicio> Servicios { get; set; }
 
         public DbSet<Solicitud> Solicitudes { get; set; }
-
+        public DbSet<Tarea> Tareas { get; set; }
+        public DbSet<Operacion> Operaciones { get; set; }
         public DbSet<UsuarioIdentity> UsuariosIdentity { get; set; }
         public DbSet<Permiso> Permisos { get; set; }
         public DbSet<RoleIdentity> RolesIdentity { get; set; }
         public DbSet<DetallePermiso> DetallePermisos { get; set; }
-        public DbSet<DetalleSolicitudEmpleado> DetalleSolicitudEmpleados { get; set; }
+        public DbSet<DetalleSolicitudTarea> DetalleSolicitudEmpleados { get; set; }
     }
 }

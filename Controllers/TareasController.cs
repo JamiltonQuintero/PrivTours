@@ -72,8 +72,6 @@ namespace PrivTours.Controllers
                     SolicitudId = solicitud.SolicitudId,
                     FechaInicio = solicitud.FechaInicio,
                     FechaFin = solicitud.FechaFin,
-                    HoraInicio = solicitud.HoraInicio,
-                    HoraFinal = solicitud.HoraFinal,
                     Descripcion = solicitud.Descripcion,
                     Cliente = cliente,
                     Servicio = servicio,

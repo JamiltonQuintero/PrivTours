@@ -1,5 +1,7 @@
 ﻿var calendar = null;
 var filtro = null;
+var lTareas = new Array();
+var count = 0;
 
 function calendario() {
 
@@ -50,8 +52,165 @@ function calendario() {
 }//fin calendario
 
 
+function crearTarea() {
+    document.getElementById("formularioTarea").style.display = "block";
+    $('#btnAgregarTarea').hide()
+}
+
+
+function limpiarModal() {
+    $("#modalCrearSoliciutd").on("hidden.bs.modal", function () {
+        
+        for (var i = 0; i < lTareas.length; i++) {
+            $("#tr" + lTareas[i].Id).remove()
+        }
+        count = 0;
+        lTareas = [];
+        $('#btnAgregarTarea').show()
+        $("#FechaInicioTarea").val(moment("").format("YYYY-MM-DD"));
+        $("#FechaFinTarea").val(moment("").format("YYYY-MM-DD"));
+        $("#UsuarioIdentityId").val(0);
+        $("#ServicioId").val(0);
+        $("#DescripcionTarea").val("");
+        $("#OperacionId").val(0);
+        $('#formularioTarea').hide()
+    });
+}
+
+
+function guardarTarea() {
+    count+=1;
+    let tarea = {
+        "Id": count,
+        "FechaInicioTareame": document.getElementById('FechaInicioTarea').value,
+        "FechaFinTarea": document.getElementById('FechaFinTarea').value,
+        "DescripcionTarea": document.getElementById('DescripcionTarea').value,
+        "UsuarioIdentityId": document.getElementById('UsuarioIdentityId').value,
+        "OperacionId": document.getElementById('OperacionId').value
+    }
+
+    $("#d").append("<tr id=" + "tr" + count + ">" + "<td>" + $('#OperacionId option:selected').text() + "</td> <td>" + "<button onclick='eliminarTarea(" + tarea.Id+")'>Eliminar</button>" + "</td>" +
+        "</tr>")
+    lTareas.push(tarea)
+
+    Swal.fire({
+        icon: 'warning',
+        title: 'Tarea creada exitosamente',
+        showConfirmButton: false,
+        timer: 2000
+    })
+}
+
+function eliminarTarea(id) {
+    var tarea = lTareas.find(s => s.Id = id);
+    $("#tr" + id).remove()
+    lTareas.pop(tarea) 
+}
+
+function cerrarTareas() {
+    $("#FechaInicioTarea").val(moment("").format("YYYY-MM-DD"));
+    $("#FechaFinTarea").val(moment("").format("YYYY-MM-DD"));
+    $("#UsuarioIdentityId").val(0);
+    $("#ServicioId").val(0);
+    $("#DescripcionTarea").val("");
+    $("#OperacionId").val(0);
+    $('#formularioTarea').hide()
+    $('#btnAgregarTarea').show()
+}
+
+
+function validarDisponibilidadEmpleado() {
+
+    $.ajax({
+        url: '/Solicitudes/ObtenerTareasEmpleadoPorId',
+        type: 'get',
+        data: formularioSolicitud,
+        dataType: 'json'
+    }).done(function (respuesta) {
+        if (respuesta.status) {
+
+            var continuar = true;
+            var empleadosNoDisponibles = "";
+            respuesta.data.map(function (e) {
+
+                var start = moment(e.fechaInicio).format("YYYY-MM-DD") + " " + e.horaInicio;
+                var end = moment(e.fechaFin).format("YYYY-MM-DD") + " " + e.horaFinal;
+
+
+                var startNew = moment($("#FechaInicio").val()).format("YYYY-MM-DD") + " " + $("#HoraInicio").val();
+                var endNew = moment($("#FechaFin").val()).format("YYYY-MM-DD") + " " + $("#HoraFinal").val();
+
+                const test = moment(startNew).isBetween(start, end);
+                const test2 = moment(endNew).isBetween(start, end);
+
+                if (test || test2) {
+                    empleadosNoDisponibles = e.empleadosNombres
+                    continuar = false;
+                }
+
+            });
+
+            if (continuar) {
+
+                $.ajax({
+                    url: '/Solicitudes/Guardar',
+                    type: 'post',
+                    data: formularioSolicitud,
+                    dataType: 'json'
+                }).done(function (guardar) {
+
+                    if (guardar.status) {
+                        $("#modalCrearSoliciutd").modal('hide');
+                        listar();
+                        $("#FechaInicio").val(moment("").format("YYYY-MM-DD"));
+                        $("#HoraInicio").val(0);
+                        $("#FechaFin").val(moment("").format("YYYY-MM-DD"));
+                        $("#HoraFinal").val(0);
+                        $("#Cliente").val(0);
+                        $('#choices-multiple-remove-button').val([]);
+                        $("#Servicio").val(0);
+                        $("#Descripcion").val("");
+                        $("#SolicitudId").val(0);
+                        $("#SolicitudEstado").val(0);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Solicitud de servicio guardada',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    } else {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No fue posible guardar la solicitud. Por favor intente nuevamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                })
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: empleadosNoDisponibles + ' no se encuentran disponibles, por favor verifica la disponibilidad',
+                    showConfirmButton: false,
+                    timer: 9000
+                })
+            }
+
+        } else {
+
+            Swal.fire({
+                icon: 'error',
+                title: 'No fue posible guardar la solicitud. Por favor intente nuevamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    })
+}
+
 function guardar() {
-    let formularioSolicitud = $("#formularioSolicitud").serialize();
 
     $.ajax({
         url: '/Solicitudes/ObtenerSolicitudesValidadndoDisponibilidad',
@@ -83,6 +242,7 @@ function guardar() {
             });
 
             if (continuar) {
+
                 $.ajax({
                     url: '/Solicitudes/Guardar',
                     type: 'post',

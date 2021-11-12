@@ -45,6 +45,7 @@ namespace PrivTours.Controllers
             ViewData["Clientes"] = new SelectList(await _solicitudesBuseness.ObtenerListaClientes(), "ClienteId", "Nombre");
             ViewData["Empleados"] = new SelectList(listaUsuarios, "Id", "Nombre");
             ViewData["Servicios"] = new SelectList(await _solicitudesBuseness.ObtenerListaServicios(), "ServicioId", "Nombre");
+            ViewData["Operaciones"] = new SelectList(await _solicitudesBuseness.ObtenerListaOperaciones(), "OperacionId", "Nombre");
 
             return View();
         }
@@ -132,7 +133,7 @@ namespace PrivTours.Controllers
                     var textonNombres = "";
                     var texto = "";
                         
-                    foreach (var e in soli.DetalleSolicitudEmpleado)
+                    /*foreach (var e in soli.DetalleSolicitudEmpleado)
                     {
                         count++;
                         var usuario = await _userManager.FindByIdAsync(e.UsuarioIdentityId);
@@ -146,14 +147,12 @@ namespace PrivTours.Controllers
                         {
                             textonNombres += texto + ", ";
                         }
-                    }
+                    }*/
                     
                     SolicitudViewModel solicitud = new SolicitudViewModel
                     {
                         FechaInicio = soli.FechaInicio,
                         FechaFin = soli.FechaFin,
-                        HoraInicio = soli.HoraInicio,
-                        HoraFinal = soli.HoraFinal,
                         Descripcion = soli.Descripcion,
                         ClienteId = soli.ClienteId,
                         ServicioId = soli.ServicioId,
@@ -171,6 +170,35 @@ namespace PrivTours.Controllers
             }
         }
 
+
+        public async Task<IActionResult> GuardarTarea(SolicitudViewModel solicitudViewModel)
+        {
+            try
+            {
+                Tarea tarea = new Tarea
+                {
+                    FechaInicioTarea = solicitudViewModel.FechaInicioTarea,
+                    FechaFinTarea = solicitudViewModel.FechaFinTarea,
+                    OperacionId = solicitudViewModel.OperacionId,
+                    UsuarioIdentityId = solicitudViewModel.UsuarioIdentityId,
+                    DescripcionTarea = solicitudViewModel.DescripcionTarea
+                };
+
+                var tareaGuardada = await _solicitudesBuseness.GuardarTarea(tarea);
+
+                if (tareaGuardada != null)
+                {
+                    return Json(new { status = true, data = tareaGuardada});
+                }
+
+                return Json(new { status = false});
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
         public async Task<IActionResult> Listar()
         {
 
@@ -268,9 +296,10 @@ namespace PrivTours.Controllers
                 return NotFound();
             }
 
+
             var detalleEmpleados = await _solicitudesBuseness.ObtenerDetalleEmpleadoPorSolicitudId(solicitud.SolicitudId);
             var empleadosPorSolicitud = new List<string>();
-            foreach (DetalleSolicitudEmpleado d in detalleEmpleados)
+           /* foreach (DetalleSolicitudTarea d in detalleEmpleados)
             {
                 var usuario = await _userManager.FindByIdAsync(d.UsuarioIdentityId);
                 if (usuario != null)
@@ -278,15 +307,13 @@ namespace PrivTours.Controllers
                     empleadosPorSolicitud.Add(usuario.Id);
                 }
 
-            }
+            }*/
 
             SolicitudViewModel solicitudVM = new SolicitudViewModel
             {
                 SolicitudId = solicitud.SolicitudId,
                 FechaInicio = solicitud.FechaInicio,
                 FechaFin = solicitud.FechaFin,
-                HoraInicio = solicitud.HoraInicio,
-                HoraFinal = solicitud.HoraFinal,
                 Descripcion = solicitud.Descripcion,
                 ClienteId = solicitud.ClienteId,
                 ServicioId = solicitud.ServicioId,
@@ -310,8 +337,6 @@ namespace PrivTours.Controllers
                         SolicitudId = solicitudViewModel.SolicitudId,
                         FechaInicio = solicitudViewModel.FechaInicio,
                         FechaFin = solicitudViewModel.FechaFin,
-                        HoraInicio = solicitudViewModel.HoraInicio,
-                        HoraFinal = solicitudViewModel.HoraFinal,
                         Descripcion = solicitudViewModel.Descripcion,
                         ClienteId = solicitudViewModel.ClienteId,
                         ServicioId = solicitudViewModel.ServicioId,
@@ -351,8 +376,6 @@ namespace PrivTours.Controllers
                 {                   
                     FechaInicio = solicitudViewModel.FechaInicio,
                     FechaFin = solicitudViewModel.FechaFin,
-                    HoraInicio = solicitudViewModel.HoraInicio,
-                    HoraFinal = solicitudViewModel.HoraFinal,
                     Descripcion = solicitudViewModel.Descripcion,
                     ClienteId = solicitudViewModel.ClienteId,
                     ServicioId = solicitudViewModel.ServicioId,

@@ -296,9 +296,9 @@ namespace PrivTours.Migrations
                     b.ToTable("DetallePermisos");
                 });
 
-            modelBuilder.Entity("PrivTours.Models.Entities.DetalleSolicitudEmpleado", b =>
+            modelBuilder.Entity("PrivTours.Models.Entities.DetalleSolicitudTarea", b =>
                 {
-                    b.Property<int>("DetalleSolicitudEmpleadoId")
+                    b.Property<int>("DetalleSolicitudTareaId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -306,15 +306,17 @@ namespace PrivTours.Migrations
                     b.Property<int>("SolicitudId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UsuarioIdentityId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("TareaId")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("DetalleSolicitudEmpleadoId");
+                    b.Property<int?>("TareaId1")
+                        .HasColumnType("int");
+
+                    b.HasKey("DetalleSolicitudTareaId");
 
                     b.HasIndex("SolicitudId");
 
-                    b.HasIndex("UsuarioIdentityId");
+                    b.HasIndex("TareaId1");
 
                     b.ToTable("DetalleSolicitudEmpleados");
                 });
@@ -347,6 +349,21 @@ namespace PrivTours.Migrations
                     b.HasKey("EmpleadoId");
 
                     b.ToTable("Empleados");
+                });
+
+            modelBuilder.Entity("PrivTours.Models.Entities.Operacion", b =>
+                {
+                    b.Property<int>("OperacionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OperacionId");
+
+                    b.ToTable("Operaciones");
                 });
 
             modelBuilder.Entity("PrivTours.Models.Entities.Permiso", b =>
@@ -436,6 +453,40 @@ namespace PrivTours.Migrations
                     b.HasIndex("ServicioId");
 
                     b.ToTable("Solicitudes");
+                });
+
+            modelBuilder.Entity("PrivTours.Models.Entities.Tarea", b =>
+                {
+                    b.Property<int>("TareaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DescripcionTarea")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte>("EstadoTarea")
+                        .HasColumnType("tinyint");
+
+                    b.Property<DateTime>("FechaFinTarea")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaInicioTarea")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OperacionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioIdentityId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("TareaId");
+
+                    b.HasIndex("OperacionId");
+
+                    b.HasIndex("UsuarioIdentityId");
+
+                    b.ToTable("Tareas");
                 });
 
             modelBuilder.Entity("PrivTours.Models.Entities.RoleIdentity", b =>
@@ -533,19 +584,17 @@ namespace PrivTours.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PrivTours.Models.Entities.DetalleSolicitudEmpleado", b =>
+            modelBuilder.Entity("PrivTours.Models.Entities.DetalleSolicitudTarea", b =>
                 {
                     b.HasOne("PrivTours.Models.Entities.Solicitud", "Solicitud")
-                        .WithMany("DetalleSolicitudEmpleado")
+                        .WithMany("DetalleSolicitudTarea")
                         .HasForeignKey("SolicitudId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PrivTours.Models.Entities.UsuarioIdentity", "UsuarioIdentity")
-                        .WithMany("DetalleSolicitudEmpleado")
-                        .HasForeignKey("UsuarioIdentityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("PrivTours.Models.Entities.Tarea", "Tarea")
+                        .WithMany("DetalleSolicitudTarea")
+                        .HasForeignKey("TareaId1");
                 });
 
             modelBuilder.Entity("PrivTours.Models.Entities.Solicitud", b =>
@@ -561,6 +610,19 @@ namespace PrivTours.Migrations
                         .HasForeignKey("ServicioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PrivTours.Models.Entities.Tarea", b =>
+                {
+                    b.HasOne("PrivTours.Models.Entities.Operacion", "Operacion")
+                        .WithMany()
+                        .HasForeignKey("OperacionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrivTours.Models.Entities.UsuarioIdentity", "UsuarioIdentity")
+                        .WithMany()
+                        .HasForeignKey("UsuarioIdentityId");
                 });
 #pragma warning restore 612, 618
         }

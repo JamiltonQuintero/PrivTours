@@ -40,6 +40,13 @@ namespace PrivTours.Models.Business
 
             return serviciosActivos;
         }
+        public async Task<IEnumerable<Operacion>> ObtenerListaOperaciones()
+        {
+            var operaciones = await _dbContext.Operaciones.ToListAsync();
+
+            return operaciones;
+        }
+        
 
         public async Task<IEnumerable<Empleado>> ObtenerListaEmpleados()
         {
@@ -65,8 +72,6 @@ namespace PrivTours.Models.Business
                     FechaInicio = s.FechaInicio,
                     FechaFin = s.FechaFin,
                     Descripcion = s.Descripcion,
-                    HoraInicio = s.HoraInicio,
-                    HoraFinal = s.HoraFinal,
                     ClienteId = c.ClienteId,
                     Cliente = c
                 }
@@ -96,8 +101,6 @@ namespace PrivTours.Models.Business
                     FechaInicio = s.FechaInicio,
                     FechaFin = s.FechaFin,
                     Descripcion = s.Descripcion,
-                    HoraInicio = s.HoraInicio,
-                    HoraFinal = s.HoraFinal,
                     ClienteId = c.ClienteId,
                     Cliente = c
                 }
@@ -114,10 +117,10 @@ namespace PrivTours.Models.Business
             List<SolicitudViewModel> solicitudes = new List<SolicitudViewModel>();
             var detalleSolicitudEmpleado = await _dbContext.DetalleSolicitudEmpleados.ToListAsync();         
             var empleadoUser = await _dbContext.UsuariosIdentity.FirstOrDefaultAsync(s => s.Id == id);
-            foreach (DetalleSolicitudEmpleado d in detalleSolicitudEmpleado)
+            foreach (DetalleSolicitudTarea d in detalleSolicitudEmpleado)
             {
 
-                if (d.UsuarioIdentityId == id)
+                /*if (d.UsuarioIdentityId == id)
                 {
                     var solicitud = await _dbContext.Solicitudes.FirstOrDefaultAsync(s => s.SolicitudId == d.SolicitudId);
                     if (solicitud != null)
@@ -133,13 +136,11 @@ namespace PrivTours.Models.Business
                             FechaInicio = solicitud.FechaInicio,
                             FechaFin = solicitud.FechaFin,
                             Descripcion = solicitud.Descripcion,
-                            HoraInicio = solicitud.HoraInicio,
-                            HoraFinal = solicitud.HoraFinal,
                             Empleado = empleado
                         };
                         solicitudes.Add(svm);
                     }
-                }
+                }*/
             } 
 
             return solicitudes;
@@ -151,17 +152,17 @@ namespace PrivTours.Models.Business
             var solicitudes = new List<Solicitud>();
             var detalleSolicitudEmpleado = await _dbContext.DetalleSolicitudEmpleados.ToListAsync();
             var empleadoUser = await _dbContext.UsuariosIdentity.FirstOrDefaultAsync(s => s.Id == id);
-            foreach (DetalleSolicitudEmpleado d in detalleSolicitudEmpleado)
+            foreach (DetalleSolicitudTarea d in detalleSolicitudEmpleado)
             {
 
-                if (d.UsuarioIdentityId == id)
+               /* if (d.UsuarioIdentityId == id)
                 {
                     var solicitud = await _dbContext.Solicitudes.FirstOrDefaultAsync(s => s.SolicitudId == d.SolicitudId);
                     if (solicitud != null)
                     {
                         solicitudes.Add(solicitud);
                     }
-                }
+                }*/
             }
 
             return solicitudes;
@@ -181,8 +182,6 @@ namespace PrivTours.Models.Business
                     FechaInicio = s.FechaInicio,
                     FechaFin = s.FechaFin,
                     Descripcion = s.Descripcion,
-                    HoraInicio = s.HoraInicio,
-                    HoraFinal = s.HoraFinal,
                     ServicioId = se.ServicioId,
                     Servicio = se
                 }
@@ -192,6 +191,21 @@ namespace PrivTours.Models.Business
 
             return solicitudesPorServicio;
 
+        }
+
+        public async Task<Tarea> GuardarTarea(Tarea tarea)
+        {
+            try {
+
+                _dbContext.Add(tarea);
+                await _dbContext.SaveChangesAsync();
+                return tarea;
+
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public async Task<List<SolicitudViewModel>> ObtenerListaSolicitudesPorEstado(byte estado)
@@ -206,8 +220,6 @@ namespace PrivTours.Models.Business
                     FechaInicio = s.FechaInicio,
                     FechaFin = s.FechaFin,
                     Descripcion = s.Descripcion,
-                    HoraInicio = s.HoraInicio,
-                    HoraFinal = s.HoraFinal,
                     EstadoSoliciud = s.EstadoSoliciud,
                     ClienteId = c.ClienteId,
                     Cliente = c
@@ -224,14 +236,14 @@ namespace PrivTours.Models.Business
             List<SolicitudViewModel> solicitudes = new List<SolicitudViewModel>();
             HashSet<int> listaSolicitudes = new HashSet<int>();
             var detalleSolicitudEmpleado = await _dbContext.DetalleSolicitudEmpleados.ToListAsync();
-            foreach (DetalleSolicitudEmpleado d in detalleSolicitudEmpleado)
+            foreach (DetalleSolicitudTarea d in detalleSolicitudEmpleado)
             {
                 foreach (string e in empleados)
                 {
-                    if (d.UsuarioIdentityId == e)
+                    /*if (d.UsuarioIdentityId == e)
                     {
                         listaSolicitudes.Add(d.SolicitudId);
-                    }
+                    }*/
                 }
 
             }
@@ -258,12 +270,12 @@ namespace PrivTours.Models.Business
 
                     foreach (string e in empleados)
                     {
-                        DetalleSolicitudEmpleado detalleSolicitudEmpleado = new DetalleSolicitudEmpleado
+                       /* DetalleSolicitudTarea detalleSolicitudEmpleado = new DetalleSolicitudTarea
                         {
                             SolicitudId = solicitud.SolicitudId,
                             UsuarioIdentityId = e
-                        };
-                        _dbContext.Add(detalleSolicitudEmpleado);
+                        };*/
+                        //_dbContext.Add(detalleSolicitudEmpleado);
                     }
                     await _dbContext.SaveChangesAsync();
                     transaction.Commit();
@@ -307,12 +319,12 @@ namespace PrivTours.Models.Business
 
                     foreach (string e in empleados)
                     {
-                        DetalleSolicitudEmpleado detalleSolicitudEmpleado = new DetalleSolicitudEmpleado
+                        /*DetalleSolicitudTarea detalleSolicitudEmpleado = new DetalleSolicitudTarea
                         {
                             SolicitudId = solicitud.SolicitudId,
                             UsuarioIdentityId = e
                         };
-                        _dbContext.Add(detalleSolicitudEmpleado);
+                        _dbContext.Add(detalleSolicitudEmpleado);*/
                     }
                     await _dbContext.SaveChangesAsync();
                     transaction.Commit();
@@ -328,7 +340,7 @@ namespace PrivTours.Models.Business
             }
         }
 
-        public async Task<List<DetalleSolicitudEmpleado>> ObtenerDetalleEmpleadoPorSolicitudId(int solicitudId)
+        public async Task<List<DetalleSolicitudTarea>> ObtenerDetalleEmpleadoPorSolicitudId(int solicitudId)
         {
 
                var detalle = await _dbContext.DetalleSolicitudEmpleados.ToListAsync();
@@ -343,7 +355,7 @@ namespace PrivTours.Models.Business
             {
                 var detalle = await _dbContext.DetalleSolicitudEmpleados.ToListAsync();
                 detalle = detalle.FindAll(d => d.SolicitudId == id);
-                foreach (DetalleSolicitudEmpleado i in detalle)
+                foreach (DetalleSolicitudTarea i in detalle)
                 {
                     _dbContext.Remove(i);
                 }
