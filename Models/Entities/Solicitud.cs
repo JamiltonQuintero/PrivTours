@@ -22,15 +22,7 @@ namespace PrivTours.Models.Entities
         [DataType(DataType.Date)]
         public DateTime FechaFin {get; set; }
 
-        [DisplayName("Hora de inicio")]
-        [Required(ErrorMessage = "{0} is required")]
-        public string HoraInicio { get; set; }
-
-        [DisplayName("Hora de fin")]
-        [Required(ErrorMessage = "{0} is required")]  
-        public string HoraFinal { get; set; }
-
-        [DisplayName("Descripción de de la solicitud")]
+        [DisplayName("Descripción de la solicitud")]
         [Required(ErrorMessage = "{0} is required")]
         public string Descripcion { get; set; }
 
@@ -41,6 +33,6 @@ namespace PrivTours.Models.Entities
         public virtual Servicio Servicio { get; set; }
 
         public byte EstadoSoliciud { get; set; }
-        public ICollection<Tarea> Tarea { get; set; }
+        public virtual ICollection<Tarea> Tareas { get; set; }
     }
 }

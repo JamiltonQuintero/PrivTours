@@ -36,8 +36,6 @@ namespace PrivTours.ViewModels
         public int ServicioId { get; set; }
         public virtual Servicio Servicio { get; set; }
 
-        public List<UsuarioIdentity> EmpleadosSeleccionados { get; set; }
-
         public byte EstadoSoliciud { get; set; }
 
         public string Rol { get; set; }
@@ -62,6 +60,7 @@ namespace PrivTours.ViewModels
         public int OperacionId { get; set; }
         public virtual Operacion Operacion { get; set; }
 
+        public List<TareaViewModel> Tareas { get; set;}
 
     }
 }

@@ -28,6 +28,5 @@ namespace PrivTours.Models.DAL
         public DbSet<Permiso> Permisos { get; set; }
         public DbSet<RoleIdentity> RolesIdentity { get; set; }
         public DbSet<DetallePermiso> DetallePermisos { get; set; }
-        public DbSet<DetalleSolicitudTarea> DetalleSolicitudEmpleados { get; set; }
     }
 }

@@ -296,31 +296,6 @@ namespace PrivTours.Migrations
                     b.ToTable("DetallePermisos");
                 });
 
-            modelBuilder.Entity("PrivTours.Models.Entities.DetalleSolicitudTarea", b =>
-                {
-                    b.Property<int>("DetalleSolicitudTareaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("SolicitudId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TareaId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TareaId1")
-                        .HasColumnType("int");
-
-                    b.HasKey("DetalleSolicitudTareaId");
-
-                    b.HasIndex("SolicitudId");
-
-                    b.HasIndex("TareaId1");
-
-                    b.ToTable("DetalleSolicitudEmpleados");
-                });
-
             modelBuilder.Entity("PrivTours.Models.Entities.Empleado", b =>
                 {
                     b.Property<int>("EmpleadoId")
@@ -435,14 +410,6 @@ namespace PrivTours.Migrations
                     b.Property<DateTime>("FechaInicio")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("HoraFinal")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HoraInicio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("ServicioId")
                         .HasColumnType("int");
 
@@ -477,12 +444,17 @@ namespace PrivTours.Migrations
                     b.Property<int>("OperacionId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SolicitudId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UsuarioIdentityId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("TareaId");
 
                     b.HasIndex("OperacionId");
+
+                    b.HasIndex("SolicitudId");
 
                     b.HasIndex("UsuarioIdentityId");
 
@@ -584,19 +556,6 @@ namespace PrivTours.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PrivTours.Models.Entities.DetalleSolicitudTarea", b =>
-                {
-                    b.HasOne("PrivTours.Models.Entities.Solicitud", "Solicitud")
-                        .WithMany("DetalleSolicitudTarea")
-                        .HasForeignKey("SolicitudId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PrivTours.Models.Entities.Tarea", "Tarea")
-                        .WithMany("DetalleSolicitudTarea")
-                        .HasForeignKey("TareaId1");
-                });
-
             modelBuilder.Entity("PrivTours.Models.Entities.Solicitud", b =>
                 {
                     b.HasOne("PrivTours.Models.Entities.Cliente", "Cliente")
@@ -617,6 +576,12 @@ namespace PrivTours.Migrations
                     b.HasOne("PrivTours.Models.Entities.Operacion", "Operacion")
                         .WithMany()
                         .HasForeignKey("OperacionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PrivTours.Models.Entities.Solicitud", "Solicitud")
+                        .WithMany("Tareas")
+                        .HasForeignKey("SolicitudId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

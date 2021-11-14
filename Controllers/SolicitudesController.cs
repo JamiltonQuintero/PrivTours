@@ -21,10 +21,12 @@ namespace PrivTours.Controllers
 
         private readonly ISolicitudesBusiness _solicitudesBuseness;
         private readonly UserManager<UsuarioIdentity> _userManager;
-        public SolicitudesController(UserManager<UsuarioIdentity> userManager, ISolicitudesBusiness solicitudesBuseness)
+        private readonly ITareasBusiness _tareasBusiness;
+        public SolicitudesController(UserManager<UsuarioIdentity> userManager, ISolicitudesBusiness solicitudesBuseness, ITareasBusiness tareasBusiness)
         {
             _solicitudesBuseness = solicitudesBuseness;
             _userManager = userManager;
+            _tareasBusiness = tareasBusiness;
         }
 
         public async Task<IActionResult> Index()
@@ -284,6 +286,11 @@ namespace PrivTours.Controllers
 
         public async Task<IActionResult> ObtenerDetalle(int? id)
         {
+
+            try 
+            {
+            
+
             if (id == null)
             {
                 return NotFound();
@@ -297,17 +304,20 @@ namespace PrivTours.Controllers
             }
 
 
-            var detalleEmpleados = await _solicitudesBuseness.ObtenerDetalleEmpleadoPorSolicitudId(solicitud.SolicitudId);
-            var empleadosPorSolicitud = new List<string>();
-           /* foreach (DetalleSolicitudTarea d in detalleEmpleados)
-            {
-                var usuario = await _userManager.FindByIdAsync(d.UsuarioIdentityId);
-                if (usuario != null)
+            var tareas = await _tareasBusiness.ObtenerTareasPorSolicitudId(id.Value);
+                var tareasVM = new List<TareaViewModel>();
+                foreach(Tarea tarea in tareas)
                 {
-                    empleadosPorSolicitud.Add(usuario.Id);
-                }
 
-            }*/
+                    var operacion = await _tareasBusiness.obtenerOperacionPorId(tarea.OperacionId);
+
+                    var tvm = new TareaViewModel
+                    {
+                        TareaId = tarea.TareaId,
+                        nombreOperacion = operacion.Nombre
+                    };
+                    tareasVM.Add(tvm);
+                }
 
             SolicitudViewModel solicitudVM = new SolicitudViewModel
             {
@@ -318,10 +328,16 @@ namespace PrivTours.Controllers
                 ClienteId = solicitud.ClienteId,
                 ServicioId = solicitud.ServicioId,
                 EstadoSoliciud = solicitud.EstadoSoliciud,
-                Empleados = empleadosPorSolicitud.ToArray()
+                Tareas = tareasVM
             };
 
-            return Json(new { data = solicitudVM });
+            return Json(new { status = true, data = solicitudVM });
+
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false});
+            }
         }
 
         [HttpPost]
@@ -363,26 +379,23 @@ namespace PrivTours.Controllers
             return Json(new { data = "error" });
         }
 
-        public async Task<IActionResult> Guardar(SolicitudViewModel solicitudViewModel)
-        {
-            if (!ModelState.IsValid)
+        public async Task<IActionResult> Guardar(DateTime FechaInicio, DateTime FechaFin, string Descripcion, int ClienteId, int ServicioId, Tarea[] lTareas)
             {
-                return Json(new { status = false });
-            }
 
             try
             {
                 Solicitud solicitud = new Solicitud
-                {                   
-                    FechaInicio = solicitudViewModel.FechaInicio,
-                    FechaFin = solicitudViewModel.FechaFin,
-                    Descripcion = solicitudViewModel.Descripcion,
-                    ClienteId = solicitudViewModel.ClienteId,
-                    ServicioId = solicitudViewModel.ServicioId,
-                    EstadoSoliciud = solicitudViewModel.EstadoSoliciud,
+                {  
+                    
+                    FechaInicio = FechaInicio,
+                    FechaFin = FechaFin,
+                    Descripcion = Descripcion,
+                    ClienteId = ClienteId,
+                    ServicioId = ServicioId,
+                    Tareas = lTareas
                 };
 
-                var respuesta = await _solicitudesBuseness.GuardarSolicitud(solicitud, solicitudViewModel.Empleados);
+                var respuesta = await _solicitudesBuseness.GuardarSolicitud(solicitud);
                 if (respuesta)
                 {
                     return Json(new { status = true });
@@ -398,6 +411,7 @@ namespace PrivTours.Controllers
             }
 
         }
+
 
     }
 }
