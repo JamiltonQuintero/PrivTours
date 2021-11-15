@@ -341,25 +341,29 @@ namespace PrivTours.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(SolicitudViewModel solicitudViewModel)
+        public async Task<IActionResult> Edit(Solicitud solicitud)
         {
            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    Solicitud solicitud = new Solicitud
+                    var tareas =  await _tareasBusiness.ObtenerTareasPorSolicitudId(solicitud.SolicitudId);
+
+                    var fechasDeInicioTareas = new List<DateTime>();
+                    var fechasDefinTareas = new List<DateTime>();
+
+                    foreach (var t in tareas)
                     {
-                        SolicitudId = solicitudViewModel.SolicitudId,
-                        FechaInicio = solicitudViewModel.FechaInicio,
-                        FechaFin = solicitudViewModel.FechaFin,
-                        Descripcion = solicitudViewModel.Descripcion,
-                        ClienteId = solicitudViewModel.ClienteId,
-                        ServicioId = solicitudViewModel.ServicioId,
-                        EstadoSoliciud = solicitudViewModel.EstadoSoliciud,
-                    };
-                    var response = await _solicitudesBuseness.EliminarDetallesEmpleadosPorId(solicitud.SolicitudId);
-                    var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud, solicitudViewModel.Empleados);
+                        fechasDeInicioTareas.Add(t.FechaInicioTarea);
+                        fechasDefinTareas.Add(t.FechaFinTarea);
+                    }
+
+                    fechasDefinTareas.OrderByDescending(e => e).ToList();
+                    fechasDeInicioTareas.OrderByDescending(e => e).ToList();
+                    solicitud.FechaFin = fechasDefinTareas[fechasDefinTareas.Count - 1];
+                    solicitud.FechaInicio = fechasDeInicioTareas[0];
+                    var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud);
                     if (respuesta)
                     {
                         return Json(new { status = true});
@@ -379,16 +383,28 @@ namespace PrivTours.Controllers
             return Json(new { data = "error" });
         }
 
-        public async Task<IActionResult> Guardar(DateTime FechaInicio, DateTime FechaFin, string Descripcion, int ClienteId, int ServicioId, Tarea[] lTareas)
+        public async Task<IActionResult> Guardar(string Descripcion, int ClienteId, int ServicioId, Tarea[] lTareas)
             {
 
             try
             {
+
+                var fechasDeInicioTareas = new List<DateTime>();
+                var fechasDefinTareas = new List<DateTime>();
+
+                foreach (var t in lTareas)
+                {
+                    fechasDeInicioTareas.Add(t.FechaInicioTarea);
+                    fechasDefinTareas.Add(t.FechaFinTarea);
+                }
+
+                fechasDefinTareas.OrderByDescending(e => e).ToList();
+                fechasDeInicioTareas.OrderByDescending(e => e).ToList();
+                
                 Solicitud solicitud = new Solicitud
-                {  
-                    
-                    FechaInicio = FechaInicio,
-                    FechaFin = FechaFin,
+                {                    
+                    FechaInicio = fechasDeInicioTareas[0],
+                    FechaFin =  fechasDefinTareas[fechasDefinTareas.Count - 1],
                     Descripcion = Descripcion,
                     ClienteId = ClienteId,
                     ServicioId = ServicioId,

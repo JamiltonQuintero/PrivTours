@@ -41,7 +41,7 @@ namespace PrivTours.ViewModels
         public string Rol { get; set; }
 
         public int TareaId { get; set; }
-        [DisplayName("Fecha de fin tarea")]
+        [DisplayName("Fecha de inicio tarea")]
         [Required(ErrorMessage = "{0} is required")]
         [DataType(DataType.Date)]
         public DateTime FechaInicioTarea { get; set; }
@@ -61,6 +61,8 @@ namespace PrivTours.ViewModels
         public virtual Operacion Operacion { get; set; }
 
         public List<TareaViewModel> Tareas { get; set;}
+
+        public byte EstadoTarea { get; set; }
 
     }
 }

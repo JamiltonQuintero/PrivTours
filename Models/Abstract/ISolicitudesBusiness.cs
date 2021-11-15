@@ -26,7 +26,7 @@ namespace PrivTours.Models.Abstract
         Task<bool> EliminarDetallesEmpleadosPorId(int id);
         Task<bool> GuardarSolicitud(Solicitud solicitud);
         Task<Solicitud> ObtenerSolicitudPorId(int id);
-        Task<bool> EditarSolicitud(Solicitud solicitud, string[] empleados);
+        Task<bool> EditarSolicitud(Solicitud solicitud);
         Task<bool> EditarSolicitudEstado(Solicitud solicitud);
        // Task<List<DetalleSolicitudTarea>> ObtenerDetalleEmpleadoPorSolicitudId(int solicitudId);
 

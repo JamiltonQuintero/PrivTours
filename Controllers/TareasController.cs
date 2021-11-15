@@ -276,7 +276,9 @@ namespace PrivTours.Controllers
                         DescripcionTarea = t.DescripcionTarea,
                         OperacionId = t.OperacionId,
                         UsuarioIdentityId = t.UsuarioIdentityId,
-                        SolicitudId = t.SolicitudId
+                        SolicitudId = t.SolicitudId,
+                        EstadoTarea = t.EstadoTarea
+
                     };
 
 
@@ -314,6 +316,63 @@ namespace PrivTours.Controllers
                 }
               
   
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+
+        }
+
+        public async Task<IActionResult> Guardar(Tarea tarea)
+        {
+            try
+            {
+                var t = await _tareasBusiness.GuardarTarea(tarea);
+
+                if (t)
+                {
+
+                    var operacion = await _tareasBusiness.obtenerOperacionPorId(tarea.OperacionId);
+
+                    var tvm = new TareaViewModel
+                    {
+                        TareaId = tarea.TareaId,
+                        nombreOperacion = operacion.Nombre
+                    };
+
+                    return Json(new { status = true, data = tvm });
+                }
+                else
+                {
+                    return Json(new { status = false });
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
+
+        public async Task<IActionResult> EliminarTareaPorId(int id)
+        {
+            try
+            {               
+                var t = await _tareasBusiness.EliminarTareaPorId(id);
+
+                if (t)
+                {
+                    return Json(new { status = true, data = id });
+                }
+                else
+                {
+                    return Json(new { status = false });
+                }
+
             }
             catch (Exception e)
             {

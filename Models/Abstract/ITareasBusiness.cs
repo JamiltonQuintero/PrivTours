@@ -16,5 +16,8 @@ namespace PrivTours.Models.Abstract
         Task<Operacion> obtenerOperacionPorId(int operacionId);
         Task<Tarea> ObtenerTareaPorId(int tareaId);
         Task<bool> EditarTarea(Tarea tarea);
+        Task<bool> GuardarTarea(Tarea tarea);
+        Task<bool> EliminarTareaPorId(int id);        
+
     }
 }

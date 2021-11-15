@@ -2,6 +2,7 @@
 using PrivTours.Models.Abstract;
 using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
+using PrivTours.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,49 @@ namespace PrivTours.Models.Business
                 return false;
             }
         }
+
+        public async Task<bool> GuardarTarea(Tarea tarea)
+        {
+
+            try
+            {
+                tarea.EstadoTarea = (byte)EEstadoTarea.RESERVADA;
+                _dbContext.Add(tarea);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+
+        public async Task<bool> EliminarTareaPorId(int id)
+        {
+            try
+            {
+                var tarea = await _dbContext.Tareas.FirstOrDefaultAsync(t => t.TareaId == id);
+                if (tarea != null)
+                {
+                    _dbContext.Remove(tarea);
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+
+                }
+                else
+                {
+                    return false;
+
+                }
+                
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        
 
     }
 }

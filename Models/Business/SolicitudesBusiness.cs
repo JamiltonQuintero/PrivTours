@@ -257,39 +257,21 @@ namespace PrivTours.Models.Business
             return await _dbContext.Solicitudes.FirstOrDefaultAsync(s => s.SolicitudId == id);
         }
 
-        public async Task<bool> EditarSolicitud(Solicitud solicitud, string[] empleados)
+        public async Task<bool> EditarSolicitud(Solicitud solicitud)
         {
-
-            using (var transaction = _dbContext.Database.BeginTransaction())
-            {
                 try
                 {
 
                     _dbContext.Update(solicitud);
                     await _dbContext.SaveChangesAsync();
-
-                    foreach (string e in empleados)
-                    {
-                       /* DetalleSolicitudTarea detalleSolicitudEmpleado = new DetalleSolicitudTarea
-                        {
-                            SolicitudId = solicitud.SolicitudId,
-                            UsuarioIdentityId = e
-                        };*/
-                        //_dbContext.Add(detalleSolicitudEmpleado);
-                    }
-                    await _dbContext.SaveChangesAsync();
-                    transaction.Commit();
                     return true;
 
                 }
                 catch (Exception e)
                 {
-                    transaction.Rollback();
-                    Console.WriteLine(e.InnerException.Message);
                     return false;
                 }
-            }
-
+            
         }
 
         public async Task<bool> EditarSolicitudEstado(Solicitud solicitud)
@@ -309,13 +291,17 @@ namespace PrivTours.Models.Business
         public async Task<bool> GuardarSolicitud(Solicitud solicitud)
         {
                 try
-                {
+                {   
+
+                    foreach(var t in solicitud.Tareas)
+                    {
+                        t.EstadoTarea = (byte)EEstadoTarea.RESERVADA;
+                    }
 
                    solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.RESERVADO;
                     _dbContext.Add(solicitud);
                     await _dbContext.SaveChangesAsync();
                     return true;
-
                 }
                 catch (Exception e)
                 {
