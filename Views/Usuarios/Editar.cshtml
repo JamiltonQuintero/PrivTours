@@ -33,10 +33,8 @@
                 <div class="col-md-6">
                     <div class="col-md-8">
                         <form method="post" asp-action="Editar" id="formulario" name="formulario">
-                            <div asp-validation-summary="All" class="text-danger"></div>
-                            <div asp-validation-summary="ModelOnly" class="text-danger">
-                                <!--<input type="hidden" name="Id" id="Id" />-->
-                            </div>
+                            <!--<div asp-validation-summary="All" class="text-danger"></div>-->
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                             <div class="form-group">
                                 <label asp-for="Nombre" class="control-label"></label>
@@ -92,87 +90,23 @@
     <script>
 
     function Editar() {
+        console.log("ingreso a editar");
+        Swal.fire({
+            title: "Editar usuario",
+            text: "¿Estás seguro que desea editar el usuario?",
+            showCancelButton: true,
+            confirmButtonText: 'Editar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log("confirmado");
+                document.getElementById('formulario').submit();
 
-        var isValid = true;
-        if (document.getElementById("Nombre").value == '') {
-            $('#Nombre').siblings('span.text-danger').text('El nombre es requerido');
-            isValid = false;
-        } else {
-            $('#Nombre').siblings('span.text-danger').text('');
-        }
-        if (document.getElementById("Email").value == '') {
-            $('#Email').siblings('span.text-danger').text('El correo electrónico  es requerido');
-            isValid = false;
-        } else {
-            if (!validaEmail($('#Email').val())) {
-                $('#Email').siblings('span.text-danger').text('Correo electrónico inválido');
-                isValid = false;
-            } else {
-                $('#Email').siblings('span.text-danger').text('');
+            } else if (result.isDenied) {
+                console.log("isDenied");
+                Swal.fire('¡Usuario no editado!', '', 'info')
             }
-        }
-
-
-        if (isValid) {
-            Swal.fire({ //Mensaje de confirmar
-                title: '¿Desea editar el usuario?',
-                //showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: `Editar`,
-                cancelButtonText: `Cancelar`,
-                reverseButtons: true
-            }).then((result) => {
-
-                if (result.isConfirmed) { // si confirmamos
-                    var formData = new FormData(); //se crea el objeto de tipo formData que va a contener todo lo que vamos a enviar
-                    formData.append("Id", document.getElementById("Id").value);
-                    formData.append("Nombre", document.getElementById("Nombre").value);
-                    formData.append("Email", document.getElementById("Email").value);
-                    formData.append("Apellido", document.getElementById("Apellido").value);
-                    formData.append("Documento", document.getElementById("Documento").value);
-                    formData.append("Telefono", document.getElementById("Telefono").value);
-                    formData.append("RolSeleccionado", document.getElementById("RolSeleccionado").value);
-
-                     $.ajax({
-                            type: "POST",
-                            url: '@Url.Action("Editar","Usuarios")',
-                            contentType: false,
-                            processData: false,
-                            data: formData,
-                            success: function (result) {
-
-                                if (result.data == "ok") {
-                                    setTimeout(
-                                        function () {
-                                            window.location.href = "@Url.Action("Index","Usuarios")";
-                                        }, 2000);
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Usuario editado',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    })
-                                } else {
-                                    console.log("ERROR!!")
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Oops...',
-                                        text: 'Ocurrió un error al editar el usuario',
-                                    })
-                                }
-                            },
-                            error: function (err) {
-                                console.log(err.data)
-                            }
-                     });
-
-                } else if (result.isDenied) {
-                    Swal.fire('Usuario no editado', '', 'info')
-                }
-            })
-        }
-
-
+        })
     }
 
     function validaEmail(email) {

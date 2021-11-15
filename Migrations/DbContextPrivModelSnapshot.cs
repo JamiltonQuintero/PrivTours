@@ -453,7 +453,7 @@ namespace PrivTours.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Documento")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Nombre")
                         .HasColumnType("nvarchar(max)");
@@ -463,6 +463,11 @@ namespace PrivTours.Migrations
 
                     b.Property<int>("TipoContrato")
                         .HasColumnType("int");
+
+                    b.HasIndex("Documento")
+                        .IsUnique()
+                        .HasName("DocumentouniqueIndex")
+                        .HasFilter("[Documento] IS NOT NULL");
 
                     b.HasDiscriminator().HasValue("UsuarioIdentity");
                 });
