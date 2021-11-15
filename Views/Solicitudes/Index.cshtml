@@ -39,7 +39,7 @@
                         <button type="button" class="btn btn-primary align-content-center" onclick="filtar()">Aplicar filtro</button>
                     </div>
 
-                    
+
                     <div class="col-9" id="calendar">
                         <div id='loading'>loading...</div>
                     </div>
@@ -48,9 +48,8 @@
 
 
             <!-- Modal Detalle-->
-
-            <div class="modal" id="modalSolicitudDetalle">
-                <div class="modal-dialog" role="document">
+            <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalSolicitudDetalle">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Detalle Solicitud</h5>
@@ -60,125 +59,272 @@
                         </div>
                         <div class="modal-body">
 
-                            <form id="formularioSolicitudEditar">
+                            <div class="row">
 
-                                <div class="row">
+                                <div class="col 6">
 
-                                    <div class="col 6">
+                                    <div class="row">
 
-                                        <div class="form group">
-                                            <label asp-for="FechaInicio" class="control-label"></label>
-                                            <input asp-for="FechaInicio" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaInicioD" />
-                                            <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                                        <div class="col 6">
+                                            <div class="form group">
+                                                <label asp-for="Cliente" class="control-label"></label>
+                                                <select asp-for="ClienteId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Clientes" id="ClienteD">
+                                                    <option value="0">Seleccione</option>
+                                                </select>
+                                                <span asp-validation-for="Cliente" class="text-danger"></span>
+                                            </div>
+
                                         </div>
+                                        <div class="col 6">
 
-                                        <br />
-
-
-                                        <div class="form group">
-                                            <label asp-for="HoraInicio" class="control-label"></label>
-                                            <input asp-for="HoraInicio" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraInicioD" />
-                                            <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                                            <div class="form group">
+                                                <label asp-for="Servicio" class="control-label"></label>
+                                                <select asp-for="ServicioId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Servicios" id="ServicioD">
+                                                    <option value="0">Seleccione</option>
+                                                </select>
+                                                <span asp-validation-for="Servicio" class="text-danger"></span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="col 6">
+                                    <br />
 
+                                    <div>
                                         <div class="form group">
-                                            <label asp-for="FechaFin" class="control-label"></label>
-                                            <input asp-for="FechaFin" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaFinD" />
-                                            <span asp-validation-for="FechaFin" class="text-danger"></span>
-                                        </div>
-
-                                        <br />
-
-                                        <div class="form group">
-                                            <label asp-for="HoraFinal" class="control-label"></label>
-                                            <input asp-for="HoraFinal" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraFinalD" />
-                                            <span asp-validation-for="HoraFinal" class="text-danger"></span>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <br />
-                                <br />
-
-                                <div class="row">
-
-                                    <div class="col 6 ">
-
-                                        <div class="form group">
-                                            <label asp-for="Cliente" class="control-label"></label>
-                                            <select asp-for="ClienteId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Clientes" id="ClienteD">
-                                                <option>Seleccione</option>
-                                            </select>
-                                            <span asp-validation-for="Cliente" class="text-danger"></span>
-                                        </div>
-
-                                        <br />
-
-
-                                        <div class="form group">
-                                            <label asp-for="Empleados" class="control-label"></label>
-
-                                            <select asp-items="ViewBag.Empleados" asp-for="Empleados" id="choices-multiple-remove-button-d" placeholder="Seleccione los empleados" multiple>
-                                            </select>
-                                            <span asp-validation-for="Empleados" class="text-danger"></span>
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="col 6">
-
-                                        <div class="form group">
-                                            <label asp-for="Servicio" class="control-label"></label>
-                                            <select asp-for="ServicioId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Servicios" id="ServicioD">
-                                                <option>Seleccione</option>
+                                            <label>Estado Actual solicitud</label>
+                                            <select asp-for="EstadoSoliciud" class="form-control input w-full border mt-2 flex-1" id="SolicitudEstadoD">
+                                                <option value="1">RESERVADO</option>
+                                                <option value="2">EN PROCESO</option>
+                                                <option value="3">VENCIDO</option>
+                                                <option value="4">CANCELADO</option>
+                                                <option value="5">FINALIZADO EMPLEADO</option>
+                                                <option value="6">FINALIZADO ADMINISTRADOR</option>
                                             </select>
                                             <span asp-validation-for="Servicio" class="text-danger"></span>
                                         </div>
 
-                                        <br />
+                                    </div>
+                                    <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="SolicitudIdD" />
 
-                                        <div class="form group">
-                                            <label asp-for="Descripcion" class="control-label"></label>
-                                            <textarea asp-for="Descripcion" class="form-control input w-full border mt-2 flex-1" id="DescripcionD"></textarea>
+                                    <div class="form group">
+
+                                        <label asp-for="Descripcion" class="control-label"></label>
+                                        <textarea asp-for="Descripcion" class="form-control input w-full border mt-2 flex-1" id="DescripcionD"></textarea>
+                                    </div>
+
+                                    <table id="tabla" class="table">
+                                        <thead>
+                                            <tr>
+
+                                                <th>
+                                                    Tarea
+                                                </th>
+                                                <th>
+                                                    Editar
+                                                </th>
+                                                <th>
+                                                    Eliminar
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="e">
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                                <div class="col 6" id="centerObjects">
+
+                                    <button id="btnAgregarTarea" type="button" class="btn btn-secondary" onclick="editarAgregarViewTarea()">Agregar tarea</button>
+
+                                    <div id="formularioTareaEdit">
+
+                                        <br />
+                                        <h5>Editar tarea</h5>
+
+                                        <div class="row">
+
+                                            <div class="col 6">
+
+                                                <div class="form group">
+                                                    <label asp-for="FechaInicioTarea" class="control-label"></label>
+                                                    <input asp-for="FechaInicioTarea" class="form-control input w-full border mt-2 flex-1" type="datetime-local" id="FechaInicioTareaD" />
+                                                    <span asp-validation-for="FechaInicioTarea" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col 6">
+
+                                                <div class="form group">
+                                                    <label asp-for="FechaFinTarea" class="control-label"></label>
+                                                    <input asp-for="FechaFinTarea" class="form-control input w-full border mt-2 flex-1" type="datetime-local" id="FechaFinTareaD" />
+                                                    <span asp-validation-for="FechaFinTarea" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
                                         </div>
 
+                                        <br />
+
+                                        <div class="row">
+
+                                            <div class="col 6 ">
+
+                                                <div class="form group">
+                                                    <label asp-for="UsuarioIdentity" class="control-label"></label>
+                                                    <select asp-for="UsuarioIdentityId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Empleados" id="UsuarioIdentityIdD">
+                                                        <option value="0">Seleccione</option>
+                                                    </select>
+                                                    <span asp-validation-for="UsuarioIdentity" class="text-danger"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col 6">
+
+                                                <div class="form group">
+                                                    <label asp-for="Operacion" class="control-label"></label>
+                                                    <select asp-for="OperacionId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Operaciones" id="OperacionIdD">
+                                                        <option value="0">Seleccione</option>
+                                                    </select>
+                                                    <span asp-validation-for="Operacion" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="form group">
+
+                                            <label asp-for="DescripcionTarea" class="control-label"></label>
+                                            <textarea asp-for="DescripcionTarea" class="form-control input w-full border mt-2 flex-1" id="DescripcionTareaD"></textarea>
+                                            <span asp-validation-for="DescripcionTarea" class="text-danger"></span>
+                                        </div>
+                                        <div class="form group">
+                                            <label>Estado Actual solicitud</label>
+                                            <select asp-for="EstadoSoliciud" class="form-control input w-full border mt-2 flex-1" id="TareaEstadoD">
+                                                <option value="1">RESERVADA</option>
+                                                <option value="2">INICIADA</option>
+                                                <option value="3">VENCIDA</option>
+                                                <option value="4">CANCELADA</option>
+                                                <option value="5">FINALIZADA EMPLEADO</option>
+                                                <option value="6">FINALIZADA ADMINISTRADOR</option>
+                                            </select>
+                                            <span asp-validation-for="Servicio" class="text-danger"></span>
+                                        </div>
+                                        <input asp-for="TareaId" class="form-control" style="visibility: hidden" id="TareaIdD" />
+                                        <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="TareaSolicitudIdD" />
+                                        <br />
+                                        <div class="row">
+                                            <div class="col 6">
+                                                <button type="button" class="btn btn-danger" onclick="cerrarTareasEditar()">Cerrar</button>
+                                            </div>
+                                            <div class="col 6">
+                                                <button type="button" class="btn btn-primary" onclick="editarTarea()">Editar tarea</button>
+                                            </div>
+                                        </div>
+                                        <br />
                                     </div>
+
+
+                                    <div id="formularioTareaEditAgregar">
+
+                                        <br />
+                                        <h5>Agregar tarea</h5>
+
+                                        <div class="row">
+
+                                            <div class="col 6">
+
+                                                <div class="form group">
+                                                    <label asp-for="FechaInicioTarea" class="control-label"></label>
+                                                    <input asp-for="FechaInicioTarea" class="form-control input w-full border mt-2 flex-1" type="datetime-local" id="FechaInicioTareaDA" />
+                                                    <span asp-validation-for="FechaInicioTarea" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col 6">
+
+                                                <div class="form group">
+                                                    <label asp-for="FechaFinTarea" class="control-label"></label>
+                                                    <input asp-for="FechaFinTarea" class="form-control input w-full border mt-2 flex-1" type="datetime-local" id="FechaFinTareaDA" />
+                                                    <span asp-validation-for="FechaFinTarea" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <br />
+
+                                        <div class="row">
+
+                                            <div class="col 6 ">
+
+                                                <div class="form group">
+                                                    <label asp-for="UsuarioIdentity" class="control-label"></label>
+                                                    <select asp-for="UsuarioIdentityId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Empleados" id="UsuarioIdentityIdDA">
+                                                        <option value="0">Seleccione</option>
+                                                    </select>
+                                                    <span asp-validation-for="UsuarioIdentity" class="text-danger"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col 6">
+
+                                                <div class="form group">
+                                                    <label asp-for="Operacion" class="control-label"></label>
+                                                    <select asp-for="OperacionId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Operaciones" id="OperacionIdDA">
+                                                        <option value="0">Seleccione</option>
+                                                    </select>
+                                                    <span asp-validation-for="Operacion" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="form group">
+
+                                            <label asp-for="DescripcionTarea" class="control-label"></label>
+                                            <textarea asp-for="DescripcionTarea" class="form-control input w-full border mt-2 flex-1" id="DescripcionTareaDA"></textarea>
+                                            <span asp-validation-for="DescripcionTarea" class="text-danger"></span>
+                                        </div>
+
+                                        <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="TareaSolicitudIdDA" />
+                                        <br />
+                                        <div class="row">
+                                            <div class="col 6">
+                                                <button type="button" class="btn btn-danger" onclick="cerrarTareasEditarAgregar()">Cerrar</button>
+                                            </div>
+                                            <div class="col 6">
+                                                <button type="button" class="btn btn-primary" onclick="editarAgregarTarea()">Agregar tarea</button>
+                                            </div>
+                                        </div>
+                                        <br />
+                                    </div>
+
                                 </div>
 
-                                <div>
-                                    <div class="form group">
-                                        <label>Estado Actual solicitud</label>
-                                        <select asp-for="EstadoSoliciud" class="form-control input w-full border mt-2 flex-1" id="SolicitudEstadoD">
-                                            <option value="1">RESERVADO</option>
-                                            <option value="2">EN PROCESO</option>
-                                            <option value="3">VENCIDO</option>
-                                            <option value="4">CANCELADO</option>
-                                            <option value="5">FINALIZADO EMPLEADO</option>
-                                            <option value="6">FINALIZADO ADMINISTRADOR</option>
-                                        </select>
-                                        <span asp-validation-for="Servicio" class="text-danger"></span>
-                                    </div>
+                            </div>
 
+                            <div class="modal-footer">
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    <button type="button" class="btn btn-primary" onclick="editar()">Editar</button>
                                 </div>
-                                <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="SolicitudIdD" />
-                            </form><!-- Fin formulario-->
-                        </div>
+                            </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" onclick="editar()">Editar</button>
                         </div>
                     </div>
-                </div>
-            </div><!--Fin Modal Detalle-->
+                </div><!--Fin Modal Detalle-->
+
+            </div>
+
+
             <!-- Modal Crear -->
-            <div class="modal" id="modalCrearSoliciutd">
-                <div class="modal-dialog" role="document">
+
+            <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modalCrearSoliciutd">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Crear una nueva solicitud</h5>
@@ -187,110 +333,153 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <div class="row">
 
+                                <div class="col 6">
 
+                                    <div class="row">
 
-                            <form id="formularioSolicitud">
+                                        <div class="col 6">
+                                            <div class="form group">
+                                                <label asp-for="Cliente" class="control-label"></label>
+                                                <select asp-for="ClienteId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Clientes">
+                                                    <option value="0">Seleccione</option>
+                                                </select>
+                                                <span asp-validation-for="Cliente" class="text-danger"></span>
+                                            </div>
 
-                                <div class="row">
-
-                                    <div class="col 6">
-
-                                        <div class="form group">
-                                            <label asp-for="FechaInicio" class="control-label"></label>
-                                            <input asp-for="FechaInicio" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaInicio" />
-                                            <span asp-validation-for="FechaInicio" class="text-danger"></span>
                                         </div>
+                                        <div class="col 6">
 
-                                        <br />
-
-
-                                        <div class="form group">
-                                            <label asp-for="HoraInicio" class="control-label"></label>
-                                            <input asp-for="HoraInicio" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraInicio" />
-                                            <span asp-validation-for="HoraInicio" class="text-danger"></span>
+                                            <div class="form group">
+                                                <label asp-for="Servicio" class="control-label"></label>
+                                                <select asp-for="ServicioId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Servicios">
+                                                    <option value="0">Seleccione</option>
+                                                </select>
+                                                <span asp-validation-for="Servicio" class="text-danger"></span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="col 6">
+                                    <br />
 
-                                        <div class="form group">
-                                            <label asp-for="FechaFin" class="control-label"></label>
-                                            <input asp-for="FechaFin" class="form-control input w-full border mt-2 flex-1" type="date" id="FechaFin" />
-                                            <span asp-validation-for="FechaFin" class="text-danger"></span>
-                                        </div>
+                                    <div class="form group">
 
-                                        <br />
-
-                                        <div class="form group">
-                                            <label asp-for="HoraFinal" class="control-label"></label>
-                                            <input asp-for="HoraFinal" class="form-control input w-full border mt-2 flex-1" type="time" id="HoraFinal" />
-                                            <span asp-validation-for="HoraFinal" class="text-danger"></span>
-                                        </div>
-
+                                        <label asp-for="Descripcion" class="control-label"></label>
+                                        <textarea asp-for="Descripcion" class="form-control input w-full border mt-2 flex-1" id="Descripcion"></textarea>
                                     </div>
+
+                                    <table id="tabla" class="table">
+                                        <thead>
+                                            <tr>
+
+                                                <th>
+                                                    Tarea
+                                                </th>
+                                                <th>
+                                                    Eliminar
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="d">
+                                        </tbody>
+
+                                    </table>
+
                                 </div>
 
-                                <br />
-                                <br />
+                                <div class="col 6" id="centerObjects">
 
-                                <div class="row">
+                                    <button id="btnAgregarTareaC" type="button" class="btn btn-secondary" onclick="agregarTarea()">Agregar tarea</button>
 
-                                    <div class="col 6 ">
+                                    <div id="formularioTarea">
 
-                                        <div class="form group">
-                                            <label asp-for="Cliente" class="control-label"></label>
-                                            <select asp-for="ClienteId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Clientes" id="Cliente">
-                                                <option value="0">Seleccione</option>
-                                            </select>
-                                            <span asp-validation-for="Cliente" class="text-danger"></span>
+                                        <br />
+                                        <h5>Nueva tarea</h5>
+
+                                        <div class="row">
+
+                                            <div class="col 6">
+
+                                                <div class="form group">
+                                                    <label asp-for="FechaInicioTarea" class="control-label"></label>
+                                                    <input asp-for="FechaInicioTarea" class="form-control input w-full border mt-2 flex-1" type="datetime-local" />
+                                                    <span asp-validation-for="FechaInicioTarea" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col 6">
+
+                                                <div class="form group">
+                                                    <label asp-for="FechaFinTarea" class="control-label"></label>
+                                                    <input asp-for="FechaFinTarea" class="form-control input w-full border mt-2 flex-1" type="datetime-local" />
+                                                    <span asp-validation-for="FechaFinTarea" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
                                         </div>
 
                                         <br />
 
+                                        <div class="row">
 
+                                            <div class="col 6 ">
 
-                                        <div class="form group">
-                                            <label asp-for="Empleados" class="control-label"></label>
-                                            <select asp-items="ViewBag.Empleados" asp-for="Empleados" id="choices-multiple-remove-button" placeholder="Seleccione los empleados" multiple>
-                                            </select>
-                                            <span asp-validation-for="Empleados" class="text-danger"></span>
+                                                <div class="form group">
+                                                    <label asp-for="UsuarioIdentity" class="control-label"></label>
+                                                    <select asp-for="UsuarioIdentityId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Empleados">
+                                                        <option value="0">Seleccione</option>
+                                                    </select>
+                                                    <span asp-validation-for="UsuarioIdentity" class="text-danger"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="col 6">
+
+                                                <div class="form group">
+                                                    <label asp-for="Operacion" class="control-label"></label>
+                                                    <select asp-for="OperacionId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Operaciones">
+                                                        <option value="0">Seleccione</option>
+                                                    </select>
+                                                    <span asp-validation-for="Operacion" class="text-danger"></span>
+                                                </div>
+
+                                            </div>
                                         </div>
-
-                                    </div>
-
-
-                                    <div class="col 6">
-
                                         <div class="form group">
-                                            <label asp-for="Servicio" class="control-label"></label>
-                                            <select asp-for="ServicioId" class="form-control input w-full border mt-2 flex-1" asp-items="ViewBag.Servicios" id="Servicio">
-                                                <option value="0">Seleccione</option>
-                                            </select>
-                                            <span asp-validation-for="Servicio" class="text-danger"></span>
-                                        </div>
 
+                                            <label asp-for="DescripcionTarea" class="control-label"></label>
+                                            <textarea asp-for="DescripcionTarea" class="form-control input w-full border mt-2 flex-1"></textarea>
+                                            <span asp-validation-for="DescripcionTarea" class="text-danger"></span>
+                                        </div>
                                         <br />
-
-                                        <div class="form group">
-
-                                            <label asp-for="Descripcion" class="control-label"></label>
-                                            <textarea asp-for="Descripcion" class="form-control input w-full border mt-2 flex-1" id="Descripcion"></textarea>
+                                        <div class="row">
+                                            <div class="col 6">
+                                                <button type="button" class="btn btn-danger" onclick="cerrarTareas()">Cerrar</button>
+                                            </div>
+                                            <div class="col 6">
+                                                <button type="button" class="btn btn-primary" onclick="crearTarea()">Asignar tarea</button>
+                                            </div>
                                         </div>
-
+                                        <br />
                                     </div>
+
                                 </div>
-                            </form><!-- Fin formulario-->
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" onclick="guardar()">Guardar</button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary" onclick="guardar()">Guardar</button>
+                            </div>
                         </div>
                     </div>
+
                 </div>
-            </div><!-- Fin Modal Crear-->
+            </div>
+
         </div>
-    </div>
+</div>
 </div>
 
 @section Scripts {
@@ -306,6 +495,10 @@
             calendario();
             listar();
             start();
+            limpiarModal();
+            $('#formularioTarea').hide()
+            $('#formularioTareaEdit').hide()
+            $('#formularioTareaEditAgregar').hide() 
         })
 
         $(document).ready(function () {
@@ -336,5 +529,4 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
-
 }

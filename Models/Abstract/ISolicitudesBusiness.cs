@@ -20,13 +20,15 @@ namespace PrivTours.Models.Abstract
         Task<List<Solicitud>> ObtenerListaSolicitudesSVM();
         Task<IEnumerable<Empleado>> ObtenerListaEmpleados();
         Task<IEnumerable<Servicio>> ObtenerListaServicios();
+        Task<IEnumerable<Operacion>> ObtenerListaOperaciones();  
+        Task<Tarea> GuardarTarea(Tarea tarea);
         Task<IEnumerable<Cliente>> ObtenerListaClientes();
         Task<bool> EliminarDetallesEmpleadosPorId(int id);
-        Task<bool> GuardarSolicitud(Solicitud solicitud, string[] empleados);
+        Task<bool> GuardarSolicitud(Solicitud solicitud);
         Task<Solicitud> ObtenerSolicitudPorId(int id);
-        Task<bool> EditarSolicitud(Solicitud solicitud, string[] empleados);
+        Task<bool> EditarSolicitud(Solicitud solicitud);
         Task<bool> EditarSolicitudEstado(Solicitud solicitud);
-        Task<List<DetalleSolicitudEmpleado>> ObtenerDetalleEmpleadoPorSolicitudId(int solicitudId);
+       // Task<List<DetalleSolicitudTarea>> ObtenerDetalleEmpleadoPorSolicitudId(int solicitudId);
 
     }
 }

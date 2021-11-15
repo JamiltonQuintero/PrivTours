@@ -10,6 +10,5 @@ namespace PrivTours.Models.Entities
         public string Documento { get; set; }
         public string Telefono { get; set; }
         public int TipoContrato { get; set; }
-        public ICollection<DetalleSolicitudEmpleado> DetalleSolicitudEmpleado { get; set; }
     }
 }

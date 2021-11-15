@@ -1,7 +1,11 @@
 ﻿var calendar = null;
 var filtro = null;
+var lTareas = new Array();
+var count = 0;
+
 
 function calendario() {
+
 
     let calendario = document.getElementById("calendar");
     calendar = new FullCalendar.Calendar(calendario, {
@@ -30,9 +34,7 @@ function calendario() {
                 })
             }
             else {
-                $("#FechaInicio").val(info.dateStr);
-                $("#modalCrearSoliciutd").modal();
-                
+                $("#modalCrearSoliciutd").modal();            
             }
             
         },
@@ -50,55 +52,203 @@ function calendario() {
 }//fin calendario
 
 
-function guardar() {
-    let formularioSolicitud = $("#formularioSolicitud").serialize();
+function agregarTarea() {
+    document.getElementById("formularioTarea").style.display = "block";
+    $('#btnAgregarTareaC').hide()
+}
+
+
+function limpiarModal() {
+    $("#modalCrearSoliciutd").on("hidden.bs.modal", function () {
+        $("#d").html("")
+        count = 0;
+        lTareas = [];
+        $('#btnAgregarTareaC').show()
+        $("#FechaInicioTarea").val(moment("").format("YYYY-MM-DD"));
+        $("#FechaFinTarea").val(moment("").format("YYYY-MM-DD"));
+        $("#UsuarioIdentityId").val(0);
+        $("#ServicioId").val(0);
+        $("#DescripcionTarea").val("");
+        $("#OperacionId").val(0);
+
+        $("#FechaInicio").val(moment("").format("YYYY-MM-DD"));
+        $("#FechaFin").val(moment("").format("YYYY-MM-DD"));
+        $("#Cliente").val(0);
+        $("#Servicio").val(0);
+        $("#Descripcion").val("");
+        $("#SolicitudId").val(0);
+        $("#SolicitudEstado").val(0);
+        $('#formularioTarea').hide()
+    });
+
+    $("#modalSolicitudDetalle").on("hidden.bs.modal", function () {
+        $("#e").html("")
+        count = 0;
+        lTareas = [];
+        $('#btnAgregarTarea').show()
+        $("#FechaInicioTareaD").val(moment("").format("YYYY-MM-DD"));
+        $("#FechaFinTareaD").val(moment("").format("YYYY-MM-DD"));
+        $("#UsuarioIdentityIdD").val(0);
+        $("#ServicioIdD").val(0);
+        $("#DescripcionTareaD").val("");
+        $("#OperacionIdD").val(0);
+        $("#TareaIdD").val(0);
+        $("#TareaSolicitudIdD").val(0);
+
+        $("#FechaInicioTareaDA").val(moment("").format("YYYY-MM-DD"));
+        $("#FechaFinTareaDA").val(moment("").format("YYYY-MM-DD"));
+        $("#UsuarioIdentityIdDA").val(0);
+        $("#ServicioIdDA").val(0);
+        $("#DescripcionTareaDA").val("");
+        $("#OperacionIdDA").val(0);
+        $("#TareaSolicitudIdDA").val(0);
+        $('#formularioTareaEditAgregar').hide()
+
+        $("#FechaInicioD").val(moment("").format("YYYY-MM-DD"));
+        $("#FechaFinD").val(moment("").format("YYYY-MM-DD"));
+        $("#ClienteD").val(0);
+        $("#ServicioD").val(0);
+        $("#DescripcionD").val("");
+        $("#SolicitudIdD").val(0);
+        $("#SolicitudEstadoD").val(0);
+        $('#formularioTareaEdit').hide()
+    });
+}
+
+
+function guardarTarea() {
+    count+=1;
+    let tarea = {
+        "Id": count,
+        "FechaInicioTarea": document.getElementById('FechaInicioTarea').value,
+        "FechaFinTarea": document.getElementById('FechaFinTarea').value,
+        "DescripcionTarea": document.getElementById('DescripcionTarea').value,
+        "UsuarioIdentityId": document.getElementById('UsuarioIdentityId').value,
+        "OperacionId": document.getElementById('OperacionId').value
+    }
+
+    $("#d").append("<tr id=" + "tr" + count + ">" + "<td>" + $('#OperacionId option:selected').text() + "</td> <td>" + "<button onclick='eliminarTarea(" + tarea.Id+")'>Eliminar</button>" + "</td>" +
+        "</tr>")
+    lTareas.push(tarea)
+
+    Swal.fire({
+        icon: 'success',
+        title: 'Tarea creada exitosamente',
+        showConfirmButton: false,
+        timer: 1500
+    })
+}
+
+function crearTarea() {
+    var empleadoId = document.getElementById('UsuarioIdentityId').value;
+    validarDisponibilidadEmpleado(empleadoId, 1);
+}
+
+function validarDisponibilidadEmpleado(empleadoId, tipoGuardado ) {
 
     $.ajax({
-        url: '/Solicitudes/ObtenerSolicitudesValidadndoDisponibilidad',
+        url: '/Tareas/ObtenerTareasPorEmpleadoId',
+        data: jQuery.param({ empleadoId: empleadoId }),
         type: 'get',
-        data: formularioSolicitud,
-        dataType: 'json'
+        dataType: 'json',
     }).done(function (respuesta) {
         if (respuesta.status) {
 
             var continuar = true;
-            var empleadosNoDisponibles = "";
             respuesta.data.map(function (e) {
-  
-                var start = moment(e.fechaInicio).format("YYYY-MM-DD") + " " + e.horaInicio;
-                var end = moment(e.fechaFin).format("YYYY-MM-DD") + " " + e.horaFinal;
 
-                
-                var startNew = moment($("#FechaInicio").val()).format("YYYY-MM-DD") + " " + $("#HoraInicio").val();
-                var endNew = moment($("#FechaFin").val()).format("YYYY-MM-DD") + " " + $("#HoraFinal").val();
-               
+                var start = e.fechaInicioTarea;
+                var end = e.fechaFinTarea;
+
+                var startNew = null;
+                var endNew = null;
+
+                if (tipoGuardado == 1) {
+                     startNew = $("#FechaInicioTarea").val();
+                     endNew = $("#FechaFinTarea").val();
+                } else if (tipoGuardado == 2) {
+                     startNew = $("#FechaInicioTareaD").val();
+                     endNew = $("#FechaFinTareaD").val();
+                } else if (tipoGuardado == 3) {
+                     startNew = $("#FechaInicioTareaDA").val();
+                     endNew = $("#FechaFinTareaDA").val();
+                }
+
                 const test = moment(startNew).isBetween(start, end);
                 const test2 = moment(endNew).isBetween(start, end);
-                
-                if (test || test2) { 
-                    empleadosNoDisponibles = e.empleadosNombres
+
+                if (test || test2) {
                     continuar = false;
                 }
 
             });
 
             if (continuar) {
+
+                if (tipoGuardado == 1) {
+                    guardarTarea()
+                } else if (tipoGuardado == 2) {
+                    editarTareaConfirm()
+                } else if (tipoGuardado == 3) {
+                    editarAgregarTareaConfirm()
+                }
+   
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'El empleado seleccionado no se encuentra disponible, por favor validar.',
+                    showConfirmButton: false,
+                    timer: 9000
+                })
+            }
+
+        } else {
+
+            Swal.fire({
+                icon: 'error',
+                title: 'No fue posible guardar la solicitud. Por favor intente nuevamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    })
+}
+
+function eliminarTarea(id) {
+    var tarea = lTareas.find(s => s.Id = id);
+    $("#tr" + id).remove()
+    lTareas.pop(tarea)
+}
+
+
+function cerrarTareas() {
+    $("#FechaInicioTarea").val(moment("").format("YYYY-MM-DD"));
+    $("#FechaFinTarea").val(moment("").format("YYYY-MM-DD"));
+    $("#UsuarioIdentityId").val(0);
+    $("#DescripcionTarea").val("");
+    $("#OperacionId").val(0);
+    $('#formularioTarea').hide()
+    $('#btnAgregarTareaC').show()
+}
+
+function guardar() {
+    
                 $.ajax({
                     url: '/Solicitudes/Guardar',
+                    data: jQuery.param({
+                        Descripcion: document.getElementById('Descripcion').value,
+                        ClienteId: document.getElementById('ClienteId').value,
+                        ServicioId: document.getElementById('ServicioId').value,
+                        lTareas: lTareas
+                    }),
                     type: 'post',
-                    data: formularioSolicitud,
-                    dataType: 'json'
+                    dataType: 'json',
                 }).done(function (guardar) {
 
                     if (guardar.status) {
                         $("#modalCrearSoliciutd").modal('hide');
                         listar();
-                        $("#FechaInicio").val(moment("").format("YYYY-MM-DD"));
-                        $("#HoraInicio").val(0);
-                        $("#FechaFin").val(moment("").format("YYYY-MM-DD"));
-                        $("#HoraFinal").val(0);
                         $("#Cliente").val(0);
-                        $('#choices-multiple-remove-button').val([]);
                         $("#Servicio").val(0);
                         $("#Descripcion").val("");
                         $("#SolicitudId").val(0);
@@ -120,48 +270,31 @@ function guardar() {
                         })
                     }
                 })
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: empleadosNoDisponibles + ' no se encuentran disponibles, por favor verifica la disponibilidad',
-                    showConfirmButton: false,
-                    timer: 9000
-                })
-            }
-
-        } else {
-
-            Swal.fire({
-                icon: 'error',
-                title: 'No fue posible guardar la solicitud. Por favor intente nuevamente',
-                showConfirmButton: false,
-                timer: 1500
-            })
-        }
-    })
-
-  
+            
 }//fin Guardar
 
 function editar() {
-    let formularioSolicitudEditar = $("#formularioSolicitudEditar").serialize();
 
+    var formData = new FormData();
+    formData.append("Descripcion", document.getElementById('DescripcionD').value);
+    formData.append("ClienteId", document.getElementById('ClienteD').value);
+    formData.append("ServicioId", document.getElementById('ServicioD').value);
+    formData.append("EstadoSoliciud", document.getElementById('SolicitudEstadoD').value);
+    formData.append("SolicitudId", document.getElementById('SolicitudIdD').value);
     $.ajax({
         url: '/Solicitudes/Edit',
         type: 'post',
-        data: formularioSolicitudEditar,
-        dataType: 'json'
+        contentType: false,
+        processData: false,
+        data: formData,
     }).done(function (respuesta) {
 
         if (respuesta.status) {
             $("#modalSolicitudDetalle").modal('hide');
             listar();
             $("#FechaInicioD").val(moment("").format("YYYY-MM-DD"));
-            $("#HoraInicioD").val(0);
             $("#FechaFinD").val(moment("").format("YYYY-MM-DD"));
-            $("#HoraFinalD").val(0);
             $("#ClienteD").val(0);
-            $('#choices-multiple-remove-button-d').val([]);
             $("#ServicioD").val(0);
             $("#DescripcionD").val("");
             $("#SolicitudIdD").val(0);
@@ -186,13 +319,6 @@ function editar() {
 }//fin editar
 
 
-function eliminar() {
-    $.ajax({
-        url: '/Solicitudes/Eliminar',
-        type: 'delete',
-        dataType: 'json'
-    })
-}//fin eliminar
 
 function obtenerServicioPorId(id) {
     $.ajax({
@@ -202,33 +328,207 @@ function obtenerServicioPorId(id) {
         type: 'get',
         dataType: 'json',
     }).done(function (respuesta) {
-        if (respuesta) {       
-            $("#FechaInicioD").val(moment(respuesta.data.fechaInicio).format("YYYY-MM-DD"));
-            $("#HoraInicioD").val(respuesta.data.horaInicio);
-            $("#FechaFinD").val(moment(respuesta.data.fechaFin).format("YYYY-MM-DD"));
-            $("#HoraFinalD").val(respuesta.data.horaFinal);
+        if (respuesta.status) {       
             $("#ClienteD").val(respuesta.data.clienteId);
-            //$("#choices-multiple-remove-button-d").val(respuesta.data.empleados);
             $("#ServicioD").val(respuesta.data.servicioId);
             $("#DescripcionD").val(respuesta.data.descripcion);
             $("#SolicitudIdD").val(respuesta.data.solicitudId);
             $("#SolicitudEstadoD").val(respuesta.data.estadoSoliciud);
-            
-            respuesta.data.empleados.forEach(function (valor, indice, array) {
-               // $('#choices-multiple-remove-button' + '[value = ' + valor + ']').attr('selected', 'true');
-                //$('#choices-multiple-remove-button-d [value=' + valor + ']').attr('selected', true);   
-                $("#choices-multiple-remove-button-d")
-                    .find("option:contains('" + valor + "')")
-                    .attr("selected", "selected");
-            });
 
-           // $("#choices-multiple-remove-button-d").multiSelect('reload');  
-
-            
-
-        }
+            for (var tarea = 0; tarea < respuesta.data.tareas.length; tarea++) {
+                $("#e").append("<tr id=" + "tr" + respuesta.data.tareas[tarea].tareaId + ">" + "<td>" + respuesta.data.tareas[tarea].nombreOperacion + "</td> <td>" + "<button onclick='obtenerTareaporId(" + respuesta.data.tareas[tarea].tareaId + ")'>Editar</button>" +
+                    "</td> <td>" + "<button onclick='eliminarTareaEditar(" + respuesta.data.tareas[tarea].tareaId + ")'>Eliminar</button>" + "</td>" +
+        "</tr>")
+            }
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'No fue posible obtenr la solicitud. Por favor intente nuevamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        } 
     })
 }//fin listar
+
+
+function obtenerTareaporId(id) {
+    $.ajax({
+        url: '/Tareas/ObtenerTareaPorId',
+        data: jQuery.param({ id: id }),
+        type: 'get',
+        dataType: 'json',
+    }).done(function (respuesta) {
+        if (respuesta.status) {
+            editarViewTarea()
+            $('#formularioTareaEditAgregar').hide()
+            $("#TareaIdD").val(respuesta.data.tareaId);
+            $("#FechaInicioTareaD").val(respuesta.data.fechaInicioTarea);
+            $("#FechaFinTareaD").val(respuesta.data.fechaFinTarea);
+            $("#DescripcionTareaD").val(respuesta.data.descripcionTarea);
+            $("#OperacionIdD").val(respuesta.data.operacionId);
+            $("#UsuarioIdentityIdD").val(respuesta.data.usuarioIdentityId); TareaSolicitudIdD
+            $("#TareaSolicitudIdD").val(respuesta.data.solicitudId);
+            $("#TareaEstadoD").val(respuesta.data.estadoTarea);
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'No fue posible obtenr la tarea. Por favor intente nuevamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    })
+}
+
+function eliminarTareaEditar(id) {
+    $.ajax({
+        url: '/Tareas/EliminarTareaPorId',
+        data: jQuery.param({ id: id }),
+        type: 'delete',
+        dataType: 'json',
+    }).done(function (respuesta) {
+        if (respuesta.status) {
+
+            $("#tr" + respuesta.data).remove()
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Tarea eliminada exitosamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'No fue posible obtenr la tarea. Por favor intente nuevamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    })
+}
+
+function editarTarea() {
+    var empleadoId = document.getElementById('UsuarioIdentityIdD').value;
+    validarDisponibilidadEmpleado(empleadoId,2);
+}
+
+function editarTareaConfirm() {
+    var formData = new FormData();
+    formData.append("TareaId", document.getElementById('TareaIdD').value) ;
+    formData.append("FechaInicioTarea", document.getElementById('FechaInicioTareaD').value);
+    formData.append("FechaFinTarea", document.getElementById('FechaFinTareaD').value);
+    formData.append("DescripcionTarea", document.getElementById('DescripcionTareaD').value);
+    formData.append("OperacionId", document.getElementById('OperacionIdD').value);
+    formData.append("UsuarioIdentityId", document.getElementById('UsuarioIdentityIdD').value);
+    formData.append("SolicitudId", document.getElementById('TareaSolicitudIdD').value);
+    formData.append("EstadoTarea", document.getElementById('TareaEstadoD').value);
+    
+    $.ajax({
+        url: '/Tareas/Edit',
+        type: "POST",
+        contentType: false,
+        processData: false,
+        data: formData,
+    }).done(function (respuesta) {
+        if (respuesta.status) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Tarea editada correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'No fue posible obtenr la tarea. Por favor intente nuevamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    })
+}
+
+function editarViewTarea() {
+    document.getElementById("formularioTareaEdit").style.display = "block";
+    $('#btnAgregarTarea').hide()
+}
+
+function cerrarTareasEditar() {
+    $("#FechaInicioTareaD").val(moment("").format("YYYY-MM-DD"));
+    $("#FechaFinTareaD").val(moment("").format("YYYY-MM-DD"));
+    $("#UsuarioIdentityIdD").val(0);
+    $("#DescripcionTareaD").val("");
+    $("#OperacionIdD").val(0);
+    $("#TareaSolicitudIdD").val(0);
+    $("#TareaIdD").val(0);
+    $('#formularioTareaEdit').hide()
+    $('#btnAgregarTarea').show()
+}
+
+function editarAgregarTarea() {
+    var empleadoId = document.getElementById('UsuarioIdentityIdDA').value;
+    validarDisponibilidadEmpleado(empleadoId,3);
+}
+
+function editarAgregarTareaConfirm() {
+    var formData = new FormData();
+    formData.append("FechaInicioTarea", document.getElementById('FechaInicioTareaDA').value);
+    formData.append("FechaFinTarea", document.getElementById('FechaFinTareaDA').value);
+    formData.append("DescripcionTarea", document.getElementById('DescripcionTareaDA').value);
+    formData.append("OperacionId", document.getElementById('OperacionIdDA').value);
+    formData.append("UsuarioIdentityId", document.getElementById('UsuarioIdentityIdDA').value);
+    formData.append("SolicitudId", document.getElementById('SolicitudIdD').value);
+    $.ajax({
+        url: '/Tareas/Guardar',
+        type: "POST",
+        contentType: false,
+        processData: false,
+        data: formData,
+    }).done(function (respuesta) {
+        if (respuesta.status) {
+
+            $("#e").append("<tr id=" + "tr" + respuesta.data.tareaId + ">" + "<td>" + respuesta.data.nombreOperacion + "</td> <td>" + "<button onclick='obtenerTareaporId(" + respuesta.data.tareaId + ")'>Editar</button>" +
+                "</td> <td>" + "<button onclick='eliminarTareaEditar(" + respuesta.data.tareaId + ")'>Eliminar</button>" + "</td>" +
+                "</tr>")
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Tarea guardada correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'No fue posible obtenr la tarea. Por favor intente nuevamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    })
+}
+
+function editarAgregarViewTarea() {
+    document.getElementById("formularioTareaEditAgregar").style.display = "block";
+    $('#btnAgregarTarea').hide()
+}
+
+
+function cerrarTareasEditarAgregar() {
+    $("#FechaInicioTareaDA").val(moment("").format("YYYY-MM-DD"));
+    $("#FechaFinTareaDA").val(moment("").format("YYYY-MM-DD"));
+    $("#UsuarioIdentityIdDA").val(0);
+    $("#TareaSolicitudIdDA").val(0);
+    $("#DescripcionTareaDA").val("");
+    $("#OperacionIdDA").val(0);
+    $('#formularioTareaEditAgregar').hide()
+    $('#btnAgregarTarea').show()
+}
 
 function listar() {
     $.ajax({
@@ -247,8 +547,8 @@ function listar() {
                 data.push({
                     id: e.solicitudId,
                     title: titulo,
-                    start: moment(e.fechaInicio).format("YYYY-MM-DD") + " " + e.horaInicio,
-                    end: moment(e.fechaFin).format("YYYY-MM-DD") + " " + e.horaFinal,
+                    start: e.fechaInicio,
+                    end: e.fechaFin,
                     descripcion: e.descripcion
                 });
 

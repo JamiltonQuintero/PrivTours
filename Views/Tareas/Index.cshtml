@@ -34,49 +34,50 @@
     <div class="content">
         <div class="container-fluid">
        
-            @foreach (var tarea in Model)
-            {
-            <div class="card">
-                <h3 class="card-header">Solicitud #@tarea.SolicitudId</h3>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h4 class="card-subtitle mb-2 text-muted">Nombre cliente :  </h4>
-                            <p>@tarea.Cliente.Nombre @tarea.Cliente.Apellidos</p>
-                            <h4 class="card-subtitle mb-2 text-muted">Telefono cliente</h4>
-                            <p>@tarea.Cliente.Telefono</p>
+            <div class="row">
+                @foreach (var tarea in Model)
+                {
+                    <div class="card col-4">
+                        <h3 class="card-header">Solicitud #@tarea.SolicitudId</h3>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h4 class="card-subtitle mb-2 text-muted">Nombre cliente :  </h4>
+                                    <p>@tarea.Cliente.Nombre @tarea.Cliente.Apellidos</p>
+                                    <h4 class="card-subtitle mb-2 text-muted">Telefono cliente</h4>
+                                    <p>@tarea.Cliente.Telefono</p>
 
-                        </div>
-                        <div class="col-sm-3">
-                            <h4 class="card-subtitle mb-2 text-muted">Nombre servicio :  </h4>
-                            <p>@tarea.Servicio.Nombre</p>
-                            <h4 class="card-subtitle mb-2 text-muted">Descripcion servicio :  </h4>
-                            <p>@tarea.Descripcion</p>
+                                </div>
+                                <div class="col-sm-3">
+                                    <h4 class="card-subtitle mb-2 text-muted">Nombre servicio :  </h4>
+                                    <p>@tarea.Servicio.Nombre</p>
+                                    <h4 class="card-subtitle mb-2 text-muted">Descripcion servicio :  </h4>
+                                    <p>@tarea.Descripcion</p>
 
-                        </div>
+                                </div>
 
-                        <div class="col-sm-3 ">
-                            <h4 class="card-subtitle mb-2 text-muted">Fecha inicio:</h4>
-                            <p>@tarea.FechaInicio : @tarea.HoraInicio</p>
-                            <h4 class="card-subtitle mb-2 text-muted">Fecha Fin:</h4>
-                            <p>@tarea.FechaFin : @tarea.HoraFinal</p>
+                                <div class="col-sm-3 ">
+                                    <h4 class="card-subtitle mb-2 text-muted">Fecha inicio:</h4>
+                                    <p>@tarea.FechaInicio</p>
+                                    <h4 class="card-subtitle mb-2 text-muted">Fecha Fin:</h4>
+                                    <p>@tarea.FechaFin </p>
 
-                        </div>
+                                </div>
 
-                        <div class="col-sm-3" id="botones">
-                            <div class="order-column">
-                                <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 3, '@tarea.Servicio.Nombre');" class="btn btn-success">Iniciar tarea</a>
-                                <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 1, '@tarea.Servicio.Nombre');" class="btn btn-danger">Cancelar tarea</a>
-                                <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 2, '@tarea.Servicio.Nombre');" class="btn btn-primary">Terminar tarea</a>
+                                <div class="col-sm-3" id="botones">
+                                    <div class="order-column">
+                                        <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 3, '@tarea.Servicio.Nombre');" class="btn btn-success">Iniciar tarea</a>
+                                        <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 1, '@tarea.Servicio.Nombre');" class="btn btn-danger">Cancelar tarea</a>
+                                        <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 2, '@tarea.Servicio.Nombre');" class="btn btn-primary">Terminar tarea</a>
 
+                                    </div>
+
+                                </div>
                             </div>
-                            
                         </div>
-                    </div>                 
-                </div>
-                </div>
+                    </div>
                 }
-
+            </div>
             </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->

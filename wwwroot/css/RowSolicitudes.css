@@ -12,3 +12,8 @@
     flex-wrap: nowrap;
 }
 
+#centerObjects {
+    align-self: center;
+    text-align-last: center;
+}
+

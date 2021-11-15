@@ -21,10 +21,12 @@ namespace PrivTours.Controllers
 
         private readonly ISolicitudesBusiness _solicitudesBuseness;
         private readonly UserManager<UsuarioIdentity> _userManager;
-        public SolicitudesController(UserManager<UsuarioIdentity> userManager, ISolicitudesBusiness solicitudesBuseness)
+        private readonly ITareasBusiness _tareasBusiness;
+        public SolicitudesController(UserManager<UsuarioIdentity> userManager, ISolicitudesBusiness solicitudesBuseness, ITareasBusiness tareasBusiness)
         {
             _solicitudesBuseness = solicitudesBuseness;
             _userManager = userManager;
+            _tareasBusiness = tareasBusiness;
         }
 
         public async Task<IActionResult> Index()
@@ -45,6 +47,7 @@ namespace PrivTours.Controllers
             ViewData["Clientes"] = new SelectList(await _solicitudesBuseness.ObtenerListaClientes(), "ClienteId", "Nombre");
             ViewData["Empleados"] = new SelectList(listaUsuarios, "Id", "Nombre");
             ViewData["Servicios"] = new SelectList(await _solicitudesBuseness.ObtenerListaServicios(), "ServicioId", "Nombre");
+            ViewData["Operaciones"] = new SelectList(await _solicitudesBuseness.ObtenerListaOperaciones(), "OperacionId", "Nombre");
 
             return View();
         }
@@ -132,7 +135,7 @@ namespace PrivTours.Controllers
                     var textonNombres = "";
                     var texto = "";
                         
-                    foreach (var e in soli.DetalleSolicitudEmpleado)
+                    /*foreach (var e in soli.DetalleSolicitudEmpleado)
                     {
                         count++;
                         var usuario = await _userManager.FindByIdAsync(e.UsuarioIdentityId);
@@ -146,14 +149,12 @@ namespace PrivTours.Controllers
                         {
                             textonNombres += texto + ", ";
                         }
-                    }
+                    }*/
                     
                     SolicitudViewModel solicitud = new SolicitudViewModel
                     {
                         FechaInicio = soli.FechaInicio,
                         FechaFin = soli.FechaFin,
-                        HoraInicio = soli.HoraInicio,
-                        HoraFinal = soli.HoraFinal,
                         Descripcion = soli.Descripcion,
                         ClienteId = soli.ClienteId,
                         ServicioId = soli.ServicioId,
@@ -171,6 +172,35 @@ namespace PrivTours.Controllers
             }
         }
 
+
+        public async Task<IActionResult> GuardarTarea(SolicitudViewModel solicitudViewModel)
+        {
+            try
+            {
+                Tarea tarea = new Tarea
+                {
+                    FechaInicioTarea = solicitudViewModel.FechaInicioTarea,
+                    FechaFinTarea = solicitudViewModel.FechaFinTarea,
+                    OperacionId = solicitudViewModel.OperacionId,
+                    UsuarioIdentityId = solicitudViewModel.UsuarioIdentityId,
+                    DescripcionTarea = solicitudViewModel.DescripcionTarea
+                };
+
+                var tareaGuardada = await _solicitudesBuseness.GuardarTarea(tarea);
+
+                if (tareaGuardada != null)
+                {
+                    return Json(new { status = true, data = tareaGuardada});
+                }
+
+                return Json(new { status = false});
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
         public async Task<IActionResult> Listar()
         {
 
@@ -256,6 +286,11 @@ namespace PrivTours.Controllers
 
         public async Task<IActionResult> ObtenerDetalle(int? id)
         {
+
+            try 
+            {
+            
+
             if (id == null)
             {
                 return NotFound();
@@ -268,57 +303,67 @@ namespace PrivTours.Controllers
                 return NotFound();
             }
 
-            var detalleEmpleados = await _solicitudesBuseness.ObtenerDetalleEmpleadoPorSolicitudId(solicitud.SolicitudId);
-            var empleadosPorSolicitud = new List<string>();
-            foreach (DetalleSolicitudEmpleado d in detalleEmpleados)
-            {
-                var usuario = await _userManager.FindByIdAsync(d.UsuarioIdentityId);
-                if (usuario != null)
-                {
-                    empleadosPorSolicitud.Add(usuario.Id);
-                }
 
-            }
+            var tareas = await _tareasBusiness.ObtenerTareasPorSolicitudId(id.Value);
+                var tareasVM = new List<TareaViewModel>();
+                foreach(Tarea tarea in tareas)
+                {
+
+                    var operacion = await _tareasBusiness.obtenerOperacionPorId(tarea.OperacionId);
+
+                    var tvm = new TareaViewModel
+                    {
+                        TareaId = tarea.TareaId,
+                        nombreOperacion = operacion.Nombre
+                    };
+                    tareasVM.Add(tvm);
+                }
 
             SolicitudViewModel solicitudVM = new SolicitudViewModel
             {
                 SolicitudId = solicitud.SolicitudId,
                 FechaInicio = solicitud.FechaInicio,
                 FechaFin = solicitud.FechaFin,
-                HoraInicio = solicitud.HoraInicio,
-                HoraFinal = solicitud.HoraFinal,
                 Descripcion = solicitud.Descripcion,
                 ClienteId = solicitud.ClienteId,
                 ServicioId = solicitud.ServicioId,
                 EstadoSoliciud = solicitud.EstadoSoliciud,
-                Empleados = empleadosPorSolicitud.ToArray()
+                Tareas = tareasVM
             };
 
-            return Json(new { data = solicitudVM });
+            return Json(new { status = true, data = solicitudVM });
+
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false});
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(SolicitudViewModel solicitudViewModel)
+        public async Task<IActionResult> Edit(Solicitud solicitud)
         {
            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    Solicitud solicitud = new Solicitud
+                    var tareas =  await _tareasBusiness.ObtenerTareasPorSolicitudId(solicitud.SolicitudId);
+
+                    var fechasDeInicioTareas = new List<DateTime>();
+                    var fechasDefinTareas = new List<DateTime>();
+
+                    foreach (var t in tareas)
                     {
-                        SolicitudId = solicitudViewModel.SolicitudId,
-                        FechaInicio = solicitudViewModel.FechaInicio,
-                        FechaFin = solicitudViewModel.FechaFin,
-                        HoraInicio = solicitudViewModel.HoraInicio,
-                        HoraFinal = solicitudViewModel.HoraFinal,
-                        Descripcion = solicitudViewModel.Descripcion,
-                        ClienteId = solicitudViewModel.ClienteId,
-                        ServicioId = solicitudViewModel.ServicioId,
-                        EstadoSoliciud = solicitudViewModel.EstadoSoliciud,
-                    };
-                    var response = await _solicitudesBuseness.EliminarDetallesEmpleadosPorId(solicitud.SolicitudId);
-                    var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud, solicitudViewModel.Empleados);
+                        fechasDeInicioTareas.Add(t.FechaInicioTarea);
+                        fechasDefinTareas.Add(t.FechaFinTarea);
+                    }
+
+                    fechasDefinTareas.OrderByDescending(e => e).ToList();
+                    fechasDeInicioTareas.OrderByDescending(e => e).ToList();
+                    solicitud.FechaFin = fechasDefinTareas[fechasDefinTareas.Count - 1];
+                    solicitud.FechaInicio = fechasDeInicioTareas[0];
+                    var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud);
                     if (respuesta)
                     {
                         return Json(new { status = true});
@@ -338,28 +383,35 @@ namespace PrivTours.Controllers
             return Json(new { data = "error" });
         }
 
-        public async Task<IActionResult> Guardar(SolicitudViewModel solicitudViewModel)
-        {
-            if (!ModelState.IsValid)
+        public async Task<IActionResult> Guardar(string Descripcion, int ClienteId, int ServicioId, Tarea[] lTareas)
             {
-                return Json(new { status = false });
-            }
 
             try
             {
+
+                var fechasDeInicioTareas = new List<DateTime>();
+                var fechasDefinTareas = new List<DateTime>();
+
+                foreach (var t in lTareas)
+                {
+                    fechasDeInicioTareas.Add(t.FechaInicioTarea);
+                    fechasDefinTareas.Add(t.FechaFinTarea);
+                }
+
+                fechasDefinTareas.OrderByDescending(e => e).ToList();
+                fechasDeInicioTareas.OrderByDescending(e => e).ToList();
+                
                 Solicitud solicitud = new Solicitud
-                {                   
-                    FechaInicio = solicitudViewModel.FechaInicio,
-                    FechaFin = solicitudViewModel.FechaFin,
-                    HoraInicio = solicitudViewModel.HoraInicio,
-                    HoraFinal = solicitudViewModel.HoraFinal,
-                    Descripcion = solicitudViewModel.Descripcion,
-                    ClienteId = solicitudViewModel.ClienteId,
-                    ServicioId = solicitudViewModel.ServicioId,
-                    EstadoSoliciud = solicitudViewModel.EstadoSoliciud,
+                {                    
+                    FechaInicio = fechasDeInicioTareas[0],
+                    FechaFin =  fechasDefinTareas[fechasDefinTareas.Count - 1],
+                    Descripcion = Descripcion,
+                    ClienteId = ClienteId,
+                    ServicioId = ServicioId,
+                    Tareas = lTareas
                 };
 
-                var respuesta = await _solicitudesBuseness.GuardarSolicitud(solicitud, solicitudViewModel.Empleados);
+                var respuesta = await _solicitudesBuseness.GuardarSolicitud(solicitud);
                 if (respuesta)
                 {
                     return Json(new { status = true });
@@ -375,6 +427,7 @@ namespace PrivTours.Controllers
             }
 
         }
+
 
     }
 }
