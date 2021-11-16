@@ -9,6 +9,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text.Encodings.Web;
+using System.Web;
 
 namespace PrivTours.Controllers
 {
@@ -17,12 +22,14 @@ namespace PrivTours.Controllers
         private readonly UserManager<UsuarioIdentity> _userManager;
         private readonly SignInManager<UsuarioIdentity> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailSender _emailSender;
 
-        public UsuariosController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager, RoleManager<IdentityRole> roleManager)
+        public UsuariosController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager, RoleManager<IdentityRole> roleManager, IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _emailSender = emailSender;
         }
 
         
@@ -97,7 +104,6 @@ namespace PrivTours.Controllers
 
                     foreach (var error in result.Errors)
                     {
-                        ModelState.AddModelError("", error.Description);
                         if (!error.Code.Equals("DuplicateUserName"))
                         {
                             string errorMessage = error.Description;
@@ -346,21 +352,56 @@ namespace PrivTours.Controllers
 
        // [AllowAnonymous]
         [HttpPost]
-        public IActionResult RecuperarContrasena(RecuperarContrasenaViewModel recuperarContrasenaViewModel)
+        public async Task<IActionResult> RecuperarContrasenaAsync(RecuperarContrasenaViewModel recuperarContrasenaViewModel)
         {
 
-            if (ModelState.IsValid)
+            /*if (ModelState.IsValid)
+            {*/
+
+            /*var result = await _signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RecordarMe, false);
+
+            if (result.Succeeded)
             {
 
-                /*var result = await _signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RecordarMe, false);
+                return RedirectToAction("Index", "Home");
 
-                if (result.Succeeded)
+            }*/
+            /* ModelState.AddModelError("", "Error recuperar contraseña");
+         }*/
+            if (ModelState.IsValid)
+            {
+                //var user = await _userManager.FindByEmailAsync(Input.Email);
+                var user = await _userManager.FindByEmailAsync(recuperarContrasenaViewModel.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
+                    // Don't reveal that the user does not exist or is not confirmed
+                    return RedirectToPage("./ForgotPasswordConfirmation");
+                }
 
-                    return RedirectToAction("Index", "Home");
+                // For more information on how to enable account confirmation and password reset please 
+                // visit https://go.microsoft.com/fwlink/?LinkID=532713
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                /*var callbackUrl = Url.Page(
+                    "/Usuarios/ResetearContrasena",
+                    pageHandler: null,
+                    values: new { code },
+                    protocol: null);*/
+                var callbackUrl = Url.Action(
+                    "ResetearContrasena",
+                     "Usuarios",
+                     new { userId = user.Id, code = code },
+                     protocol: Request.Scheme);
 
-                }*/
-                ModelState.AddModelError("", "Error recuperar contraseña");
+                await _emailSender.SendEmailAsync(
+                    recuperarContrasenaViewModel.Email,
+                    "Restablecer contraseña",
+                    $"Hola {user.Nombre}, <br><br> ¿Olvidaste tu contraseña? <br> Hemos recibido una solicitud para restablecer tu contraseña. <br><br> Para restablecer la contraseña, haga clic <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>aquí</a>");
+                    //$"Para restablecer la contraseña, haga clic <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Aquí</a>.");
+
+                TempData["Accion"] = "RecuperarContrasena";
+                TempData["Mensaje"] = "Por favor revise su correo, se ha enviado enviado mensaje para recuperación";
+                return RedirectToAction("Index");
             }
 
             return View();
@@ -368,6 +409,47 @@ namespace PrivTours.Controllers
 
         public IActionResult AccesoDenegado()
         {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetearContrasena(string code)
+        {
+            if (code == null) 
+            {
+                return View("Error");
+            } else
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ResetearContrasena(string code, ResetearContrasenaViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist
+                return RedirectToPage("./ResetPasswordConfirmation");
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, code, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Login", "Usuarios");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
             return View();
         }
     }
