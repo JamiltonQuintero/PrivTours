@@ -10,14 +10,14 @@ namespace PrivTours.Models.Abstract
     {
 
         Task<List<Tarea>> ObtenerListaTareasPorEmpleadoId(string id);
-
+        Task<List<Tarea>> ObterTareas();     
         Task<List<Tarea>> ObtenerTareasPorSolicitudId(int solicitudId);
-
         Task<Operacion> obtenerOperacionPorId(int operacionId);
         Task<Tarea> ObtenerTareaPorId(int tareaId);
         Task<bool> EditarTarea(Tarea tarea);
         Task<bool> GuardarTarea(Tarea tarea);
-        Task<bool> EliminarTareaPorId(int id);        
+        Task<bool> EliminarTareaPorId(int id);
+        Task<bool> EditarTareaEstado(Tarea tarea);
 
     }
 }

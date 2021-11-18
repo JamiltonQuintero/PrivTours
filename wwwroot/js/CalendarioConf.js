@@ -660,12 +660,12 @@ function filtar() {
                 let data = [];
                 respuesta.data.map(function (e) {
                     console.log(e)
-                    var titulo = 'Empleado: ' + e.empleado.nombre + ' ' + e.empleado.apellido;
+                    var titulo = 'Empleado: ' + e.usuarioIdentity.nombre + ' ' + e.usuarioIdentity.apellido;
                     data.push({
                         id: e.solicitudId,
                         title: titulo,
-                        start: moment(e.fechaInicio).format("YYYY-MM-DD") + " " + e.horaInicio,
-                        end: moment(e.fechaFin).format("YYYY-MM-DD") + " " + e.horaFinal,
+                        start: e.fechaInicio,
+                        end: e.fechaFin,
                         descripcion: e.descripcion
                     });
 
@@ -699,8 +699,8 @@ function filtar() {
                     data.push({
                         id: e.solicitudId,
                         title: titulo,
-                        start: moment(e.fechaInicio).format("YYYY-MM-DD") + " " + e.horaInicio,
-                        end: moment(e.fechaFin).format("YYYY-MM-DD") + " " + e.horaFinal,
+                        start: e.fechaInicio,
+                        end: e.fechaFin,
                         descripcion: e.descripcion
                     });
 
@@ -734,8 +734,8 @@ function filtar() {
                     data.push({
                         id: e.solicitudId,
                         title: titulo,
-                        start: moment(e.fechaInicio).format("YYYY-MM-DD") + " " + e.horaInicio,
-                        end: moment(e.fechaFin).format("YYYY-MM-DD") + " " + e.horaFinal,
+                        start: e.fechaInicio,
+                        end:e.fechaFin,
                         descripcion: e.descripcion
                     });
 
@@ -769,8 +769,8 @@ function filtar() {
                     data.push({
                         id: e.solicitudId,
                         title: titulo,
-                        start: moment(e.fechaInicio).format("YYYY-MM-DD") + " " + e.horaInicio,
-                        end: moment(e.fechaFin).format("YYYY-MM-DD") + " " + e.horaFinal,
+                        start:e.fechaInicio,
+                        end: e.fechaFin,
                         descripcion: e.descripcion
                     });
 
