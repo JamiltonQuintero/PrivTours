@@ -8,51 +8,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Log in</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="~/adminlte/plugins/fontawesome-free/css/all.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="~/adminlte/dist/css/adminlte.min.css">
+    <link href="~/css/Login.css" rel="stylesheet" />
 </head>
 <body class="hold-transition login-page">
-    <div class="login-box">
-        <div class="login-logo">
-        </div>
-        <div class="card">
-            <div class="card-body login-card-body">
-                <p class="login-box-msg">Resetear Contraseña</p>
 
-                <form method="post" asp-action="ResetearContrasena">
-                    <input asp-for="Code" type="hidden" />
-                    <div class="input-group">
-                        <input asp-for="Email" required placeholder="E-mail" class="form-control" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
+    <div id="login-page">
+        <div class="login">
+            <div class='console-container'><span id='text'></span><div class='console-underscore' id='console'>&#95;</div></div>
+            <h1 class="login-title">PRIVTOURS</h1>
+            <h3 class="login-title">Restablecer Contraseña</h3>
+            
+            <form method="post" asp-action="ResetearContrasena">
+                <input asp-for="Code" type="hidden" />
+
+                <label for="email">E-mail</label>
+                <div class="input-email">
+                    <i class="fas fa-envelope icon"></i>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                    <input asp-for="Email" class="form-control" placeholder="Correo" type="email" name="email" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
                     </div>
-                    
-                    <div class="input-group">
-                        <input asp-for="Password" required placeholder="Contraseña" class="form-control" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <label for="email">Contraseña</label>
+                <div class="input-email">
+                    <i class="fas fa-envelope icon"></i>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                    <input asp-for="Password" class="form-control" placeholder="Contraseña" type="Password" name="Password" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
                     </div>
-                    
-                    <div class="input-group">
-                        <input type="password" asp-for="PasswordConfirm" required placeholder="Confirmar contraseña" class="form-control" />
-                        <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+                </div>
+
+                <label for="email">Confirmar contraseña</label>
+                <div class="input-email">
+                    <i class="fas fa-envelope icon"></i>
+                    <span asp-validation-for="PasswordConfirm" class="text-danger small"></span>
+                    <input asp-for="PasswordConfirm" class="form-control" placeholder="Confirmar contraseña" type="Password" name="PasswordConfirm" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
                     </div>
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">Resetear</button>
-                    </div>
+                </div>
+
+                <div class="col-5">
+                    <button type="submit" class="btn btn-primary btn-block">Restablecer</button>
+                </div>
 
 
-                    <div asp-validation-summary="All" class="text-danger small"></div>
-                </form>
+                <div asp-validation-summary="All" class="text-danger small"></div>
+            </form>
+           
+            <div class="created">
+
+                <p>
+                    Created by
+                    <a href="https://github.com/blendyvillamizar">Blendy Villamizar</a>
+                    <a href="https://github.com/andresgd7">Carlos Gomez</a>
+                    <a href="https://github.com/JamiltonQuintero">Jamilton Quintero</a>
+                </p>
             </div>
+        </div>
+
+        <div class="background">
         </div>
     </div>
 

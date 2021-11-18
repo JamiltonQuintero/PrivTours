@@ -15,33 +15,21 @@
         <div class="login">
             <div class='console-container'><span id='text'></span><div class='console-underscore' id='console'>&#95;</div></div>
             <h1 class="login-title">PRIVTOURS</h1>
-            <h3 class="login-title">Recuperar Contraseña</h3>
+            <h3 class="login-title">Confirmación Recuperar Contraseña</h3>
+            <br/>
 
-            <form method="post" asp-action="RecuperarContrasena">
-                
-                <label for="email">E-mail</label>
-                <div class="input-email">
-                    <i class="fas fa-envelope icon"></i>
-                    <span asp-validation-for="Email" class="text-danger small"></span>
-                    <input asp-for="Email" class="form-control" placeholder="Correo" type="email" name="email" required>
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-envelope"></span>
-                        </div>
-                    </div>
-                </div>
+            <p>
+                Por favor revise su correo electrónico para restablecer su contraseña.
+            </p>
+            <div class="col-auto">
+                <a asp-action="Login" class="btn btn-outline-secondary">Volver</a>
+            </div>
 
-                
-
-                <div class="col-5">
-                    <button type="submit" class="btn btn-primary btn-block">Restablecer</button>
-                </div>
-
-
-                <div asp-validation-summary="All" class="text-danger small"></div>
-            </form>
 
             <div class="created">
+                <br />
+                <br />
+                <br />
 
                 <p>
                     Created by
@@ -52,12 +40,24 @@
             </div>
         </div>
 
-        <div class="background">
+            <div class="background">
+            </div>
         </div>
-    </div>
 
 
 </body>
+
+<h1> Confirmación Recuperar Contraseña </h1><br>
+
+<p>
+    Por favor revise su correo electrónico para restablecer su contraseña.
+</p>
+<div class="form-group row col-xs-12">
+    <div class="col-auto">
+        <a asp-action="Login" class="btn btn-outline-secondary">Volver</a>
+    </div>
+
+
 </html>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

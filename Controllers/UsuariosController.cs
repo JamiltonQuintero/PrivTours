@@ -63,7 +63,7 @@ namespace PrivTours.Controllers
             return new List<string>(await _userManager.GetRolesAsync(usuario));
         }
 
-        //[Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         [HttpGet]
         public async Task<IActionResult> Crearusuario()
         {
@@ -71,7 +71,7 @@ namespace PrivTours.Controllers
             return View();
         }
 
-       // [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         public async Task<IActionResult> Crearusuario(UsuarioViewModel usuarioViewModel)
         {
@@ -139,7 +139,7 @@ namespace PrivTours.Controllers
             return View(usuarioViewModel);
         }
 
-       // [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Editar(string id)
         {
@@ -175,7 +175,7 @@ namespace PrivTours.Controllers
         // POST: Clientes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-       // [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(string id, [Bind("Id,Nombre,Apellido,Documento,Email,Telefono,RolSeleccionado")] UsuarioViewModel usuarioViewModel)
@@ -254,7 +254,7 @@ namespace PrivTours.Controllers
             return View(usuarioViewModel);
         }
         // GET: Clientes/Delete/5
-        //[Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -277,7 +277,7 @@ namespace PrivTours.Controllers
             }
         }
 
-       // [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> CambiarEstado(string id)
         {
             if (id == null)
@@ -314,7 +314,7 @@ namespace PrivTours.Controllers
             return View();
         }
 
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
@@ -336,57 +336,35 @@ namespace PrivTours.Controllers
             return View();
         }
 
-       // [AllowAnonymous]
+        [AllowAnonymous]
         public async Task<IActionResult> CerrarSesion()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Usuarios");
         }
 
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult RecuperarContrasena()
         {
             return View();
         }
 
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> RecuperarContrasenaAsync(RecuperarContrasenaViewModel recuperarContrasenaViewModel)
         {
-
-            /*if (ModelState.IsValid)
-            {*/
-
-            /*var result = await _signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RecordarMe, false);
-
-            if (result.Succeeded)
-            {
-
-                return RedirectToAction("Index", "Home");
-
-            }*/
-            /* ModelState.AddModelError("", "Error recuperar contraseña");
-         }*/
             if (ModelState.IsValid)
             {
-                //var user = await _userManager.FindByEmailAsync(Input.Email);
                 var user = await _userManager.FindByEmailAsync(recuperarContrasenaViewModel.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToPage("./ForgotPasswordConfirmation");
+                    return RedirectToAction("RecuperarContrasenaConfirmacion", "Usuarios");
                 }
 
-                // For more information on how to enable account confirmation and password reset please 
-                // visit https://go.microsoft.com/fwlink/?LinkID=532713
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                /*var callbackUrl = Url.Page(
-                    "/Usuarios/ResetearContrasena",
-                    pageHandler: null,
-                    values: new { code },
-                    protocol: null);*/
+               
                 var callbackUrl = Url.Action(
                     "ResetearContrasena",
                      "Usuarios",
@@ -397,17 +375,21 @@ namespace PrivTours.Controllers
                     recuperarContrasenaViewModel.Email,
                     "Restablecer contraseña",
                     $"Hola {user.Nombre}, <br><br> ¿Olvidaste tu contraseña? <br> Hemos recibido una solicitud para restablecer tu contraseña. <br><br> Para restablecer la contraseña, haga clic <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>aquí</a>");
-                    //$"Para restablecer la contraseña, haga clic <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Aquí</a>.");
+     
 
                 TempData["Accion"] = "RecuperarContrasena";
                 TempData["Mensaje"] = "Por favor revise su correo, se ha enviado enviado mensaje para recuperación";
-                return RedirectToAction("Index");
+                return RedirectToAction("RecuperarContrasenaConfirmacion", "Usuarios");
             }
 
             return View();
         }
 
         public IActionResult AccesoDenegado()
+        {
+            return View();
+        }
+        public IActionResult RecuperarContrasenaConfirmacion()
         {
             return View();
         }

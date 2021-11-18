@@ -27,80 +27,73 @@
     <div class="content">
         <div class="container-fluid">
             <hr />
-            <div class="row ">
-               
-                    
-                <form method="post" asp-action="CrearUsuario" id="formulario" name="formulario">
-                    <!--<div asp-validation-summary="All" class="text-danger"></div>-->
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!--<div class="row ">-->
 
-                    <div class="form-group row col-xs-12">
-                        <div class="col-auto">
-                            <p> <input asp-for="Nombre" required placeholder="Nombre" class="form-control" /></p>
-                            <span asp-validation-for="Nombre" class="text-danger"></span>
-                        </div>
 
-                        <div class="col-auto">
-                            <p> <input asp-for="Apellido" required placeholder="Apellido" class="form-control" /></p>
-                            <span asp-validation-for="Apellido" class="text-danger"></span>
-                        </div>
+            <form method="post" asp-action="CrearUsuario" id="formulario" name="formulario">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Documento" class="control-label">Documento <span style="color: red;">*</span></label>
+                        <input asp-for="Documento" required placeholder="Documento" class="form-control" />
+                        <span asp-validation-for="Documento" class="text-danger"></span>
                     </div>
-
-
-                    <div class="form-group row col-xs-12">
-                        <div class="col-auto">
-                            <input asp-for="Documento" required placeholder="Documento" class="form-control" />
-                            <span asp-validation-for="Documento" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-auto">
-                            <input asp-for="Telefono" required placeholder="Teléfono" class="form-control" />
-                            <span asp-validation-for="Telefono" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-auto">
-                            <input asp-for="Email" required placeholder="E-mail" class="form-control" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Telefono" class="control-label">Teléfono</label>
+                        <input asp-for="Telefono" required placeholder="Teléfono" class="form-control" />
+                        <span asp-validation-for="Telefono" class="text-danger"></span>
                     </div>
-
-
-                    <div class="form-group row col-xs-12">
-
-                        <div class="col-auto">
-                            <input asp-for="Password" required placeholder="Contraseña" class="form-control" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-
-                        <div class="col-auto">
-                            <input type="password" asp-for="ConfirmarPassword" required placeholder="Confirmar contraseña" class="form-control" />
-                            <span asp-validation-for="ConfirmarPassword" class="text-danger"></span>
-                        </div>
-
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Nombre" class="control-label">Nombre <span style="color: red;">*</span></label>
+                        <input asp-for="Nombre" required placeholder="Nombre" class="form-control" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
                     </div>
-
-
-                    <div class="form-group">
-                        <label asp-for="RolSeleccionado" class="control-label">Seleccionar rol</label>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Apellido" class="control-label">Apellido <span style="color: red;">*</span></label>
+                        <input asp-for="Apellido" required placeholder="Apellido" class="form-control" />
+                        <span asp-validation-for="Apellido" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Password" class="control-label">Constraseña <span style="color: red;">*</span></label>
+                        <input asp-for="Password" required placeholder="Contraseña" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="ConfirmarPassword" class="control-label">Confirmar contraseña <span style="color: red;">*</span></label>
+                        <input type="password" asp-for="ConfirmarPassword" required placeholder="Confirmar contraseña" class="form-control" />
+                        <span asp-validation-for="ConfirmarPassword" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Email" class="control-label">E-mail <span style="color: red;">*</span></label>
+                        <input asp-for="Email" required placeholder="E-mail" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="RolSeleccionado" class="control-label">Seleccionar rol <span style="color: red;">*</span></label>
                         <select asp-for="RolSeleccionado" class="form-control" asp-items="ViewBag.Roles">
                             <option value="">Seleccione...</option>
                         </select>
                         <span asp-validation-for="RolSeleccionado" class="text-danger"></span>
                     </div>
-
-                    <div class="form-group row col-xs-12">
-                        <div class="col-auto">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
                             <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
                         </div>
-
-                        <div class="col-auto">
+                        <div class="form-group col-md-6">
                             <input type="button" value="Crear" class="btn btn-primary" onclick="guardarUsuario()" />
                         </div>
                     </div>
-                </form>
-                    
-                  
-             </div>
+                </div>
+            </form>
+
+
+            <!--</div>-->
 
         </div><!-- /.container-fluid -->
     </div>
