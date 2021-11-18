@@ -1,4 +1,4 @@
-﻿@model PrivTours.ViewModels.RecuperarContrasenaViewModel
+﻿@model PrivTours.ViewModels.ResetearContrasenaViewModel
 
 @{
     Layout = null;
@@ -11,17 +11,20 @@
     <link href="~/css/Login.css" rel="stylesheet" />
 </head>
 <body class="hold-transition login-page">
+
     <div id="login-page">
         <div class="login">
             <div class='console-container'><span id='text'></span><div class='console-underscore' id='console'>&#95;</div></div>
             <h1 class="login-title">PRIVTOURS</h1>
-            <h3 class="login-title">Recuperar Contraseña</h3>
+            <h3 class="login-title">Restablecer Contraseña</h3>
 
-            <form method="post" asp-action="RecuperarContrasena">
+            <form method="post" asp-action="ResetearContrasena">
+                <input asp-for="Code" type="hidden" />
 
                 <label for="email">E-mail <span style="color: red;">*</span></label>
                 <div class="input-email">
                     <i class="fas fa-envelope icon"></i>
+
                     <input asp-for="Email" class="form-control" placeholder="Correo" type="email" name="email" required>
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -30,7 +33,29 @@
                     </div>
                 </div>
 
+                <label for="email">Contraseña <span style="color: red;">*</span></label>
+                <div class="input-email">
+                    <i class="fas fa-envelope icon"></i>
 
+                    <input asp-for="Password" class="form-control" placeholder="Contraseña" type="Password" name="Password" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <label for="email">Confirmar contraseña <span style="color: red;">*</span></label>
+                <div class="input-email">
+                    <i class="fas fa-envelope icon"></i>
+
+                    <input asp-for="PasswordConfirm" class="form-control" placeholder="Confirmar contraseña" type="Password" name="PasswordConfirm" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="col-5">
                     <button type="submit" class="btn btn-primary btn-block">Restablecer</button>

@@ -9,6 +9,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Text.Encodings.Web;
+using System.Web;
 
 namespace PrivTours.Controllers
 {
@@ -17,12 +22,14 @@ namespace PrivTours.Controllers
         private readonly UserManager<UsuarioIdentity> _userManager;
         private readonly SignInManager<UsuarioIdentity> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailSender _emailSender;
 
-        public UsuariosController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager, RoleManager<IdentityRole> roleManager)
+        public UsuariosController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager, RoleManager<IdentityRole> roleManager, IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _emailSender = emailSender;
         }
 
         
@@ -56,15 +63,15 @@ namespace PrivTours.Controllers
             return new List<string>(await _userManager.GetRolesAsync(usuario));
         }
 
-        //[Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         [HttpGet]
         public async Task<IActionResult> Crearusuario()
         {
-            ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+            ViewData["Roles"] = new SelectList(await _roleManager.Roles.OrderBy(x => x.Name).ToListAsync(), "Name", "Name");
             return View();
         }
 
-       // [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         public async Task<IActionResult> Crearusuario(UsuarioViewModel usuarioViewModel)
         {
@@ -97,21 +104,42 @@ namespace PrivTours.Controllers
 
                     foreach (var error in result.Errors)
                     {
-                        ModelState.AddModelError("", error.Description);
+                        if (!error.Code.Equals("DuplicateUserName"))
+                        {
+                            string errorMessage = error.Description;
+                            if (error.Description.EndsWith("is already taken."))
+                            {
+                                errorMessage = error.Description.Replace("is already taken", "ya está siendo usado por otro usuario");
+                            }
+                            ModelState.AddModelError("", errorMessage);
+                        }
+
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+                    
+                    string error = e.Message;
+                    if (e.InnerException.Message.Contains("DocumentouniqueIndex"))
+                    {
+                        error = "Ya existe un usuario con ese Documento";
+                        ModelState.AddModelError("Documento", error);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", error);
+                    }
                     return View(usuarioViewModel);
-                }
 
+                }
+                
             }
             ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
             return View(usuarioViewModel);
         }
 
-       // [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Editar(string id)
         {
@@ -147,26 +175,28 @@ namespace PrivTours.Controllers
         // POST: Clientes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-       // [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(string id, [Bind("Id,Nombre,Apellido,Documento,Email,Telefono,RolSeleccionado")] UsuarioViewModel usuarioViewModel)
         {
-
-            if (id != usuarioViewModel.Id)
+            try
             {
-                return Json(new { data = "Error" });
-            }
-
-            ModelState.Remove("Password");
-            ModelState.Remove("ConfirmarPassword");
-            if (ModelState.IsValid)
-            {
-                try
+                ModelState.Remove("Password");
+                ModelState.Remove("ConfirmarPassword");
+                if (id != usuarioViewModel.Id)
                 {
+                    ModelState.AddModelError("", "Usuario a editar no corresponde");
+                    throw new Exception("ERROR: Usuario a editar no corresponde");
+                }
+
+                if (ModelState.IsValid)
+                {
+
                     var usuario = await _userManager.FindByIdAsync(id);
 
                     usuario.Email = usuarioViewModel.Email;
+                    usuario.UserName = usuarioViewModel.Email;
                     usuario.Nombre = usuarioViewModel.Nombre;
                     usuario.Apellido = usuarioViewModel.Apellido;
                     usuario.Documento = usuarioViewModel.Documento;
@@ -177,25 +207,54 @@ namespace PrivTours.Controllers
                     {
                         await _userManager.AddToRoleAsync(usuario, usuarioViewModel.RolSeleccionado);
                     }
-                    else if(!RolesUsuario.Contains(usuarioViewModel.RolSeleccionado)){
+                    else if (!RolesUsuario.Contains(usuarioViewModel.RolSeleccionado))
+                    {
                         await _userManager.RemoveFromRoleAsync(usuario, RolesUsuario.First());
                         await _userManager.AddToRoleAsync(usuario, usuarioViewModel.RolSeleccionado);
                     }
-                    
-                    await _userManager.UpdateAsync(usuario);
-                    return Json(new { data = "ok" });
 
-                }
-                catch (Exception e)
-                {
+                    var result = await _userManager.UpdateAsync(usuario);
+                    if (result.Succeeded)
+                    {
+                        TempData["Accion"] = "Editar";
+                        TempData["Mensaje"] = "Se ha actualizado correctamente el usuario " + usuario.Nombre;
+                        return RedirectToAction("Index");
+                    }
 
-                    return Json(new { data = e.Message });
+                    foreach (var error in result.Errors)
+                    {
+                        if (!error.Code.Equals("DuplicateUserName"))
+                        {
+                            string errorMessage = error.Description;
+                            if (error.Description.EndsWith("is already taken."))
+                            {
+                                errorMessage = error.Description.Replace("is already taken", "ya está siendo usado por otro usuario");
+                            }
+                            ModelState.AddModelError("", errorMessage);
+                        }
+                    }
+
                 }
             }
-            return Json(new { data = "error" });
+            catch (Exception e)
+            {
+                ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+                string error = e.Message;
+                if (e.InnerException.Message.Contains("DocumentouniqueIndex"))
+                {
+                    error = "Ya existe un usuario con ese Documento";
+                    ModelState.AddModelError("Documento", error);
+                } else
+                {
+                    ModelState.AddModelError("", error);
+                }
+                return View(usuarioViewModel);
+            }
+            ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+            return View(usuarioViewModel);
         }
         // GET: Clientes/Delete/5
-        //[Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -218,7 +277,7 @@ namespace PrivTours.Controllers
             }
         }
 
-       // [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> CambiarEstado(string id)
         {
             if (id == null)
@@ -255,7 +314,7 @@ namespace PrivTours.Controllers
             return View();
         }
 
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
@@ -271,43 +330,56 @@ namespace PrivTours.Controllers
                     return RedirectToAction("Index", "Usuarios");
 
                 }
-                ModelState.AddModelError("", "Error login");
+                ModelState.AddModelError("", "Credenciales incorrectas");
             }
 
             return View();
         }
 
-       // [AllowAnonymous]
+        [AllowAnonymous]
         public async Task<IActionResult> CerrarSesion()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Dashboard", "Admin");
+            return RedirectToAction("Login", "Usuarios");
         }
 
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult RecuperarContrasena()
         {
             return View();
         }
 
-       // [AllowAnonymous]
+        [AllowAnonymous]
         [HttpPost]
-        public IActionResult RecuperarContrasena(RecuperarContrasenaViewModel recuperarContrasenaViewModel)
+        public async Task<IActionResult> RecuperarContrasenaAsync(RecuperarContrasenaViewModel recuperarContrasenaViewModel)
         {
-
             if (ModelState.IsValid)
             {
-
-                /*var result = await _signInManager.PasswordSignInAsync(loginViewModel.Email, loginViewModel.Password, loginViewModel.RecordarMe, false);
-
-                if (result.Succeeded)
+                var user = await _userManager.FindByEmailAsync(recuperarContrasenaViewModel.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
+                    ModelState.AddModelError("", "No existe usuario registrado con ese correo");
+                    return View();
+                }
 
-                    return RedirectToAction("Index", "Home");
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+               
+                var callbackUrl = Url.Action(
+                    "ResetearContrasena",
+                     "Usuarios",
+                     new { userId = user.Id, code = code },
+                     protocol: Request.Scheme);
 
-                }*/
-                ModelState.AddModelError("", "Error recuperar contraseña");
+                await _emailSender.SendEmailAsync(
+                    recuperarContrasenaViewModel.Email,
+                    "Restablecer contraseña",
+                    $"Hola {user.Nombre}, <br><br> ¿Olvidaste tu contraseña? <br> Hemos recibido una solicitud para restablecer tu contraseña. <br><br> Para restablecer la contraseña, haga clic <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>aquí</a>");
+     
+
+                TempData["Accion"] = "RecuperarContrasena";
+                TempData["Mensaje"] = "Por favor revise su correo, se ha enviado enviado mensaje para recuperación";
+                return RedirectToAction("RecuperarContrasenaConfirmacion", "Usuarios");
             }
 
             return View();
@@ -317,5 +389,51 @@ namespace PrivTours.Controllers
         {
             return View();
         }
+        public IActionResult RecuperarContrasenaConfirmacion()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetearContrasena(string code)
+        {
+            if (code == null) 
+            {
+                return View("Error");
+            } else
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ResetearContrasena(string code, ResetearContrasenaViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "No existe usuario registrado con ese correo");
+                return View();
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, code, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Login", "Usuarios");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View();
+        }
     }
+
 }

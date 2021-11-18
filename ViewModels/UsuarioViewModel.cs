@@ -40,7 +40,7 @@ namespace PrivTours.ViewModels
         public string Password { get; set; }
 
 
-        [Required(ErrorMessage = "La contraseña es requerida")]
+        [Required(ErrorMessage = "Confirmar contraseña es requerida")]
         [DisplayName("Confirmar Contraseña")]
         [DataType(DataType.Password)]
         [StringLength(16, ErrorMessage = "El {0} debe tener al menos {2} y maximo {1} caracteres.", MinimumLength = 8)]
@@ -48,6 +48,8 @@ namespace PrivTours.ViewModels
         public string ConfirmarPassword { get; set; }
 
         public List<string> Rol { get; set; }
+
+        [Required(ErrorMessage = "El rol es requerido")]
         public string RolSeleccionado { get; set; }
 
         public int TipoContrato { get; set; }

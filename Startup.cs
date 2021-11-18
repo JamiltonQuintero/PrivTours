@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,8 +36,8 @@ namespace PrivTours
             var conexion = Configuration["ConnectionStrings:conexion"];
             services.AddDbContext<DbContextPriv>(option => option.UseSqlServer(conexion));
 
-            services.AddIdentity<UsuarioIdentity, IdentityRole>().AddEntityFrameworkStores<DbContextPriv>();
-
+            services.AddIdentity<UsuarioIdentity, IdentityRole>().AddEntityFrameworkStores<DbContextPriv>().AddDefaultTokenProviders();
+            
             services.AddScoped<ISolicitudesBusiness, SolicitudesBusiness>();
             services.AddScoped<IEmpleadosBusiness, EmpleadosBusiness>();
             services.AddScoped<ITareasBusiness, TareasBusiness>();
@@ -70,6 +71,11 @@ namespace PrivTours
                 options.SlidingExpiration = true;
 
             });
+
+            // requires
+            // using Microsoft.AspNetCore.Identity.UI.Services;
+            // using WebPWrecover.Services;
+            services.AddTransient<IEmailSender, EmailSender>();
 
         }
 

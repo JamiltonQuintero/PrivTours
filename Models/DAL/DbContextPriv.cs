@@ -15,6 +15,16 @@ namespace PrivTours.Models.DAL
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<UsuarioIdentity>()
+                .HasIndex("Documento")
+                        .IsUnique()
+                        .HasName("DocumentouniqueIndex")
+                        .HasFilter("[Documento] IS NOT NULL");
+        }
+
         public DbSet<Cliente> Clientes { get; set; }
 
         public DbSet<Empleado> Empleados { get; set; }

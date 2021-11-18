@@ -180,3 +180,11 @@ button[type="submit"] {
     display: inline;
     margin: 0;
 }
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+a.text-danger:hover, a.text-danger:focus {
+    color: #a71d2a !important;
+}
