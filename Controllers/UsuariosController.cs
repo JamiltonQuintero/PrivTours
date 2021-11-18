@@ -359,8 +359,8 @@ namespace PrivTours.Controllers
                 var user = await _userManager.FindByEmailAsync(recuperarContrasenaViewModel.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
-                    // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToAction("RecuperarContrasenaConfirmacion", "Usuarios");
+                    ModelState.AddModelError("", "No existe usuario registrado con ese correo");
+                    return View();
                 }
 
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -418,8 +418,8 @@ namespace PrivTours.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                // Don't reveal that the user does not exist
-                return RedirectToPage("./ResetPasswordConfirmation");
+                ModelState.AddModelError("", "No existe usuario registrado con ese correo");
+                return View();
             }
 
             var result = await _userManager.ResetPasswordAsync(user, code, model.Password);

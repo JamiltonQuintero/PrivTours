@@ -17,14 +17,14 @@
             <div class='console-container'><span id='text'></span><div class='console-underscore' id='console'>&#95;</div></div>
             <h1 class="login-title">PRIVTOURS</h1>
             <h3 class="login-title">Restablecer Contraseña</h3>
-            
+
             <form method="post" asp-action="ResetearContrasena">
                 <input asp-for="Code" type="hidden" />
 
-                <label for="email">E-mail</label>
+                <label for="email">E-mail <span style="color: red;">*</span></label>
                 <div class="input-email">
                     <i class="fas fa-envelope icon"></i>
-                    <span asp-validation-for="Email" class="text-danger small"></span>
+
                     <input asp-for="Email" class="form-control" placeholder="Correo" type="email" name="email" required>
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -33,10 +33,10 @@
                     </div>
                 </div>
 
-                <label for="email">Contraseña</label>
+                <label for="email">Contraseña <span style="color: red;">*</span></label>
                 <div class="input-email">
                     <i class="fas fa-envelope icon"></i>
-                    <span asp-validation-for="Password" class="text-danger small"></span>
+
                     <input asp-for="Password" class="form-control" placeholder="Contraseña" type="Password" name="Password" required>
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -45,10 +45,10 @@
                     </div>
                 </div>
 
-                <label for="email">Confirmar contraseña</label>
+                <label for="email">Confirmar contraseña <span style="color: red;">*</span></label>
                 <div class="input-email">
                     <i class="fas fa-envelope icon"></i>
-                    <span asp-validation-for="PasswordConfirm" class="text-danger small"></span>
+
                     <input asp-for="PasswordConfirm" class="form-control" placeholder="Confirmar contraseña" type="Password" name="PasswordConfirm" required>
                     <div class="input-group-append">
                         <div class="input-group-text">
@@ -64,7 +64,7 @@
 
                 <div asp-validation-summary="All" class="text-danger small"></div>
             </form>
-           
+
             <div class="created">
 
                 <p>
@@ -83,6 +83,60 @@
 
 </body>
 </html>
+<script>
+
+    consoleText(['Guidance that meets your expectations.', '¡Viajar por Colombia nunca fue tan fácil!', '“CUIDA DE LOS DEMÁS CUIDANDO DE TI MISMO”.'], 'text', ['tomato', 'rebeccapurple', 'lightblue']);
+
+    function consoleText(words, id, colors) {
+        if (colors === undefined) colors = ['#fff'];
+        var visible = true;
+        var con = document.getElementById('console');
+        var letterCount = 1;
+        var x = 1;
+        var waiting = false;
+        var target = document.getElementById(id)
+        target.setAttribute('style', 'color:' + colors[0])
+        window.setInterval(function () {
+
+            if (letterCount === 0 && waiting === false) {
+                waiting = true;
+                target.innerHTML = words[0].substring(0, letterCount)
+                window.setTimeout(function () {
+                    var usedColor = colors.shift();
+                    colors.push(usedColor);
+                    var usedWord = words.shift();
+                    words.push(usedWord);
+                    x = 1;
+                    target.setAttribute('style', 'color:' + colors[0])
+                    letterCount += x;
+                    waiting = false;
+                }, 1000)
+            } else if (letterCount === words[0].length + 1 && waiting === false) {
+                waiting = true;
+                window.setTimeout(function () {
+                    x = -1;
+                    letterCount += x;
+                    waiting = false;
+                }, 1000)
+            } else if (waiting === false) {
+                target.innerHTML = words[0].substring(0, letterCount)
+                letterCount += x;
+            }
+        }, 120)
+        window.setInterval(function () {
+            if (visible === true) {
+                con.className = 'console-underscore hidden'
+                visible = false;
+
+            } else {
+                con.className = 'console-underscore'
+
+                visible = true;
+            }
+        }, 400)
+    }
+
+</script>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
