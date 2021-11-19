@@ -202,7 +202,7 @@
                                         </div>
                                         <div class="form group">
                                             <label>Estado Actual solicitud</label>
-                                            <select asp-for="EstadoSoliciud" class="form-control input w-full border mt-2 flex-1" id="TareaEstadoD">
+                                            <select asp-for="EstadoTarea" class="form-control input w-full border mt-2 flex-1" id="TareaEstadoD">
                                                 <option value="1">RESERVADA</option>
                                                 <option value="2">INICIADA</option>
                                                 <option value="3">VENCIDA</option>
@@ -517,13 +517,6 @@
             });
 
         });
-
-        var today = new Date().toISOString().split('T')[0];
-        $("#FechaInicioD").attr('min', today);
-        $("#FechaInicio").attr('min', today);
-        $("#FechaFinD").attr('min', today);
-        $("#FechaFin").attr('min', today);
-
 
 
     </script>

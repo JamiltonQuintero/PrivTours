@@ -55,6 +55,41 @@ function calendario() {
 function agregarTarea() {
     document.getElementById("formularioTarea").style.display = "block";
     $('#btnAgregarTareaC').hide()
+    inhabilitarDiasAnteriores(1)
+}
+
+function inhabilitarDiasAnteriores(tipo) {
+    var dtToday = new Date();
+    var month = dtToday.getMonth() + 1;
+    var day = dtToday.getDate();
+    var year = dtToday.getFullYear();
+    if (month < 10)
+        month = '0' + month.toString();
+    if (day < 10)
+        day = '0' + day.toString();
+
+    var today = year + '-' + month + '-' + day;
+    var hours = new Date().getHours().toString();
+    var minutes = new Date().getMinutes();
+
+    if (minutes < 10)
+        minutes = '0' + minutes.toString();
+
+    today = today + 'T' + hours + ':' + minutes;
+
+    if (tipo == 1) {
+        document.getElementById("FechaInicioTarea").value = today
+        $("#FechaInicioTarea").attr('min', today);
+        $("#FechaFinTarea").attr('min', today);
+    } else if (tipo == 2) {
+        $("#FechaInicioTareaD").attr('min', today);
+        $("#FechaFinTareaD").attr('min', today);
+    } else {
+        document.getElementById("FechaInicioTareaDA").value = today
+
+        $("#FechaInicioTareaDA").attr('min', today);
+        $("#FechaFinTareaDA").attr('min', today);
+    }    
 }
 
 
@@ -117,26 +152,69 @@ function limpiarModal() {
 
 
 function guardarTarea() {
-    count+=1;
-    let tarea = {
-        "Id": count,
-        "FechaInicioTarea": document.getElementById('FechaInicioTarea').value,
-        "FechaFinTarea": document.getElementById('FechaFinTarea').value,
-        "DescripcionTarea": document.getElementById('DescripcionTarea').value,
-        "UsuarioIdentityId": document.getElementById('UsuarioIdentityId').value,
-        "OperacionId": document.getElementById('OperacionId').value
+    var continuar = true;
+    var newTareas = new Array();
+    var empleadoId = document.getElementById('UsuarioIdentityId').value;
+    for (var i = 0; i < lTareas.length; i++) {
+        if (empleadoId == lTareas[i].UsuarioIdentityId) {
+            newTareas.push(lTareas[i]);
+        }
     }
 
-    $("#d").append("<tr id=" + "tr" + count + ">" + "<td>" + $('#OperacionId option:selected').text() + "</td> <td>" + "<button onclick='eliminarTarea(" + tarea.Id+")'>Eliminar</button>" + "</td>" +
-        "</tr>")
-    lTareas.push(tarea)
+    if (newTareas.length > 0) {
+        
+        newTareas.map(function (e) {
 
-    Swal.fire({
-        icon: 'success',
-        title: 'Tarea creada exitosamente',
-        showConfirmButton: false,
-        timer: 1500
-    })
+            var start = e.FechaInicioTarea;
+            var end = e.FechaFinTarea;
+
+            var startNew = null;
+            var endNew = null;
+
+            startNew = $("#FechaInicioTarea").val();
+            endNew = $("#FechaFinTarea").val();
+
+            const test = moment(startNew).isBetween(start, end);
+            const test2 = moment(endNew).isBetween(start, end);
+
+            if (test || test2) {
+                continuar = false;
+            }
+        });
+
+    }
+
+    if (continuar) {
+        count += 1;
+        let tarea = {
+            "Id": count,
+            "FechaInicioTarea": document.getElementById('FechaInicioTarea').value,
+            "FechaFinTarea": document.getElementById('FechaFinTarea').value,
+            "DescripcionTarea": document.getElementById('DescripcionTarea').value,
+            "UsuarioIdentityId": document.getElementById('UsuarioIdentityId').value,
+            "OperacionId": document.getElementById('OperacionId').value
+        }
+
+        $("#d").append("<tr id=" + "tr" + count + ">" + "<td>" + $('#OperacionId option:selected').text() + "</td> <td>" + "<button onclick='eliminarTarea(" + tarea.Id + ")'>Eliminar</button>" + "</td>" +
+            "</tr>")
+        lTareas.push(tarea)
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Tarea creada exitosamente',
+            showConfirmButton: false,
+            timer: 1500
+        })
+
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'El empleado seleccionado no se encuentra disponible, por favor validar.',
+            showConfirmButton: false,
+            timer: 9000
+        })
+    }
+
 }
 
 function crearTarea() {
@@ -181,6 +259,7 @@ function validarDisponibilidadEmpleado(empleadoId, tipoGuardado ) {
                     continuar = false;
                 }
 
+                
             });
 
             if (continuar) {
@@ -382,22 +461,66 @@ function obtenerTareaporId(id) {
 }
 
 function eliminarTareaEditar(id) {
+
+    var solicitudEstado = document.getElementById("SolicitudEstadoD").value;
+    if (solicitudEstado == 1 || solicitudEstado == 2) {
+
     $.ajax({
-        url: '/Tareas/EliminarTareaPorId',
+        url: '/Tareas/ObtenerTareaPorId',
         data: jQuery.param({ id: id }),
-        type: 'delete',
+        type: 'get',
         dataType: 'json',
     }).done(function (respuesta) {
         if (respuesta.status) {
 
-            $("#tr" + respuesta.data).remove()
+            var estadoTarea = respuesta.data.estadoTarea;
+            if (estadoTarea == 1 || estadoTarea == 2) {
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Tarea eliminada exitosamente',
-                showConfirmButton: false,
-                timer: 1500
-            })
+                $.ajax({
+                    url: '/Tareas/EliminarTareaPorId',
+                    data: jQuery.param({ id: id }),
+                    type: 'delete',
+                    dataType: 'json',
+                }).done(function (respuesta) {
+                    if (respuesta.status) {
+
+                        $("#tr" + respuesta.data).remove()
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Tarea eliminada exitosamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'No fue posible obtenr la tarea. Por favor intente nuevamente',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+                })
+
+            } else {
+                var estado = null;
+                if (estadoTarea == 3) {
+                    estado = "VENCIDA";
+                } else if (estadoTarea == 4) {
+                    estado = "CANCELADA";
+                } else if (estadoTarea == 5) {
+                    estado = "FINALIZADA EMPLEADO";
+                } else {
+                    estado = "FINALIZADA ADMINISTRADOR"
+                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Esta tarea tiene estado ' + estado + ' ,Por lo tanto ya no puedes eliminarla',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
 
         } else {
             Swal.fire({
@@ -408,11 +531,103 @@ function eliminarTareaEditar(id) {
             })
         }
     })
+
+    } else {
+        var estado = null;
+        if (solicitudEstado == 3) {
+            estado = "VENCIDO";
+        } else if (solicitudEstado == 4) {
+            estado = "CANCELADO";
+        } else if (solicitudEstado == 5) {
+            estado = "FINALIZADO EMPLEADO";
+        } else {
+            estado = "FINALIZADO ADMINISTRADOR"
+        }
+        Swal.fire({
+            icon: 'error',
+            title: 'Esta solicitud tiene estado ' + estado + ' ,Por lo tanto ya no puedes eliminar las tareas',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
 }
 
 function editarTarea() {
-    var empleadoId = document.getElementById('UsuarioIdentityIdD').value;
-    validarDisponibilidadEmpleado(empleadoId,2);
+    var solicitudEstado = document.getElementById("SolicitudEstadoD").value;
+    if (solicitudEstado == 1 || solicitudEstado == 2) {
+    var estadoTarea = document.getElementById('TareaEstadoD').value;
+    if (estadoTarea == 1 || estadoTarea == 2) {
+        var empleadoId = document.getElementById('UsuarioIdentityIdD').value;
+        var id = document.getElementById('TareaIdD').value;
+        var continuar = false;
+        $.ajax({
+            url: '/Tareas/ObtenerTareaPorId',
+            data: jQuery.param({ id: id }),
+            type: 'get',
+            dataType: 'json',
+        }).done(function (respuesta) {
+            if (respuesta.status) {
+
+                var fechaInicio = $("#FechaInicioTareaD").val()
+                var fechaFin = $("#FechaFinTareaD").val();
+
+                if (fechaInicio == respuesta.data.fechaInicioTarea && fechaFin == respuesta.data.fechaFinTarea && empleadoId == respuesta.data.usuarioIdentityId) {
+                    continuar = true;
+                }
+
+                if (continuar) {
+                    editarTareaConfirm()
+                } else {
+                    validarDisponibilidadEmpleado(empleadoId, 2);
+                }
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No fue posible obtenr la tarea. Por favor intente nuevamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        })
+    } else {
+        var estado = null;
+        if (estadoTarea == 3) {
+            estado = "VENCIDA";
+        } else if (estadoTarea == 4) {
+            estado = "CANCELADA";
+        }else if (estadoTarea == 5) {
+            estado = "FINALIZADA EMPLEADO";
+        }else{
+            estado = "FINALIZADA ADMINISTRADOR"
+        }
+        Swal.fire({
+            icon: 'error',
+            title: 'Esta tarea tiene estado ' + estado + ' ,Por lo tanto ya no puedes editarla',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
+
+} else {
+    var estado = null;
+    if (solicitudEstado == 3) {
+        estado = "VENCIDO";
+    } else if (solicitudEstado == 4) {
+        estado = "CANCELADO";
+    } else if (solicitudEstado == 5) {
+        estado = "FINALIZADO EMPLEADO";
+    } else {
+        estado = "FINALIZADO ADMINISTRADOR"
+    }
+    Swal.fire({
+        icon: 'error',
+        title: 'Esta solicitud tiene estado ' + estado + ' ,Por lo tanto ya no puedes editar las tareas',
+        showConfirmButton: false,
+        timer: 1500
+    })
+}
+    
 }
 
 function editarTareaConfirm() {
@@ -455,6 +670,7 @@ function editarTareaConfirm() {
 function editarViewTarea() {
     document.getElementById("formularioTareaEdit").style.display = "block";
     $('#btnAgregarTarea').hide()
+    inhabilitarDiasAnteriores(2)
 }
 
 function cerrarTareasEditar() {
@@ -491,7 +707,7 @@ function editarAgregarTareaConfirm() {
     }).done(function (respuesta) {
         if (respuesta.status) {
 
-            $("#e").append("<tr id=" + "tr" + respuesta.data.tareaId + ">" + "<td>" + respuesta.data.nombreOperacion + "</td> <td>" + "<button onclick='obtenerTareaporId(" + respuesta.data.tareaId + ")'>Editar</button>" +
+            $("#e").append("<tr id=" + "tr" + respuesta.data.tareaId + ">" + "<td>" + respuesta.data.nombreOperacion + "</td> <td>" + "<button  onclick='obtenerTareaporId(" + respuesta.data.tareaId + ")'class='btn' <i class='fas fa - user - edit'></i>></button>" +
                 "</td> <td>" + "<button onclick='eliminarTareaEditar(" + respuesta.data.tareaId + ")'>Eliminar</button>" + "</td>" +
                 "</tr>")
 
@@ -514,8 +730,30 @@ function editarAgregarTareaConfirm() {
 }
 
 function editarAgregarViewTarea() {
-    document.getElementById("formularioTareaEditAgregar").style.display = "block";
-    $('#btnAgregarTarea').hide()
+    var solicitudEstado = document.getElementById("SolicitudEstadoD").value;
+    if (solicitudEstado == 1 || solicitudEstado == 2) {
+        document.getElementById("formularioTareaEditAgregar").style.display = "block";
+        $('#btnAgregarTarea').hide()
+        inhabilitarDiasAnteriores(3)
+    } else {
+        var estado = null;
+        if (solicitudEstado == 3) {
+            estado = "VENCIDO";
+        } else if (solicitudEstado == 4) {
+            estado = "CANCELADO";
+        } else if (solicitudEstado == 5) {
+            estado = "FINALIZADO EMPLEADO";
+        } else {
+            estado = "FINALIZADO ADMINISTRADOR"
+        }
+        Swal.fire({
+            icon: 'error',
+            title: 'Esta solicitud tiene estado ' + estado + ' ,Por lo tanto ya no puedes editarla',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
+    
 }
 
 

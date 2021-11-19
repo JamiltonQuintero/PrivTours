@@ -32,8 +32,9 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-
+            
             <div class="row">
+                
                 @foreach (var tarea in Model)
                 {
 
@@ -78,7 +79,7 @@
             </div>
         </div>
         -->
-
+                    
                     
                         <div class="courses-container">
                             <div class="course">
@@ -99,8 +100,33 @@
                                 <div class="course-info">
                                     <div class="progress-container">
                                         <div class="progress"></div>
+                                       
                                         <span class="progress-text">
-                                            6/9 Challenges
+
+                                            @if (tarea.EstadoTarea == 1)
+                                            {
+                                            <a>RESERVADA</a>
+                                            }
+                                            else if (tarea.EstadoTarea == 2)
+                                            {
+                                        <a>INICIADA</a>
+                                            }
+                                            else if (tarea.EstadoTarea == 3)
+                                            {
+                                        <a>VENCIDA</a>
+                                            }
+                                            else if (tarea.EstadoTarea == 4)
+                                            {
+                                        <a>CANCELADA</a>
+                                            }
+                                            else if (tarea.EstadoTarea == 5)
+                                            {
+                                        <a>FINALIZADA EMPLEADO</a>
+                                            }
+                                            else if (tarea.EstadoTarea == 6)
+                                            {
+                                        <a>FINALIZADA ADMIN</a>
+                                            }
                                         </span>
                                     </div>
                                     <h6>Tarea # @tarea.TareaId</h6>
