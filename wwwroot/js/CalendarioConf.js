@@ -2,7 +2,8 @@
 var filtro = null;
 var lTareas = new Array();
 var count = 0;
-
+var cancelaTarea = false;
+var cancelaSolicitud = false;
 
 function calendario() {
 
@@ -152,6 +153,15 @@ function limpiarModal() {
 
 
 function guardarTarea() {
+
+    var fechaInicioTarea = null;
+    var fechaFinTarea = null;
+
+    fechaInicioTarea = $("#FechaInicioTarea").val();
+    fechaFinTarea = $("#FechaFinTarea").val();
+
+    if (Date.parse(fechaFinTarea) > Date.parse(fechaInicioTarea)) {
+
     var continuar = true;
     var newTareas = new Array();
     var empleadoId = document.getElementById('UsuarioIdentityId').value;
@@ -186,6 +196,7 @@ function guardarTarea() {
 
     if (continuar) {
         count += 1;
+
         let tarea = {
             "Id": count,
             "FechaInicioTarea": document.getElementById('FechaInicioTarea').value,
@@ -205,6 +216,7 @@ function guardarTarea() {
             showConfirmButton: false,
             timer: 1500
         })
+        
 
     } else {
         Swal.fire({
@@ -212,6 +224,29 @@ function guardarTarea() {
             title: 'El empleado seleccionado no se encuentra disponible, por favor validar.',
             showConfirmButton: false,
             timer: 9000
+        })
+        }
+
+    } else if (Date.parse(fechaFinTarea) < Date.parse(fechaInicioTarea)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'La fecha de fin no debe ser menor a la fecha de inicio',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    } else if (Date.parse(fechaFinTarea) == Date.parse(fechaInicioTarea)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Las fechas de la tarea no pueden ser iguales',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Las fechas deben ser validas',
+            showConfirmButton: false,
+            timer: 1500
         })
     }
 
@@ -353,6 +388,27 @@ function guardar() {
 }//fin Guardar
 
 function editar() {
+    var id = document.getElementById('SolicitudIdD').value;
+    $.ajax({
+        url: '/Solicitudes/ObtenerDetalle',
+        data: jQuery.param({ id: id }),
+        type: 'get',
+        dataType: 'json',
+    }).done(function (respuesta) {
+        if (respuesta.status) {
+
+            if (respuesta.data.estadoSoliciud == 1 || respuesta.data.estadoSoliciud == 2) {
+
+        
+         var cont = true;
+        if (cancelaSolicitud) {
+                    var nov = document.getElementById('RazonCancelacionD').value;
+            if (nov == null || nov == "") {
+                cont = false;
+            }
+        }
+
+        if (cont) {
 
     var formData = new FormData();
     formData.append("Descripcion", document.getElementById('DescripcionD').value);
@@ -360,6 +416,9 @@ function editar() {
     formData.append("ServicioId", document.getElementById('ServicioD').value);
     formData.append("EstadoSoliciud", document.getElementById('SolicitudEstadoD').value);
     formData.append("SolicitudId", document.getElementById('SolicitudIdD').value);
+    formData.append("RazonCancelacion", document.getElementById('RazonCancelacionD').value);
+ 
+
     $.ajax({
         url: '/Solicitudes/Edit',
         type: 'post',
@@ -386,10 +445,48 @@ function editar() {
                 timer: 1500
             })
         } else {
-
             Swal.fire({
                 icon: 'error',
                 title: 'No fue posible guardar la solicitud. Por favor intente nuevamente',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    })
+
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Debes agregar la novedad de cancelación en la solicitud',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
+
+    } else {
+        var estado = null;
+                if (respuesta.data.estadoSoliciud == 3) {
+            estado = "VENCIDO";
+                } else if (respuesta.data.estadoSoliciud == 4) {
+            estado = "CANCELADO";
+                } else if (respuesta.data.estadoSoliciud == 5) {
+            estado = "FINALIZADO EMPLEADO";
+        } else {
+            estado = "FINALIZADO ADMINISTRADOR"
+        }
+        Swal.fire({
+            icon: 'error',
+            title: 'Esta solicitud tiene estado ' + estado + ' ,Por lo tanto ya no puedes editar las tareas',
+            showConfirmButton: false,
+            timer: 1500
+        })
+            }
+
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'No fue posible obtenr la solicitud. Por favor intente nuevamente',
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -555,8 +652,6 @@ function eliminarTareaEditar(id) {
 function editarTarea() {
     var solicitudEstado = document.getElementById("SolicitudEstadoD").value;
     if (solicitudEstado == 1 || solicitudEstado == 2) {
-    var estadoTarea = document.getElementById('TareaEstadoD').value;
-    if (estadoTarea == 1 || estadoTarea == 2) {
         var empleadoId = document.getElementById('UsuarioIdentityIdD').value;
         var id = document.getElementById('TareaIdD').value;
         var continuar = false;
@@ -568,17 +663,38 @@ function editarTarea() {
         }).done(function (respuesta) {
             if (respuesta.status) {
 
-                var fechaInicio = $("#FechaInicioTareaD").val()
-                var fechaFin = $("#FechaFinTareaD").val();
+                if (respuesta.data.estadoTarea == 1 || respuesta.data.estadoTarea == 2) {
 
-                if (fechaInicio == respuesta.data.fechaInicioTarea && fechaFin == respuesta.data.fechaFinTarea && empleadoId == respuesta.data.usuarioIdentityId) {
-                    continuar = true;
-                }
+                    var fechaInicio = $("#FechaInicioTareaD").val()
+                    var fechaFin = $("#FechaFinTareaD").val();
 
-                if (continuar) {
-                    editarTareaConfirm()
-                } else {
-                    validarDisponibilidadEmpleado(empleadoId, 2);
+                    if (fechaInicio == respuesta.data.fechaInicioTarea && fechaFin == respuesta.data.fechaFinTarea && empleadoId == respuesta.data.usuarioIdentityId) {
+                        continuar = true;
+                    }
+
+                    if (continuar) {
+                        editarTareaConfirm()
+                    } else {
+                        validarDisponibilidadEmpleado(empleadoId, 2);
+                    }
+
+                }else {
+                    var estado = null;
+                    if (respuesta.data.estadoTarea == 3) {
+                        estado = "VENCIDA";
+                    } else if (respuesta.data.estadoTarea == 4) {
+                        estado = "CANCELADA";
+                    } else if (respuesta.data.estadoTarea == 5) {
+                        estado = "FINALIZADA EMPLEADO";
+                    } else {
+                        estado = "FINALIZADA ADMINISTRADOR"
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Esta tarea tiene estado ' + estado + ' ,Por lo tanto ya no puedes editarla',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
                 }
 
             } else {
@@ -590,24 +706,7 @@ function editarTarea() {
                 })
             }
         })
-    } else {
-        var estado = null;
-        if (estadoTarea == 3) {
-            estado = "VENCIDA";
-        } else if (estadoTarea == 4) {
-            estado = "CANCELADA";
-        }else if (estadoTarea == 5) {
-            estado = "FINALIZADA EMPLEADO";
-        }else{
-            estado = "FINALIZADA ADMINISTRADOR"
-        }
-        Swal.fire({
-            icon: 'error',
-            title: 'Esta tarea tiene estado ' + estado + ' ,Por lo tanto ya no puedes editarla',
-            showConfirmButton: false,
-            timer: 1500
-        })
-    }
+  
 
 } else {
     var estado = null;
@@ -631,6 +730,16 @@ function editarTarea() {
 }
 
 function editarTareaConfirm() {
+    var cont = true;
+    if (cancelaTarea) {
+        var nov = document.getElementById('NovedadD').value;
+        if (nov == null || nov == "") {
+            cont = false;
+        }
+    }
+
+    if (cont) {
+
     var formData = new FormData();
     formData.append("TareaId", document.getElementById('TareaIdD').value) ;
     formData.append("FechaInicioTarea", document.getElementById('FechaInicioTareaD').value);
@@ -640,7 +749,11 @@ function editarTareaConfirm() {
     formData.append("UsuarioIdentityId", document.getElementById('UsuarioIdentityIdD').value);
     formData.append("SolicitudId", document.getElementById('TareaSolicitudIdD').value);
     formData.append("EstadoTarea", document.getElementById('TareaEstadoD').value);
-    
+    var novedad = document.getElementById('NovedadD').value;
+    if (novedad != null) {
+        formData.append("Novedad", novedad);
+    }
+
     $.ajax({
         url: '/Tareas/Edit',
         type: "POST",
@@ -665,6 +778,15 @@ function editarTareaConfirm() {
             })
         }
     })
+
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Debes agregar la novedad de cancelación en la tarea',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
 }
 
 function editarViewTarea() {
@@ -806,6 +928,29 @@ function refrescarCalendario(data) {
 function start() {
     document.getElementById('TipoDeBusqueda').addEventListener('change', function () {
         filtroSeleccionado(this.value)
+    });
+}
+
+
+function mostrarDescripcionCancelar() {
+    document.getElementById('SolicitudEstadoD').addEventListener('change', function () {
+        if (this.value == 4) {
+            $('#RazonCancelacionDView').show()
+            cancelaSolicitud = true;
+        } else {
+            $('#RazonCancelacionDView').hide()
+        }
+    });
+}
+
+function mostrarDescripcionCancelarTarea() {
+    document.getElementById('TareaEstadoD').addEventListener('change', function () {
+        if (this.value == 4) {
+            $('#NovedadDView').show()
+            cancelaTarea = true;
+        } else {
+            $('#NovedadDView').hide()
+        }
     });
 }
 

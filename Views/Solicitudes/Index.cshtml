@@ -104,13 +104,18 @@
                                         </div>
 
                                     </div>
-                                    <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="SolicitudIdD" />
+                                    
+                                    <div class="form group" id="RazonCancelacionDView">
+                                        <label asp-for="RazonCancelacion" class="control-label"></label>
+                                        <textarea asp-for="RazonCancelacion" class="form-control input w-full border flex-1" id="RazonCancelacionD"></textarea>
+                                    </div>
 
                                     <div class="form group">
 
                                         <label asp-for="Descripcion" class="control-label"></label>
                                         <textarea asp-for="Descripcion" class="form-control input w-full border mt-2 flex-1" id="DescripcionD"></textarea>
                                     </div>
+                                    <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="SolicitudIdD" />
 
                                     <table id="tabla" class="table">
                                         <thead>
@@ -212,6 +217,12 @@
                                             </select>
                                             <span asp-validation-for="Servicio" class="text-danger"></span>
                                         </div>
+
+                                        <div class="form group" id="NovedadDView">
+                                            <label asp-for="Novedad" class="control-label"></label>
+                                            <textarea asp-for="Novedad" class="form-control input w-full border flex-1" id="NovedadD"></textarea>
+                                        </div>
+
                                         <input asp-for="TareaId" class="form-control" style="visibility: hidden" id="TareaIdD" />
                                         <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="TareaSolicitudIdD" />
                                         <br />
@@ -495,8 +506,12 @@
             calendario();
             listar();
             start();
-            limpiarModal();
+            limpiarModal(); 
+            mostrarDescripcionCancelar()
+            mostrarDescripcionCancelarTarea()
             $('#formularioTarea').hide()
+            $('#RazonCancelacionDView').hide()
+            $('#NovedadDView').hide() 
             $('#formularioTareaEdit').hide()
             $('#formularioTareaEditAgregar').hide() 
         })

@@ -64,5 +64,11 @@ namespace PrivTours.ViewModels
 
         public byte EstadoTarea { get; set; }
 
+        [DisplayName("Razon Cancelación ")]
+        public string RazonCancelacion { get; set; }
+
+        public string Novedad { get; set; }
+
+
     }
 }

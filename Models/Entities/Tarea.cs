@@ -31,5 +31,6 @@ namespace PrivTours.Models.Entities
 
         public virtual Solicitud Solicitud { get; set; }
 
+        public string Novedad { get; set; }
     }
 }

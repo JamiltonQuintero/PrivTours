@@ -59,7 +59,12 @@ namespace PrivTours.Controllers
                 if (tarea.EstadoTarea == (byte)EEstadoTarea.RESERVADA ||
                     tarea.EstadoTarea == (byte)EEstadoTarea.INICIADA)
                 {
-                    tareasActivas.Add(tarea);
+                    var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                    if (solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.RESERVADO ||
+                        solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.EN_PROCESO)
+                    {
+                        tareasActivas.Add(tarea);
+                    }                  
                 }
             }
 
