@@ -99,7 +99,7 @@ namespace PrivTours.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CambiarEstadoSolicitud(int id, int tipo)
+        public async Task<ActionResult> CambiarEstadoSolicitud(int id, int tipo, string novedad)
         {
             try
             {
@@ -113,6 +113,7 @@ namespace PrivTours.Controllers
                 if (tipo == 1)
                 {
                         tarea.EstadoTarea = (byte)EEstadoTarea.CANCELADA;
+                        tarea.Novedad = novedad;
                 }
                 else if (tipo == 2)
                 {
@@ -134,6 +135,31 @@ namespace PrivTours.Controllers
                 var respuesta = await _tareasBusiness.EditarTareaEstado(tarea);
                 if (respuesta)
                 {
+                        var tareas = await _tareasBusiness.ObtenerTareasPorSolicitudId(tarea.SolicitudId);
+                        var cambiarEstadoSolicitudUltimaTarea = true;
+                        foreach (var t in tareas)
+                        {
+                            if (t.EstadoTarea == (byte)EEstadoTarea.INICIADA ||
+                                t.EstadoTarea == (byte)EEstadoTarea.RESERVADA)
+                            {
+                                cambiarEstadoSolicitudUltimaTarea = false;
+                            }
+                        }
+
+                        if (cambiarEstadoSolicitudUltimaTarea)
+                        {
+                            var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                            solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.FINALIZADO;
+                            var r = await _solicitudesBuseness.EditarSolicitudEstado(solicitud);
+                            if (r)
+                            {
+                                return Json(new { status = true });
+                            } else
+                            {
+                                return Json(new { status = false });
+                            }
+                        }
+
                     return Json(new { status = true });
                 }
                 else
@@ -317,14 +343,37 @@ namespace PrivTours.Controllers
 
                 if (t)
                 {
-                    return Json(new { status = true });
+                    var tareas = await _tareasBusiness.ObtenerTareasPorSolicitudId(tarea.SolicitudId);
+                    var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                    var fechasDeInicioTareas = new List<DateTime>();
+                    var fechasDefinTareas = new List<DateTime>();
+
+                    foreach (var ta in tareas)
+                    {
+                        fechasDeInicioTareas.Add(ta.FechaInicioTarea);
+                        fechasDefinTareas.Add(ta.FechaFinTarea);
+                    }
+
+                    fechasDefinTareas.OrderByDescending(e => e).ToList();
+                    fechasDeInicioTareas.OrderByDescending(e => e).ToList();
+                    solicitud.FechaFin = fechasDefinTareas[fechasDefinTareas.Count - 1];
+                    solicitud.FechaInicio = fechasDeInicioTareas[0];
+                    var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud);
+                    if (respuesta)
+                    {
+                        return Json(new { status = true });
+                    }
+                    else
+                    {
+                        return Json(new { status = false });
+                    }
+
                 }
                 else
                 {
                     return Json(new { status = false });
                 }
               
-  
             }
             catch (Exception e)
             {

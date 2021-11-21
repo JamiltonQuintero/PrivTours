@@ -471,9 +471,11 @@ function editar() {
             estado = "CANCELADO";
                 } else if (respuesta.data.estadoSoliciud == 5) {
             estado = "FINALIZADO EMPLEADO";
-        } else {
+                } else if (respuesta.data.estadoSoliciud == 6){
             estado = "FINALIZADO ADMINISTRADOR"
-        }
+                } else if (respuesta.data.estadoSoliciud == 7) {
+                    estado = "FINALIZADO"
+                }
         Swal.fire({
             icon: 'error',
             title: 'Esta solicitud tiene estado ' + estado + ' ,Por lo tanto ya no puedes editar las tareas',
@@ -608,7 +610,7 @@ function eliminarTareaEditar(id) {
                     estado = "CANCELADA";
                 } else if (estadoTarea == 5) {
                     estado = "FINALIZADA EMPLEADO";
-                } else {
+                } else if (estadoTarea == 6){
                     estado = "FINALIZADA ADMINISTRADOR"
                 }
                 Swal.fire({
@@ -637,8 +639,10 @@ function eliminarTareaEditar(id) {
             estado = "CANCELADO";
         } else if (solicitudEstado == 5) {
             estado = "FINALIZADO EMPLEADO";
-        } else {
+        } else if (solicitudEstado == 6){
             estado = "FINALIZADO ADMINISTRADOR"
+        } else if (solicitudEstado == 7) {
+            estado = "FINALIZADO"
         }
         Swal.fire({
             icon: 'error',
@@ -716,8 +720,10 @@ function editarTarea() {
         estado = "CANCELADO";
     } else if (solicitudEstado == 5) {
         estado = "FINALIZADO EMPLEADO";
-    } else {
+    } else if (solicitudEstado == 6){
         estado = "FINALIZADO ADMINISTRADOR"
+    }else if (solicitudEstado == 7) {
+       estado = "FINALIZADO"
     }
     Swal.fire({
         icon: 'error',
@@ -865,8 +871,10 @@ function editarAgregarViewTarea() {
             estado = "CANCELADO";
         } else if (solicitudEstado == 5) {
             estado = "FINALIZADO EMPLEADO";
-        } else {
+        } else if (solicitudEstado == 6){
             estado = "FINALIZADO ADMINISTRADOR"
+        }else if (solicitudEstado == 7) {
+            estado = "FINALIZADO"
         }
         Swal.fire({
             icon: 'error',
@@ -1014,7 +1022,8 @@ async function filtroSeleccionado(tipoFiltro) {
             { estadoId: 3, nombre: "VENCIDO" },
             { estadoId: 4, nombre: "CANCELADO" },
             { estadoId: 5, nombre: "FINALIZADO EMPLEADO" },
-            { estadoId: 6, nombre: "FINALIZADO ADMINISTRADOR"}
+            { estadoId: 6, nombre: "FINALIZADO ADMINISTRADOR" },
+            { estadoId: 7, nombre: "FINALIZADO"}
         ]
 
         $('#TipoDeBusquedaSeleccionado').find('option').remove().end()
@@ -1193,6 +1202,8 @@ function nombteEstado(estadoEnum) {
     }
     else if (estadoEnum == 6) {
         nombreEstado = "FINALIZADO ADMINISTRADOR";
+    } else if (solicitudEstado == 7) {
+        estado = "FINALIZADO"
     }
     
     return nombreEstado;

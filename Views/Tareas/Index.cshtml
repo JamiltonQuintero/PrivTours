@@ -137,7 +137,7 @@
 
                                     <div class="row-cols-3">
                                         <a onclick="cambiarEstadoTarea('@tarea.TareaId', 3, '@tarea.Operacion.Nombre');" class="btn btn-success">Iniciar tarea</a>
-                                        <a onclick="cambiarEstadoTarea('@tarea.TareaId', 1, '@tarea.Operacion.Nombre');" class="btn btn-danger">Cancelar tarea</a>
+                                        <a onclick="cambiarEstadoTareaCancelar('@tarea.TareaId', 1, '@tarea.Operacion.Nombre');" class="btn btn-danger">Cancelar tarea</a>
                                         <a onclick="cambiarEstadoTarea('@tarea.TareaId', 2, '@tarea.Operacion.Nombre');" class="btn btn-primary">Terminar tarea</a>
 
                                     </div>
@@ -239,7 +239,7 @@
                     $.ajax({
                         type: "POST",
                         url: '@Url.Action("CambiarEstadoSolicitud", "Tareas")',
-                        data: jQuery.param({ id: id, tipo: tipo}),
+                        data: jQuery.param({ id: id, tipo: tipo, novedad: ""}),
                         success: function (result) {
 
                             if (result.status) {
@@ -268,6 +268,66 @@
                 }
             })
         }
+
+        async function cambiarEstadoTareaCancelar(id, tipo, nombreServicio) {
+
+            const { value: text } = await Swal.fire({
+                input: 'textarea',
+                inputLabel: 'Por favor ingresa el motivo de cancelacion de la tarea',
+                inputPlaceholder: 'Escribe tu mensaje aquí...',
+                inputAttributes: {
+                    'aria-label': 'Escribe tu mensaje aquí'
+                },
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Cancelar tarea',
+                cancelButtonText: 'Regresar',
+                inputValidator: (value) => {
+
+                if (value) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("CambiarEstadoSolicitud", "Tareas")',
+                    data: jQuery.param({ id: id, tipo: tipo, novedad: value }),
+                    success: function (result) {
+
+                        if (result.status) {
+                            setTimeout(function () {
+                                window.location.href = "@Url.Action("Index", "Tareas")";
+                            }, 1500);
+                            Swal.fire({
+                                icon: 'success',
+                                title: result.message,
+                                showConfirmButton: false,
+                                timer: 2500
+                            })
+                        } else {
+                            console.log("ERROR!!");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: result.message,
+                            })
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err.data)
+                    }
+                });
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Debe ingresar la novedad para cancelar la solicitud',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+                }
+            })
+        }
+
 
     </script>
 }
