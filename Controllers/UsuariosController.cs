@@ -277,7 +277,7 @@ namespace PrivTours.Controllers
             }
         }
 
-        [Authorize(Roles = "Administrador")]
+       [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> CambiarEstado(string id)
         {
             if (id == null)
