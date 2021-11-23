@@ -38,6 +38,7 @@ namespace PrivTours.Models.Business
 
         }
 
+
         public async Task<Operacion> obtenerOperacionPorId(int operacionId)
         {
             return await _dbContext.Operaciones.FirstOrDefaultAsync(o => o.OperacionId == operacionId); 

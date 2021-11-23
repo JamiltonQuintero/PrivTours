@@ -295,6 +295,118 @@ namespace PrivTours.Controllers
 
         }
 
+        public async Task<IActionResult> ObtenerTareasPorRangoFechaDeInicio(DateTime fechaInicioFiltro, DateTime fechaFinFiltro)
+        {
+            try
+            {
+                var tareasActivas = new List<Tarea>();
+
+                var tareas = new List<Tarea>();
+
+                var usuarioLogeado = await ObtenerUsuarioLogeado();
+
+                tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+
+                var result = tareas.FindAll(a => {                
+                    return (a.FechaInicioTarea >= fechaInicioFiltro && a.FechaInicioTarea <= fechaFinFiltro);
+                });
+
+                foreach (Tarea tarea in result)
+                {
+
+                    tareasActivas.Add(tarea);
+
+                }
+
+                var lTareas = new List<SolicitudViewModel>();
+
+                foreach (var t in tareasActivas)
+                {
+
+                    SolicitudViewModel solicitudVM = new SolicitudViewModel
+                    {
+                        TareaId = t.TareaId,
+                        FechaInicioTarea = t.FechaInicioTarea,
+                        FechaFinTarea = t.FechaFinTarea,
+                        DescripcionTarea = t.DescripcionTarea,
+                    };
+
+                    lTareas.Add(solicitudVM);
+                }
+
+                if (lTareas != null)
+                {
+                    return Json(new { status = true, data = lTareas });
+                }
+                else
+                {
+                    return Json(new { status = false });
+                }
+
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
+
+        
+    public async Task<IActionResult> ObtenerTareasPorRangoFechaDeFin(DateTime fechaInicioFiltro, DateTime fechaFinFiltro)
+        {
+            try
+            {
+                var tareasActivas = new List<Tarea>();
+
+                var tareas = new List<Tarea>();
+
+                var usuarioLogeado = await ObtenerUsuarioLogeado();
+
+                tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+
+                var result = tareas.FindAll(a => {
+                    return (a.FechaFinTarea >= fechaInicioFiltro && a.FechaFinTarea <= fechaFinFiltro);
+                });
+
+                foreach (Tarea tarea in result)
+                {
+
+                    tareasActivas.Add(tarea);
+
+                }
+
+                var lTareas = new List<SolicitudViewModel>();
+
+                foreach (var t in tareasActivas)
+                {
+
+                    SolicitudViewModel solicitudVM = new SolicitudViewModel
+                    {
+                        TareaId = t.TareaId,
+                        FechaInicioTarea = t.FechaInicioTarea,
+                        FechaFinTarea = t.FechaFinTarea,
+                        DescripcionTarea = t.DescripcionTarea,
+                    };
+
+                    lTareas.Add(solicitudVM);
+                }
+
+                if (lTareas != null)
+                {
+                    return Json(new { status = true, data = lTareas });
+                }
+                else
+                {
+                    return Json(new { status = false });
+                }
+
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
         public async Task<IActionResult> ObtenerTareaPorId(int id)
         {
 

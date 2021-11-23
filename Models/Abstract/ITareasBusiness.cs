@@ -18,6 +18,7 @@ namespace PrivTours.Models.Abstract
         Task<bool> GuardarTarea(Tarea tarea);
         Task<bool> EliminarTareaPorId(int id);
         Task<bool> EditarTareaEstado(Tarea tarea);
+        
 
     }
 }

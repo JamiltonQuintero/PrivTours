@@ -154,14 +154,6 @@ function limpiarModal() {
 
 function guardarTarea() {
 
-    var fechaInicioTarea = null;
-    var fechaFinTarea = null;
-
-    fechaInicioTarea = $("#FechaInicioTarea").val();
-    fechaFinTarea = $("#FechaFinTarea").val();
-
-    if (Date.parse(fechaFinTarea) > Date.parse(fechaInicioTarea)) {
-
     var continuar = true;
     var newTareas = new Array();
     var empleadoId = document.getElementById('UsuarioIdentityId').value;
@@ -205,8 +197,8 @@ function guardarTarea() {
             "UsuarioIdentityId": document.getElementById('UsuarioIdentityId').value,
             "OperacionId": document.getElementById('OperacionId').value
         }
-
-        $("#d").append("<tr id=" + "tr" + count + ">" + "<td>" + $('#OperacionId option:selected').text() + "</td> <td>" + "<button onclick='eliminarTarea(" + tarea.Id + ")'>Eliminar</button>" + "</td>" +
+            
+        $("#d").append("<tr id=" + "tr" + count + ">" + "<td>" + $('#OperacionId option:selected').text() + "</td> <td>" + "<a class='btn btn-secondary' onclick = 'eliminarTarea(" + tarea.Id + ")'> <i class='fas fa-user-minus'></i></a >" + "</td>" +
             "</tr>")
         lTareas.push(tarea)
 
@@ -226,6 +218,21 @@ function guardarTarea() {
             timer: 9000
         })
         }
+
+}
+
+    function crearTarea() {
+
+        var fechaInicioTarea = null;
+        var fechaFinTarea = null;
+
+        fechaInicioTarea = $("#FechaInicioTarea").val();
+        fechaFinTarea = $("#FechaFinTarea").val();
+
+        if (Date.parse(fechaFinTarea) > Date.parse(fechaInicioTarea)) {
+
+            var empleadoId = document.getElementById('UsuarioIdentityId').value;
+            validarDisponibilidadEmpleado(empleadoId, 1);
 
     } else if (Date.parse(fechaFinTarea) < Date.parse(fechaInicioTarea)) {
         Swal.fire({
@@ -249,12 +256,6 @@ function guardarTarea() {
             timer: 1500
         })
     }
-
-}
-
-function crearTarea() {
-    var empleadoId = document.getElementById('UsuarioIdentityId').value;
-    validarDisponibilidadEmpleado(empleadoId, 1);
 }
 
 function validarDisponibilidadEmpleado(empleadoId, tipoGuardado ) {
@@ -346,44 +347,54 @@ function cerrarTareas() {
 }
 
 function guardar() {
-    
-                $.ajax({
-                    url: '/Solicitudes/Guardar',
-                    data: jQuery.param({
-                        Descripcion: document.getElementById('Descripcion').value,
-                        ClienteId: document.getElementById('ClienteId').value,
-                        ServicioId: document.getElementById('ServicioId').value,
-                        lTareas: lTareas
-                    }),
-                    type: 'post',
-                    dataType: 'json',
-                }).done(function (guardar) {
 
-                    if (guardar.status) {
-                        $("#modalCrearSoliciutd").modal('hide');
-                        listar();
-                        $("#Cliente").val(0);
-                        $("#Servicio").val(0);
-                        $("#Descripcion").val("");
-                        $("#SolicitudId").val(0);
-                        $("#SolicitudEstado").val(0);
+    if (lTareas.length != 0) {
+        $.ajax({
+            url: '/Solicitudes/Guardar',
+            data: jQuery.param({
+                Descripcion: document.getElementById('Descripcion').value,
+                ClienteId: document.getElementById('ClienteId').value,
+                ServicioId: document.getElementById('ServicioId').value,
+                lTareas: lTareas
+            }),
+            type: 'post',
+            dataType: 'json',
+        }).done(function (guardar) {
 
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Solicitud de servicio guardada',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    } else {
+            if (guardar.status) {
+                $("#modalCrearSoliciutd").modal('hide');
+                listar();
+                $("#Cliente").val(0);
+                $("#Servicio").val(0);
+                $("#Descripcion").val("");
+                $("#SolicitudId").val(0);
+                $("#SolicitudEstado").val(0);
 
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'No fue posible guardar la solicitud. Por favor intente nuevamente',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Solicitud de servicio guardada',
+                    showConfirmButton: false,
+                    timer: 1500
                 })
+            } else {
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No fue posible guardar la solicitud. Por favor intente nuevamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+        })
+
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Debes crear por lo menos una tarea antes de guardar la solicitud',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }  
             
 }//fin Guardar
 
@@ -514,10 +525,11 @@ function obtenerServicioPorId(id) {
             $("#SolicitudEstadoD").val(respuesta.data.estadoSoliciud);
 
             for (var tarea = 0; tarea < respuesta.data.tareas.length; tarea++) {
-                $("#e").append("<tr id=" + "tr" + respuesta.data.tareas[tarea].tareaId + ">" + "<td>" + respuesta.data.tareas[tarea].nombreOperacion + "</td> <td>" + "<button onclick='obtenerTareaporId(" + respuesta.data.tareas[tarea].tareaId + ")'>Editar</button>" +
-                    "</td> <td>" + "<button onclick='eliminarTareaEditar(" + respuesta.data.tareas[tarea].tareaId + ")'>Eliminar</button>" + "</td>" +
+                $("#e").append("<tr id=" + "tr" + respuesta.data.tareas[tarea].tareaId + ">" + "<td>" + respuesta.data.tareas[tarea].nombreOperacion + "</td> <td>" + "<a class='btn btn-secondary' onclick='obtenerTareaporId(" + respuesta.data.tareas[tarea].tareaId + ")'> <i class='fas fa-user-edit'></i></a >" +
+                    "</td>  <td>" + "<a class='btn btn-secondary' onclick='eliminarTareaEditar(" + respuesta.data.tareas[tarea].tareaId + ")'> <i class='fas fa-user-minus'></i></a >" + "</td>" +
         "</tr>")
             }
+            
         } else {
             Swal.fire({
                 icon: 'error',
@@ -679,7 +691,34 @@ function editarTarea() {
                     if (continuar) {
                         editarTareaConfirm()
                     } else {
-                        validarDisponibilidadEmpleado(empleadoId, 2);
+
+                        if (Date.parse(fechaFin) > Date.parse(fechaInicio)) {   
+
+                            validarDisponibilidadEmpleado(empleadoId, 2);
+
+                        } else if (Date.parse(fechaFinTarea) < Date.parse(fechaInicioTarea)) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'La fecha de fin no debe ser menor a la fecha de inicio',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        } else if (Date.parse(fechaFinTarea) == Date.parse(fechaInicioTarea)) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Las fechas de la tarea no pueden ser iguales',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Las fechas deben ser validas',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+
                     }
 
                 }else {
@@ -814,8 +853,39 @@ function cerrarTareasEditar() {
 }
 
 function editarAgregarTarea() {
-    var empleadoId = document.getElementById('UsuarioIdentityIdDA').value;
-    validarDisponibilidadEmpleado(empleadoId,3);
+
+
+    var fechaInicioTarea = null;
+    var fechaFinTarea = null;
+    fechaInicioTarea = $("#FechaInicioTareaDA").val();
+    fechaFinTarea = $("#FechaFinTareaDA").val();
+    if (Date.parse(fechaFin) > Date.parse(fechaInicio)) {
+
+        var empleadoId = document.getElementById('UsuarioIdentityIdDA').value;
+        validarDisponibilidadEmpleado(empleadoId, 3);
+
+    } else if (Date.parse(fechaFinTarea) < Date.parse(fechaInicioTarea)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'La fecha de fin no debe ser menor a la fecha de inicio',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    } else if (Date.parse(fechaFinTarea) == Date.parse(fechaInicioTarea)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Las fechas de la tarea no pueden ser iguales',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Las fechas deben ser validas',
+            showConfirmButton: false,
+            timer: 1500
+        })
+    }
 }
 
 function editarAgregarTareaConfirm() {
