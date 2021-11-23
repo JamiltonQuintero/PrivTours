@@ -36,48 +36,57 @@ namespace PrivTours.Controllers
         // GET: TareasController
         public async Task<ActionResult> Index()
         {
-            var solicitudesActivas = new List<Solicitud>();
+            var tareasActivas = new List<Tarea>();
             
             var usuarioLogeado = await ObtenerUsuarioLogeado();
 
-            var solicitudes = new List<Solicitud>();
+            var tareas = new List<Tarea>();
 
             if (usuarioLogeado.Id != null)
             {
                 if (usuarioLogeado.RolSeleccionado.ToUpper() == "ADMINISTRADOR")
                 {
-                    solicitudes = await _solicitudesBuseness.ObtenerListaSolicitudesSVM();
+                    tareas = await _tareasBusiness.ObterTareas();
+
                 } else if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
                 {
-                    solicitudes = await _solicitudesBuseness.ObtenerListaSolicitudesPorEmpleadoTareas(usuarioLogeado.Id);
+                    tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
                 } 
             } 
 
-            foreach (Solicitud solicitud in solicitudes)
+            foreach (Tarea tarea in tareas)
             {
-                if (solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.RESERVADO ||
-                    solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.EN_PROCESO)
+                if (tarea.EstadoTarea == (byte)EEstadoTarea.RESERVADA ||
+                    tarea.EstadoTarea == (byte)EEstadoTarea.INICIADA)
                 {
-                    solicitudesActivas.Add(solicitud);
+                    var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                    if (solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.RESERVADO ||
+                        solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.EN_PROCESO)
+                    {
+                        tareasActivas.Add(tarea);
+                    }                  
                 }
             }
 
             var lSolicitudes = new List<SolicitudViewModel>();
 
-            foreach (var solicitud in solicitudesActivas)
+            foreach (var tarea in tareasActivas)
             {
+                var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
                 var cliente = await _clientesBusiness.ObtenerClientePorId(solicitud.ClienteId);
                 var servicio = await _serviciosBusiness.ObtenerServicioPorId(solicitud.ServicioId);
+                var operacion = await _tareasBusiness.obtenerOperacionPorId(tarea.OperacionId);
             SolicitudViewModel solicitudVM = new SolicitudViewModel
                 {
                     
-                    SolicitudId = solicitud.SolicitudId,
-                    FechaInicio = solicitud.FechaInicio,
-                    FechaFin = solicitud.FechaFin,
-                    Descripcion = solicitud.Descripcion,
+                    TareaId = tarea.TareaId,
+                    FechaInicioTarea = tarea.FechaInicioTarea,
+                    FechaFinTarea = tarea.FechaFinTarea,
+                    DescripcionTarea = tarea.DescripcionTarea,
                     Cliente = cliente,
                     Servicio = servicio,
-                    EstadoSoliciud = solicitud.EstadoSoliciud,
+                    Operacion = operacion,
+                    EstadoTarea = tarea.EstadoTarea
                 };
                 lSolicitudes.Add(solicitudVM);
             }
@@ -90,41 +99,67 @@ namespace PrivTours.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CambiarEstadoSolicitud(int id, int tipo)
+        public async Task<ActionResult> CambiarEstadoSolicitud(int id, int tipo, string novedad)
         {
             try
             {
 
                 var usuarioLogeado = await ObtenerUsuarioLogeado();
 
-                var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(id);
+                var tarea = await _tareasBusiness.ObtenerTareaPorId(id);
 
                 if (usuarioLogeado != null)
                 {              
                 if (tipo == 1)
                 {
-                    solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.CANCELADO;
+                        tarea.EstadoTarea = (byte)EEstadoTarea.CANCELADA;
+                        tarea.Novedad = novedad;
                 }
                 else if (tipo == 2)
                 {
 
                     if (usuarioLogeado.RolSeleccionado.ToUpper() == "ADMINISTRADOR")
                     {
-                        solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.FINALIZADO_ADMIN;
+                            tarea.EstadoTarea = (byte)EEstadoTarea.FINALIZADA_ADMIN;
                     }
                     else if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
                     {
-                        solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.FINALIZADO_EMPLEADO;
+                            tarea.EstadoTarea = (byte)EEstadoTarea.FINALIZADA_EMPLEADO;
                     }
                 }
                 else
                 {
-                    solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.EN_PROCESO;
+                        tarea.EstadoTarea = (byte)EEstadoTarea.INICIADA;
                 }
 
-                var respuesta = await _solicitudesBuseness.EditarSolicitudEstado(solicitud);
+                var respuesta = await _tareasBusiness.EditarTareaEstado(tarea);
                 if (respuesta)
                 {
+                        var tareas = await _tareasBusiness.ObtenerTareasPorSolicitudId(tarea.SolicitudId);
+                        var cambiarEstadoSolicitudUltimaTarea = true;
+                        foreach (var t in tareas)
+                        {
+                            if (t.EstadoTarea == (byte)EEstadoTarea.INICIADA ||
+                                t.EstadoTarea == (byte)EEstadoTarea.RESERVADA)
+                            {
+                                cambiarEstadoSolicitudUltimaTarea = false;
+                            }
+                        }
+
+                        if (cambiarEstadoSolicitudUltimaTarea)
+                        {
+                            var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                            solicitud.EstadoSoliciud = (byte)EEstadoSolicitud.FINALIZADO;
+                            var r = await _solicitudesBuseness.EditarSolicitudEstado(solicitud);
+                            if (r)
+                            {
+                                return Json(new { status = true });
+                            } else
+                            {
+                                return Json(new { status = false });
+                            }
+                        }
+
                     return Json(new { status = true });
                 }
                 else
@@ -139,7 +174,7 @@ namespace PrivTours.Controllers
             catch (Exception)
             {
 
-                return Json(new { data = "error" });
+                return Json(new { data = false });
             }
         }
 
@@ -308,14 +343,37 @@ namespace PrivTours.Controllers
 
                 if (t)
                 {
-                    return Json(new { status = true });
+                    var tareas = await _tareasBusiness.ObtenerTareasPorSolicitudId(tarea.SolicitudId);
+                    var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                    var fechasDeInicioTareas = new List<DateTime>();
+                    var fechasDefinTareas = new List<DateTime>();
+
+                    foreach (var ta in tareas)
+                    {
+                        fechasDeInicioTareas.Add(ta.FechaInicioTarea);
+                        fechasDefinTareas.Add(ta.FechaFinTarea);
+                    }
+
+                    fechasDefinTareas.OrderByDescending(e => e).ToList();
+                    fechasDeInicioTareas.OrderByDescending(e => e).ToList();
+                    solicitud.FechaFin = fechasDefinTareas[fechasDefinTareas.Count - 1];
+                    solicitud.FechaInicio = fechasDeInicioTareas[0];
+                    var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud);
+                    if (respuesta)
+                    {
+                        return Json(new { status = true });
+                    }
+                    else
+                    {
+                        return Json(new { status = false });
+                    }
+
                 }
                 else
                 {
                     return Json(new { status = false });
                 }
               
-  
             }
             catch (Exception e)
             {

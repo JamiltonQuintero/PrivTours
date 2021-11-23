@@ -23,16 +23,9 @@ namespace PrivTours.Models.Business
 
         public async Task<List<Tarea>> ObtenerListaTareasPorEmpleadoId(string id)
         {
-            var tarea = new List<Tarea>();
-            var tareasEmpleado = await _dbContext.Tareas.ToListAsync();
-            var empleado = await _dbContext.UsuariosIdentity.FirstOrDefaultAsync(s => s.Id == id);
-            foreach (Tarea t in tareasEmpleado)
-            {
-
-            }
-
+            var tareas = await _dbContext.Tareas.ToListAsync();
+            var tareasEmpleado = tareas.FindAll(t => t.UsuarioIdentityId == id);
             return tareasEmpleado;
-
         }
 
         public async Task<List<Tarea>> ObtenerTareasPorSolicitudId(int solicitudId)
@@ -108,7 +101,25 @@ namespace PrivTours.Models.Business
                 return false;
             }
         }
-        
+
+        public async Task<List<Tarea>> ObterTareas()
+        {
+            return await _dbContext.Tareas.ToListAsync();
+        }
+
+        public async Task<bool> EditarTareaEstado(Tarea tarea)
+        {
+            try
+            {
+                _dbContext.Update(tarea);
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
 
     }
 }

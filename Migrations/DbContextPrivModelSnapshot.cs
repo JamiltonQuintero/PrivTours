@@ -410,6 +410,9 @@ namespace PrivTours.Migrations
                     b.Property<DateTime>("FechaInicio")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("RazonCancelacion")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ServicioId")
                         .HasColumnType("int");
 
@@ -440,6 +443,9 @@ namespace PrivTours.Migrations
 
                     b.Property<DateTime>("FechaInicioTarea")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Novedad")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("OperacionId")
                         .HasColumnType("int");

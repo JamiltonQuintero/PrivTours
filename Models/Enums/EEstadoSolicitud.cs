@@ -13,6 +13,7 @@ namespace PrivTours.Models.Enums
         CANCELADO = 4,
         FINALIZADO_EMPLEADO = 5,
         FINALIZADO_ADMIN = 6,
+        FINALIZADO = 7,
 
     }
 }

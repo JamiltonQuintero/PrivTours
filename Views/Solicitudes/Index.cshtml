@@ -97,6 +97,7 @@
                                                 <option value="2">EN PROCESO</option>
                                                 <option value="3">VENCIDO</option>
                                                 <option value="4">CANCELADO</option>
+                                                <option value="7">FINALIZADO</option>
                                                 <option value="5">FINALIZADO EMPLEADO</option>
                                                 <option value="6">FINALIZADO ADMINISTRADOR</option>
                                             </select>
@@ -104,13 +105,18 @@
                                         </div>
 
                                     </div>
-                                    <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="SolicitudIdD" />
+                                    
+                                    <div class="form group" id="RazonCancelacionDView">
+                                        <label asp-for="RazonCancelacion" class="control-label"></label>
+                                        <textarea asp-for="RazonCancelacion" class="form-control input w-full border flex-1" id="RazonCancelacionD"></textarea>
+                                    </div>
 
                                     <div class="form group">
 
                                         <label asp-for="Descripcion" class="control-label"></label>
                                         <textarea asp-for="Descripcion" class="form-control input w-full border mt-2 flex-1" id="DescripcionD"></textarea>
                                     </div>
+                                    <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="SolicitudIdD" />
 
                                     <table id="tabla" class="table">
                                         <thead>
@@ -202,7 +208,7 @@
                                         </div>
                                         <div class="form group">
                                             <label>Estado Actual solicitud</label>
-                                            <select asp-for="EstadoSoliciud" class="form-control input w-full border mt-2 flex-1" id="TareaEstadoD">
+                                            <select asp-for="EstadoTarea" class="form-control input w-full border mt-2 flex-1" id="TareaEstadoD">
                                                 <option value="1">RESERVADA</option>
                                                 <option value="2">INICIADA</option>
                                                 <option value="3">VENCIDA</option>
@@ -212,6 +218,12 @@
                                             </select>
                                             <span asp-validation-for="Servicio" class="text-danger"></span>
                                         </div>
+
+                                        <div class="form group" id="NovedadDView">
+                                            <label asp-for="Novedad" class="control-label"></label>
+                                            <textarea asp-for="Novedad" class="form-control input w-full border flex-1" id="NovedadD"></textarea>
+                                        </div>
+
                                         <input asp-for="TareaId" class="form-control" style="visibility: hidden" id="TareaIdD" />
                                         <input asp-for="SolicitudId" class="form-control" style="visibility: hidden" id="TareaSolicitudIdD" />
                                         <br />
@@ -495,8 +507,12 @@
             calendario();
             listar();
             start();
-            limpiarModal();
+            limpiarModal(); 
+            mostrarDescripcionCancelar()
+            mostrarDescripcionCancelarTarea()
             $('#formularioTarea').hide()
+            $('#RazonCancelacionDView').hide()
+            $('#NovedadDView').hide() 
             $('#formularioTareaEdit').hide()
             $('#formularioTareaEditAgregar').hide() 
         })
@@ -517,13 +533,6 @@
             });
 
         });
-
-        var today = new Date().toISOString().split('T')[0];
-        $("#FechaInicioD").attr('min', today);
-        $("#FechaInicio").attr('min', today);
-        $("#FechaFinD").attr('min', today);
-        $("#FechaFin").attr('min', today);
-
 
 
     </script>

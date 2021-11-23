@@ -6,9 +6,8 @@
 
 
 @section Styles{
-
+    <link href="https://fonts.googleapis.com/css?family=Poiret+One" rel="stylesheet">
     <link href="~/css/EstiloCardTarea.css" rel="stylesheet" />
-
 }
 
 <!-- Content Wrapper. Contains page content -->
@@ -33,72 +32,200 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-       
+            
             <div class="row">
+                
                 @foreach (var tarea in Model)
                 {
-                    <div class="card col-4">
-                        <h3 class="card-header">Solicitud #@tarea.SolicitudId</h3>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    <h4 class="card-subtitle mb-2 text-muted">Nombre cliente :  </h4>
-                                    <p>@tarea.Cliente.Nombre @tarea.Cliente.Apellidos</p>
-                                    <h4 class="card-subtitle mb-2 text-muted">Telefono cliente</h4>
-                                    <p>@tarea.Cliente.Telefono</p>
 
+                    <!-- /.container-fluid
+        <div class="card col-4">
+            <h3 class="card-header">Solicitud #@tarea.TareaId</h3>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h4 class="card-subtitle mb-2 text-muted">Nombre cliente :  </h4>
+                        <p>@tarea.Cliente.Nombre @tarea.Cliente.Apellidos</p>
+                        <h4 class="card-subtitle mb-2 text-muted">Telefono cliente</h4>
+                        <p>@tarea.Cliente.Telefono</p>
+
+                    </div>
+                    <div class="col-sm-3">
+                        <h4 class="card-subtitle mb-2 text-muted">Nombre tarea :  </h4>
+                        <p>@tarea.Operacion.Nombre</p>
+                        <h4 class="card-subtitle mb-2 text-muted">Descripcion tarea :  </h4>
+                        <p>@tarea.DescripcionTarea</p>
+
+                    </div>
+
+                    <div class="col-sm-3 ">
+                        <h4 class="card-subtitle mb-2 text-muted">Fecha inicio:</h4>
+                        <p>@tarea.FechaInicioTarea</p>
+                        <h4 class="card-subtitle mb-2 text-muted">Fecha Fin:</h4>
+                        <p>@tarea.FechaFinTarea </p>
+
+                    </div>
+
+                    <div class="col-sm-3" id="botones">
+                        <div class="order-column">
+                            <a onclick="cambiarEstadoTarea('@tarea.TareaId', 3, '@tarea.Operacion.Nombre');" class="btn btn-success">Iniciar tarea</a>
+                            <a onclick="cambiarEstadoTarea('@tarea.TareaId', 1, '@tarea.Operacion.Nombre');" class="btn btn-danger">Cancelar tarea</a>
+                            <a onclick="cambiarEstadoTarea('@tarea.TareaId', 2, '@tarea.Operacion.Nombre');" class="btn btn-primary">Terminar tarea</a>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        -->
+                    
+                    
+                        <div class="courses-container">
+                            <div class="course">
+                                <div class="course-preview">
+                                    
+                                        <h4 class="card-subtitle mb-2 text-muted">Nombre cliente :  </h4>
+                                        <p>@tarea.Cliente.Nombre @tarea.Cliente.Apellidos</p>
+                                        <h4 class="card-subtitle mb-2 text-muted">Telefono cliente</h4>
+                                        <p>@tarea.Cliente.Telefono</p>
+                                   
+                                        <h4 class="card-subtitle mb-2 text-muted">Nombre tarea :  </h4>
+                                        <p>@tarea.Operacion.Nombre</p>
+                                        <h4 class="card-subtitle mb-2 text-muted">Descripcion tarea :  </h4>
+                                        <p>@tarea.DescripcionTarea</p>
+
+                                    
                                 </div>
-                                <div class="col-sm-3">
-                                    <h4 class="card-subtitle mb-2 text-muted">Nombre servicio :  </h4>
-                                    <p>@tarea.Servicio.Nombre</p>
-                                    <h4 class="card-subtitle mb-2 text-muted">Descripcion servicio :  </h4>
-                                    <p>@tarea.Descripcion</p>
+                                <div class="course-info">
+                                    <div class="progress-container">
+                                        <div class="progress"></div>
+                                       
+                                        <span class="progress-text">
 
-                                </div>
-
-                                <div class="col-sm-3 ">
+                                            @if (tarea.EstadoTarea == 1)
+                                            {
+                                            <a>RESERVADA</a>
+                                            }
+                                            else if (tarea.EstadoTarea == 2)
+                                            {
+                                        <a>INICIADA</a>
+                                            }
+                                            else if (tarea.EstadoTarea == 3)
+                                            {
+                                        <a>VENCIDA</a>
+                                            }
+                                            else if (tarea.EstadoTarea == 4)
+                                            {
+                                        <a>CANCELADA</a>
+                                            }
+                                            else if (tarea.EstadoTarea == 5)
+                                            {
+                                        <a>FINALIZADA EMPLEADO</a>
+                                            }
+                                            else if (tarea.EstadoTarea == 6)
+                                            {
+                                        <a>FINALIZADA ADMIN</a>
+                                            }
+                                        </span>
+                                    </div>
+                                    <h6>Tarea # @tarea.TareaId</h6>
                                     <h4 class="card-subtitle mb-2 text-muted">Fecha inicio:</h4>
-                                    <p>@tarea.FechaInicio</p>
+                                    <p>@tarea.FechaInicioTarea</p>
                                     <h4 class="card-subtitle mb-2 text-muted">Fecha Fin:</h4>
-                                    <p>@tarea.FechaFin </p>
+                                    <p>@tarea.FechaFinTarea </p>
 
-                                </div>
-
-                                <div class="col-sm-3" id="botones">
-                                    <div class="order-column">
-                                        <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 3, '@tarea.Servicio.Nombre');" class="btn btn-success">Iniciar tarea</a>
-                                        <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 1, '@tarea.Servicio.Nombre');" class="btn btn-danger">Cancelar tarea</a>
-                                        <a onclick="cambiarEstadoSolicitud('@tarea.SolicitudId', 2, '@tarea.Servicio.Nombre');" class="btn btn-primary">Terminar tarea</a>
+                                    <div class="row-cols-3">
+                                        <a onclick="cambiarEstadoTarea('@tarea.TareaId', 3, '@tarea.Operacion.Nombre');" class="btn btn-success">Iniciar tarea</a>
+                                        <a onclick="cambiarEstadoTareaCancelar('@tarea.TareaId', 1, '@tarea.Operacion.Nombre');" class="btn btn-danger">Cancelar tarea</a>
+                                        <a onclick="cambiarEstadoTarea('@tarea.TareaId', 2, '@tarea.Operacion.Nombre');" class="btn btn-primary">Terminar tarea</a>
 
                                     </div>
 
                                 </div>
                             </div>
                         </div>
+
+
+
+                    <!-- /
+        <div class="wrapper">
+            <input type="radio" name="slider" id="tab-1">
+            <input type="radio" name="slider" id="tab-2" checked>
+            <input type="radio" name="slider" id="tab-3">
+            <header>
+                <label for="tab-1" class="tab-1">Basic</label>
+                <label for="tab-2" class="tab-2">Standard</label>
+                <label for="tab-3" class="tab-3">Team</label>
+                <div class="slider"></div>
+            </header>
+            <div class="card-area">
+                <div class="cards">
+                    <div class="row row-1">
+                        <div class="price-details">
+                            <span class="price">19</span>
+                            <p>For beginner use</p>
+                        </div>
+                        <ul class="features">
+                            <li><i class="fas fa-check"></i><span>100 GB Premium Bandwidth</span></li>
+                            <li><i class="fas fa-check"></i><span>FREE 50+ Installation Scripts WordPress Supported</span></li>
+                            <li><i class="fas fa-check"></i><span>One FREE Domain Registration .com and .np extensions only</span></li>
+                            <li><i class="fas fa-check"></i><span>Unlimited Email Accounts & Databases</span></li>
+                        </ul>
                     </div>
+                    <div class="row">
+                        <div class="price-details">
+                            <span class="price">99</span>
+                            <p>For professional use</p>
+                        </div>
+                        <ul class="features">
+                            <li><i class="fas fa-check"></i><span>Unlimited GB Premium Bandwidth</span></li>
+                            <li><i class="fas fa-check"></i><span>FREE 200+ Installation Scripts WordPress Supported</span></li>
+                            <li><i class="fas fa-check"></i><span>Five FREE Domain Registration .com and .np extensions only</span></li>
+                            <li><i class="fas fa-check"></i><span>Unlimited Email Accounts & Databases</span></li>
+                        </ul>
+                    </div>
+                    <div class="row">
+                        <div class="price-details">
+                            <span class="price">49</span>
+                            <p>For team collaboration</p>
+                        </div>
+                        <ul class="features">
+                            <li><i class="fas fa-check"></i><span>200 GB Premium Bandwidth</span></li>
+                            <li><i class="fas fa-check"></i><span>FREE 100+ Installation Scripts WordPress Supported</span></li>
+                            <li><i class="fas fa-check"></i><span>Two FREE Domain Registration .com and .np extensions only</span></li>
+                            <li><i class="fas fa-check"></i><span>Unlimited Email Accounts & Databases</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <button>Choose plan</button>
+        </div>
+         -->
                 }
             </div>
-            </div><!-- /.container-fluid -->
-    </div>
+        </div><!-- /.container-fluid -->
+                </div>
     <!-- /.content -->
     <!-- /.content-wrapper -->
 </div>
 @section Scripts{
 
     <script src="~/js/Tabla.js"></script>
+    <script src="~/js/CardAnim.js"></script>
     <script>
 
-        function cambiarEstadoSolicitud(id, tipo, nombreServicio) {
+        function cambiarEstadoTarea(id, tipo, nombreServicio) {
             var textoTerminarCancelar = "";
             if (tipo == 1) {
                 textoTerminarCancelar = "CANCELAR"
             } else if (tipo == 2) {
                 textoTerminarCancelar = "TERMINAR"
             } else {
-                textoTerminarCancelar = "INICIAR(EN PROCESO)"
+                textoTerminarCancelar = "INICIAR"
             }
             Swal.fire({
-                title: '¿Está seguro de ' + textoTerminarCancelar + ' la solicitud?',
+                title: '¿Está seguro de ' + textoTerminarCancelar + ' la tarea?',
                 text: nombreServicio,
                 icon: 'warning',
                 showCancelButton: true,
@@ -112,7 +239,7 @@
                     $.ajax({
                         type: "POST",
                         url: '@Url.Action("CambiarEstadoSolicitud", "Tareas")',
-                        data: jQuery.param({ id: id, tipo: tipo}),
+                        data: jQuery.param({ id: id, tipo: tipo, novedad: ""}),
                         success: function (result) {
 
                             if (result.status) {
@@ -141,6 +268,66 @@
                 }
             })
         }
+
+        async function cambiarEstadoTareaCancelar(id, tipo, nombreServicio) {
+
+            const { value: text } = await Swal.fire({
+                input: 'textarea',
+                inputLabel: 'Por favor ingresa el motivo de cancelacion de la tarea',
+                inputPlaceholder: 'Escribe tu mensaje aquí...',
+                inputAttributes: {
+                    'aria-label': 'Escribe tu mensaje aquí'
+                },
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Cancelar tarea',
+                cancelButtonText: 'Regresar',
+                inputValidator: (value) => {
+
+                if (value) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("CambiarEstadoSolicitud", "Tareas")',
+                    data: jQuery.param({ id: id, tipo: tipo, novedad: value }),
+                    success: function (result) {
+
+                        if (result.status) {
+                            setTimeout(function () {
+                                window.location.href = "@Url.Action("Index", "Tareas")";
+                            }, 1500);
+                            Swal.fire({
+                                icon: 'success',
+                                title: result.message,
+                                showConfirmButton: false,
+                                timer: 2500
+                            })
+                        } else {
+                            console.log("ERROR!!");
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: result.message,
+                            })
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err.data)
+                    }
+                });
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Debe ingresar la novedad para cancelar la solicitud',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+                }
+            })
+        }
+
 
     </script>
 }

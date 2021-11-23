@@ -33,6 +33,8 @@ namespace PrivTours.Models.Entities
         public virtual Servicio Servicio { get; set; }
 
         public byte EstadoSoliciud { get; set; }
+
+        public string RazonCancelacion { get; set; }
         public virtual ICollection<Tarea> Tareas { get; set; }
     }
 }

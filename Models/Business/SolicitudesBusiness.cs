@@ -114,34 +114,31 @@ namespace PrivTours.Models.Business
         
         public async Task<List<SolicitudViewModel>> ObtenerListaSolicitudesPorEmpleado(string id)
         {
-            List<SolicitudViewModel> solicitudes = new List<SolicitudViewModel>();
-            //var detalleSolicitudEmpleado = await _dbContext.DetalleSolicitudEmpleados.ToListAsync();         
-            var empleadoUser = await _dbContext.UsuariosIdentity.FirstOrDefaultAsync(s => s.Id == id);
-            /*foreach (DetalleSolicitudTarea d in detalleSolicitudEmpleado)
-            {
 
-                /*if (d.UsuarioIdentityId == id)
+            List<SolicitudViewModel> solicitudes = new List<SolicitudViewModel>();
+            var tareas = await _dbContext.Tareas.ToListAsync();
+            var tareasPorEmpleado = tareas.FindAll(t => t.UsuarioIdentityId == id);
+            var solicitudesId = new HashSet<int>();
+            foreach (var t in tareasPorEmpleado)
+            {
+                solicitudesId.Add(t.SolicitudId);
+
+            }
+
+            foreach(var sI in solicitudesId)
+            {
+                var s = await _dbContext.Solicitudes.FirstOrDefaultAsync(s => s.SolicitudId == sI);
+                var empleadoUser = await _dbContext.UsuariosIdentity.FirstOrDefaultAsync(s => s.Id == id);
+                var svm = new SolicitudViewModel
                 {
-                    var solicitud = await _dbContext.Solicitudes.FirstOrDefaultAsync(s => s.SolicitudId == d.SolicitudId);
-                    if (solicitud != null)
-                    {
-                        var empleado = new Empleado
-                        {
-                            Nombre = empleadoUser.Nombre,
-                            Apellido = empleadoUser.Apellido,
-                        };
-                        var svm = new SolicitudViewModel
-                        {
-                            SolicitudId = solicitud.SolicitudId,
-                            FechaInicio = solicitud.FechaInicio,
-                            FechaFin = solicitud.FechaFin,
-                            Descripcion = solicitud.Descripcion,
-                            Empleado = empleado
-                        };
-                        solicitudes.Add(svm);
-                    }
-                }
-            } */
+                    SolicitudId = s.SolicitudId,
+                    FechaInicio = s.FechaInicio,
+                    FechaFin = s.FechaFin,
+                    Descripcion = s.Descripcion,
+                    UsuarioIdentity = empleadoUser
+                };
+                solicitudes.Add(svm);
+            }
 
             return solicitudes;
 
