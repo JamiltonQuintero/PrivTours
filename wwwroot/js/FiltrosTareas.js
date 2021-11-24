@@ -84,31 +84,7 @@ function filtar() {
             dataType: 'json',
         }).done(function (respuesta) {
             if (respuesta.status) {
-                let data = [];
-                respuesta.data.map(function (e) {
-                    console.log(e)
-                    var titulo = 'Empleado: ' + e.usuarioIdentity.nombre + ' ' + e.usuarioIdentity.apellido;
-                    data.push({
-                        id: e.solicitudId,
-                        title: titulo,
-                        start: e.fechaInicio,
-                        end: e.fechaFin,
-                        descripcion: e.descripcion
-                    });
 
-                });
-
-                if (!data || data.length == 0) {
-                    var titulo = 'El Empleado seleccionado, no tiene servicios programados';
-                    Swal.fire({
-                        icon: 'warning',
-                        title: titulo,
-                        showConfirmButton: false,
-                        timer: 3000
-                    })
-                }
-                calendar.removeAllEvents();
-                refrescarCalendario(data);
             }
         })
     } else if (this.filtro == "3") {
@@ -119,31 +95,7 @@ function filtar() {
             dataType: 'json',
         }).done(function (respuesta) {
             if (respuesta.status) {
-                let data = [];
-                respuesta.data.map(function (e) {
-                    console.log(e)
-                    var titulo = 'Cliente: ' + e.cliente.nombre + ' ' + e.cliente.apellidos + ', Documento: ' + e.cliente.numDoc;
-                    data.push({
-                        id: e.solicitudId,
-                        title: titulo,
-                        start: e.fechaInicio,
-                        end: e.fechaFin,
-                        descripcion: e.descripcion
-                    });
 
-                });
-
-                if (!data || data.length == 0) {
-                    var titulo = 'El Cliente seleccionado, no tiene servicios programados';
-                    Swal.fire({
-                        icon: 'warning',
-                        title: titulo,
-                        showConfirmButton: false,
-                        timer: 3000
-                    })
-                }
-                calendar.removeAllEvents();
-                refrescarCalendario(data);
             }
         })
     } else if (this.filtro == "4") {
@@ -154,31 +106,7 @@ function filtar() {
             dataType: 'json',
         }).done(function (respuesta) {
             if (respuesta.status) {
-                let data = [];
-                respuesta.data.map(function (e) {
-                    console.log(e)
-                    var titulo = 'Servicio: ' + e.servicio.nombre + ', Descripción: ' + e.servicio.descripcion;
-                    data.push({
-                        id: e.solicitudId,
-                        title: titulo,
-                        start: e.fechaInicio,
-                        end: e.fechaFin,
-                        descripcion: e.descripcion
-                    });
 
-                });
-
-                if (!data || data.length == 0) {
-                    var titulo = 'El Servicio seleccionado, no tiene registros';
-                    Swal.fire({
-                        icon: 'warning',
-                        title: titulo,
-                        showConfirmButton: false,
-                        timer: 3000
-                    })
-                }
-                calendar.removeAllEvents();
-                refrescarCalendario(data);
             }
         })
     } else if (this.filtro == "5") {
@@ -189,17 +117,74 @@ function filtar() {
             dataType: 'json',
         }).done(function (respuesta) {
             if (respuesta.status) {
-                let data = [];
+                $("#cardTarea").html("")
                 respuesta.data.map(function (e) {
 
-                    var titulo = 'Cliente: ' + e.cliente.nombre + ' ' + e.cliente.apellidos + ', Estado: ' + nombteEstado(e.estadoSolicitud);
-                    data.push({
-                        id: e.solicitudId,
-                        title: titulo,
-                        start: e.fechaInicio,
-                        end: e.fechaFin,
-                        descripcion: e.descripcion
-                    });
+                    var estado = "";
+                    if (e.estadoTarea == 1) {
+                        estado = "RESERVADA"
+                    }
+                    else if (e.estadoTarea == 2) {
+                        estado = "INICIADA"
+                    }
+                    else if (e.estadoTarea == 3) {
+                        estado = "VENCIDA"
+                    }
+                    else if (e.estadoTarea == 4) {
+                        estado = "CANCELADA"
+                    }
+                    else if (e.estadoTarea == 5) {
+                        estado = "FINALIZADA EMPLEADO"
+                    }
+                    else if (e.estadoTarea == 6) {
+                        estado = "FINALIZADA ADMIN"
+                    }
+
+                    $("#cardTarea").append(
+
+                        "<div class='courses-container'>" +
+                        "<div class= 'course'>" +
+                        "<div class='course-preview'>" +
+
+                        "<h4 class='card-subtitle mb-2 text-muted'>Nombre cliente :  </h4>" +
+                        "<p>" + e.cliente.nombre + " " + e.cliente.apellidos + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Telefono cliente</h4>" +
+                        "<p>" + e.cliente.telefono + "</p>" +
+
+                        "<h4 class='ard-subtitle mb-2 text-muted'>Nombre tarea :  </h4>" +
+                        "<p>" + e.operacion.nombre + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Descripcion tarea :  </h4>" +
+                        "<p>" + e.descripcionTarea + "</p>" +
+
+
+                        "</div>" +
+                        "<div class='course-info'>" +
+                        "<div class='progress-container'>" +
+                        "<div class='progress'></div>" +
+
+                        "<span class='progress-text'>" +
+
+                        "<a>" + estado + "</a>" +
+
+                        "</span>" +
+                        "</div>" +
+                        "<h6>Tarea # " + e.tareaId + "</h6>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Fecha inicio:</h4>" +
+                        "<p>" + e.fechaInicioTarea + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Fecha Fin:</h4>" +
+                        "<p>" + e.fechaFinTarea + "</p>" +
+
+                        "<div class='row-cols-3'>" +
+                        "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 3 + "," + " " + ")'" + " class='btn btn-success'>Iniciar tarea</a>" +
+                        "<a onclick='cambiarEstadoTareaCancelar(" + e.tareaId + "," + 1 + "," + " " + ")'" + " class='btn btn-danger'>Cancelar tarea</a>" +
+                        "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 2 + "," + " " + ")'" + " class='btn btn-primary'>Terminar tarea</a>" +
+
+                        "</div>" +
+
+                        "</div>" +
+                        "</div>" +
+                        "</div >"
+                    )
 
                 });
 
@@ -212,8 +197,6 @@ function filtar() {
                         timer: 3000
                     })
                 }
-                calendar.removeAllEvents();
-                refrescarCalendario(data);
             }
         })
     } else if (this.filtro == "6") {
@@ -229,11 +212,87 @@ function filtar() {
         }).done(function (respuesta) {
             if (respuesta.status) {
 
-                let data = [];
+                $("#cardTarea").html("")
                 respuesta.data.map(function (e) {
+
+                    var estado = "";
+                    if (e.estadoTarea == 1) {
+                        estado = "RESERVADA"
+                    }
+                    else if (e.estadoTarea == 2) {
+                        estado = "INICIADA"
+                    }
+                    else if (e.estadoTarea == 3) {
+                        estado = "VENCIDA"
+                    }
+                    else if (e.estadoTarea == 4) {
+                        estado = "CANCELADA"
+                    }
+                    else if (e.estadoTarea == 5) {
+                        estado = "FINALIZADA EMPLEADO"
+                    }
+                    else if (e.estadoTarea == 6) {
+                        estado = "FINALIZADA ADMIN"
+                    }
+
+                    $("#cardTarea").append(
+
+                        "<div class='courses-container'>" +
+                        "<div class= 'course'>" +
+                        "<div class='course-preview'>" +
+
+                        "<h4 class='card-subtitle mb-2 text-muted'>Nombre cliente :  </h4>" +
+                        "<p>" + e.cliente.nombre + " " + e.cliente.apellidos + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Telefono cliente</h4>" +
+                        "<p>" + e.cliente.telefono + "</p>" +
+
+                        "<h4 class='ard-subtitle mb-2 text-muted'>Nombre tarea :  </h4>" +
+                        "<p>" + e.operacion.nombre + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Descripcion tarea :  </h4>" +
+                        "<p>" + e.descripcionTarea + "</p>" +
+
+
+                        "</div>" +
+                        "<div class='course-info'>" +
+                        "<div class='progress-container'>" +
+                        "<div class='progress'></div>" +
+
+                        "<span class='progress-text'>" +
+
+                        "<a>" + estado + "</a>" +
+
+                        "</span>" +
+                        "</div>" +
+                        "<h6>Tarea # " + e.tareaId + "</h6>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Fecha inicio:</h4>" +
+                        "<p>" + e.fechaInicioTarea + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Fecha Fin:</h4>" +
+                        "<p>" + e.fechaFinTarea + "</p>" +
+
+                        "<div class='row-cols-3'>" +
+                        "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 3 + "," + " " + ")'" + " class='btn btn-success'>Iniciar tarea</a>" +
+                        "<a onclick='cambiarEstadoTareaCancelar(" + e.tareaId + "," + 1 + "," + " " + ")'" + " class='btn btn-danger'>Cancelar tarea</a>" +
+                        "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 2 + "," + " " + ")'" + " class='btn btn-primary'>Terminar tarea</a>" +
+
+                        "</div>" +
+
+                        "</div>" +
+                        "</div>" +
+                        "</div >"
+                    )
 
                 });
 
+
+                if (!respuesta.data || respuesta.data.length == 0) {
+                    var titulo = 'El rango de fechas no tiene tareas';
+                    Swal.fire({
+                        icon: 'warning',
+                        title: titulo,
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                }
 
             }
         })
@@ -251,55 +310,87 @@ function filtar() {
         }).done(function (respuesta) {
             if (respuesta.status) {
 
-                let data = [];
+                $("#cardTarea").html("")
                 respuesta.data.map(function (e) {
 
+                    var estado = "";
+                    if (e.estadoTarea == 1) {
+                        estado = "RESERVADA"
+                    }
+                    else if (e.estadoTarea == 2) {
+                        estado = "INICIADA"
+                    }
+                    else if (e.estadoTarea == 3) {
+                        estado = "VENCIDA"
+                    }
+                    else if (e.estadoTarea == 4) {
+                        estado = "CANCELADA"
+                    }
+                    else if (e.estadoTarea == 5) {
+                        estado = "FINALIZADA EMPLEADO"
+                    }
+                    else if (e.estadoTarea == 6) {
+                        estado = "FINALIZADA ADMIN"
+                    }
+
+                    $("#cardTarea").append(
+
+                        "<div class='courses-container'>" +
+                        "<div class= 'course'>" +
+                        "<div class='course-preview'>" +
+
+                        "<h4 class='card-subtitle mb-2 text-muted'>Nombre cliente :  </h4>" +
+                        "<p>" + e.cliente.nombre + " " + e.cliente.apellidos + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Telefono cliente</h4>" +
+                        "<p>" + e.cliente.telefono + "</p>" +
+
+                        "<h4 class='ard-subtitle mb-2 text-muted'>Nombre tarea :  </h4>" +
+                        "<p>" + e.operacion.nombre + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Descripcion tarea :  </h4>" +
+                        "<p>" + e.descripcionTarea + "</p>" +
+
+
+                        "</div>" +
+                        "<div class='course-info'>" +
+                        "<div class='progress-container'>" +
+                        "<div class='progress'></div>" +
+
+                        "<span class='progress-text'>" +
+
+                        "<a>" + estado + "</a>" +
+
+                        "</span>" +
+                        "</div>" +
+                        "<h6>Tarea # " + e.tareaId + "</h6>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Fecha inicio:</h4>" +
+                        "<p>" + e.fechaInicioTarea + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Fecha Fin:</h4>" +
+                        "<p>" + e.fechaFinTarea + "</p>" +
+
+                        "<div class='row-cols-3'>" +
+                        "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 3 + "," + " " + ")'" + " class='btn btn-success'>Iniciar tarea</a>" +
+                        "<a onclick='cambiarEstadoTareaCancelar(" + e.tareaId + "," + 1 + "," + " " + ")'" + " class='btn btn-danger'>Cancelar tarea</a>" +
+                        "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 2 + "," + " " + ")'" + " class='btn btn-primary'>Terminar tarea</a>" +
+
+                        "</div>" +
+
+                        "</div>" +
+                        "</div>" +
+                        "</div >"
+                    )
+
                 });
-
-
+                if (!respuesta.data || respuesta.data.length == 0) {
+                    var titulo = 'El rango de fechas no tiene tareas';
+                    Swal.fire({
+                        icon: 'warning',
+                        title: titulo,
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                }
             }
         })
-
     }
 }
 
-
-
-function nombteEstado(estadoEnum) {
-    var nombreEstado = ""
-
-    if (estadoEnum == 1) {
-        nombreEstado = "RESERVADO";
-    } else if (estadoEnum == 2) {
-        nombreEstado = "EN PROCESO";
-    } else if (estadoEnum == 3) {
-        nombreEstado = "VENCIDO";
-    }
-    else if (estadoEnum == 4) {
-        nombreEstado = "CANCELADO";
-    }
-    else if (estadoEnum == 5) {
-        nombreEstado = "FINALIZADO EMPLEADO";
-    }
-    else if (estadoEnum == 6) {
-        nombreEstado = "FINALIZADO ADMINISTRADOR";
-    } else if (solicitudEstado == 7) {
-        estado = "FINALIZADO"
-    }
-
-    return nombreEstado;
-}
-
-function tipoDocumento(tipoDocumento) {
-    var nombreDocumento = ""
-
-    if (tipoDocumento == 1) {
-        nombreDocumento = "Cedula";
-    } else if (tipoDocumento == 2) {
-        nombreDocumento = "Cedula extranjera";
-    } else if (tipoDocumento == 3) {
-        nombreDocumento = "Pasaporte";
-    }
-
-    return nombreDocumento;
-}

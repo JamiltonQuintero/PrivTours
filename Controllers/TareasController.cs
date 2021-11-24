@@ -93,6 +93,45 @@ namespace PrivTours.Controllers
             return View(lSolicitudes);
         }
 
+        public async Task<ActionResult> ObtenerTareasId()
+        {
+            var tareasActivas = new List<Tarea>();
+
+            var usuarioLogeado = await ObtenerUsuarioLogeado();
+
+            var tareas = new List<Tarea>();
+
+            if (usuarioLogeado.Id != null)
+            {
+                if (usuarioLogeado.RolSeleccionado.ToUpper() == "ADMINISTRADOR")
+                {
+                    tareas = await _tareasBusiness.ObterTareas();
+
+                }
+                else if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
+                {
+                    tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+                }
+            }
+            var lTareasId = new List<int>();
+            foreach (Tarea tarea in tareas)
+            {
+                if (tarea.EstadoTarea == (byte)EEstadoTarea.RESERVADA ||
+                    tarea.EstadoTarea == (byte)EEstadoTarea.INICIADA)
+                {
+                    var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                    if (solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.RESERVADO ||
+                        solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.EN_PROCESO)
+                    {
+                        lTareasId.Add(tarea.TareaId);
+                    }
+                }
+            }
+
+            return Json(new { status = true, data = lTareasId });
+
+        }
+
         private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
         {
             return new List<string>(await _userManager.GetRolesAsync(usuario));
@@ -322,13 +361,20 @@ namespace PrivTours.Controllers
 
                 foreach (var t in tareasActivas)
                 {
-
+                    var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(t.SolicitudId);
+                    var cliente = await _clientesBusiness.ObtenerClientePorId(solicitud.ClienteId);
+                    var servicio = await _serviciosBusiness.ObtenerServicioPorId(solicitud.ServicioId);
+                    var operacion = await _tareasBusiness.obtenerOperacionPorId(t.OperacionId);
                     SolicitudViewModel solicitudVM = new SolicitudViewModel
                     {
                         TareaId = t.TareaId,
                         FechaInicioTarea = t.FechaInicioTarea,
                         FechaFinTarea = t.FechaFinTarea,
-                        DescripcionTarea = t.DescripcionTarea,
+                        DescripcionTarea = t.DescripcionTarea, 
+                        Cliente = cliente,
+                        Servicio = servicio,
+                        Operacion = operacion,
+                        EstadoTarea = t.EstadoTarea
                     };
 
                     lTareas.Add(solicitudVM);
