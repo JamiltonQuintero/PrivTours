@@ -49,9 +49,9 @@ async function filtroSeleccionado(tipoFiltro) {
         $('#tipoBusquedaSelect').show()
 
         var listaEstados = [
-            { estadoId: 1, nombre: "RESERVADO" },
-            { estadoId: 2, nombre: "EN PROCESO" },
-            { estadoId: 3, nombre: "VENCIDO" }
+            { estadoId: 1, nombre: "RESERVADA" },
+            { estadoId: 2, nombre: "INICIADA" },
+            { estadoId: 3, nombre: "VENCIDA" }
         ]
 
         $('#TipoDeBusquedaSeleccionado').find('option').remove().end()
@@ -111,7 +111,7 @@ function filtar() {
         })
     } else if (this.filtro == "5") {
         $.ajax({
-            url: '/Solicitudes/ObtenerListaSolicitudesPorEstado/',
+            url: '/Tareas/ObtenerListaTareasPorEstado/',
             data: jQuery.param({ estado: document.getElementById('TipoDeBusquedaSeleccionado').value }),
             type: 'get',
             dataType: 'json',
@@ -188,7 +188,7 @@ function filtar() {
 
                 });
 
-                if (!data || data.length == 0) {
+                if (!respuesta.data || respuesta.data.length == 0) {
                     var titulo = 'El Estado seleccionado, no tiene registros';
                     Swal.fire({
                         icon: 'warning',

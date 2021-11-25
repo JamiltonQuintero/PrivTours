@@ -17,3 +17,7 @@
     text-align-last: center;
 }
 
+.modal-lg, .modal-xl {
+    max-width: 1200px;
+}
+

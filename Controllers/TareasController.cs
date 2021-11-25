@@ -397,6 +397,48 @@ namespace PrivTours.Controllers
 
         }
 
+        public async Task<IActionResult> ObtenerListaTareasPorEstado(byte estado)
+        {
+            try
+            {
+                var tareas = new List<Tarea>();
+
+                var usuarioLogeado = await ObtenerUsuarioLogeado();
+
+                tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+                var tareasPorEstado = tareas.FindAll(tarea => tarea.EstadoTarea == estado);
+                var lTareas = new List<SolicitudViewModel>();
+
+                foreach (var t in tareasPorEstado)
+                {
+                    var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(t.SolicitudId);
+                    var cliente = await _clientesBusiness.ObtenerClientePorId(solicitud.ClienteId);
+                    var servicio = await _serviciosBusiness.ObtenerServicioPorId(solicitud.ServicioId);
+                    var operacion = await _tareasBusiness.obtenerOperacionPorId(t.OperacionId);
+                    SolicitudViewModel solicitudVM = new SolicitudViewModel
+                    {
+                        TareaId = t.TareaId,
+                        FechaInicioTarea = t.FechaInicioTarea,
+                        FechaFinTarea = t.FechaFinTarea,
+                        DescripcionTarea = t.DescripcionTarea,
+                        Cliente = cliente,
+                        Servicio = servicio,
+                        Operacion = operacion,
+                        EstadoTarea = t.EstadoTarea
+                    };
+
+                    lTareas.Add(solicitudVM);
+                }
+
+                return Json(new { status = true, data = lTareas });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
+
         
     public async Task<IActionResult> ObtenerTareasPorRangoFechaDeFin(DateTime fechaInicioFiltro, DateTime fechaFinFiltro)
         {

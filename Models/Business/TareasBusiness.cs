@@ -3,6 +3,7 @@ using PrivTours.Models.Abstract;
 using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
 using PrivTours.Models.Enums;
+using PrivTours.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,13 @@ namespace PrivTours.Models.Business
 
         }
 
+        public async Task<List<Tarea>> ObtenerListaTareasPorEstado(byte estado)
+        {
+            var tareas = await _dbContext.Tareas.ToListAsync();
+                
+            var tareasPorEstado = tareas.FindAll(tarea => tarea.EstadoTarea == estado);
+            return tareasPorEstado;
+        }
 
         public async Task<Operacion> obtenerOperacionPorId(int operacionId)
         {
