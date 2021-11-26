@@ -1,10 +1,9 @@
-﻿@model PrivTours.ViewModels.RecuperarContrasenaViewModel
+﻿@model PrivTours.ViewModels.ResetearContrasenaViewModel
 
 @{
     Layout = null;
 
 }
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,15 +14,15 @@
         <div class="login">
             <div class='console-container'><span id='text'></span><div class='console-underscore' id='console'>&#95;</div></div>
             <h1 class="login-title">PRIVTOURS</h1>
-            <h3 class="login-title">Confirmación Recuperar Contraseña</h3>
+            <h3 class="login-title">Confirmación de restablecimiento de contraseña</h3>
             <br />
 
-            <div style="border-radius: 5px; padding: 15px; background-color: #28a745 !important;">
-                Por favor revise su correo electrónico para restablecer su contraseña.
+            <div style="text-align: center; border-radius: 5px; padding: 15px; background-color: #28a745 !important;">
+                Se restableció la contraseña exitosamente.
             </div>
-            <div class="col-auto">
-                <a asp-action="Login">Volver</a>
-            </div>
+            <p><a asp-action="Login">Haga clic aquí para iniciar sesión</a></p>
+                
+            
 
 
             <div class="created">

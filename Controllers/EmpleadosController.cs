@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PrivTours.Filters;
 using PrivTours.Models.Abstract;
 using PrivTours.Models.Entities;
 using PrivTours.ViewModels;
 
 namespace PrivTours.Controllers
 {
+    [NoCache]
     public class EmpleadosController : Controller
     {
         private readonly UserManager<UsuarioIdentity> _userManager;

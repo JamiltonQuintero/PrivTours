@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PrivTours.Filters;
 using PrivTours.Models.Abstract;
 using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
@@ -13,8 +14,7 @@ using System.Threading.Tasks;
 
 namespace PrivTours.Controllers
 {
-
-    
+    [NoCache]
     public class SolicitudesController : Controller
     {
 

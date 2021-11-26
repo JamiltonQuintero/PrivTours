@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 using PrivTours.Models.Abstract;
 using Microsoft.AspNetCore.Identity;
 using PrivTours.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using PrivTours.Filters;
 
 namespace PrivTours.Controllers
 {
+    [NoCache]
     public class AdminController : Controller
     {
 
@@ -19,6 +22,7 @@ namespace PrivTours.Controllers
             _iAdminBusiness = adminBusiness;
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult Dashboard()
         {
             var reporte = _iAdminBusiness.ReporteDashboar();

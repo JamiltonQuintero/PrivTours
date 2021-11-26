@@ -14,9 +14,11 @@ using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Encodings.Web;
 using System.Web;
+using PrivTours.Filters;
 
 namespace PrivTours.Controllers
 {
+    [NoCache]
     public class UsuariosController : Controller
     {
         private readonly UserManager<UsuarioIdentity> _userManager;
@@ -32,7 +34,7 @@ namespace PrivTours.Controllers
             _emailSender = emailSender;
         }
 
-        
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Index()
         {
             var usuarios = await _userManager.Users.ToListAsync();
@@ -58,12 +60,14 @@ namespace PrivTours.Controllers
             return View(listaUsuariosViewModel);
 
         }
+
+        [Authorize(Roles = "Administrador")]
         private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
         {
             return new List<string>(await _userManager.GetRolesAsync(usuario));
         }
 
-       // [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         [HttpGet]
         public async Task<IActionResult> Crearusuario()
         {
@@ -71,7 +75,7 @@ namespace PrivTours.Controllers
             return View();
         }
 
-        //[Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         public async Task<IActionResult> Crearusuario(UsuarioViewModel usuarioViewModel)
         {
@@ -111,7 +115,14 @@ namespace PrivTours.Controllers
                             {
                                 errorMessage = error.Description.Replace("is already taken", "ya está siendo usado por otro usuario");
                             }
-                            ModelState.AddModelError("", errorMessage);
+                            
+                            if (error.Code.Equals("DuplicateEmail"))
+                            {
+                                ModelState.AddModelError("Email", errorMessage);
+                            } else
+                            {
+                                ModelState.AddModelError("", errorMessage);
+                            }
                         }
 
                     }
@@ -139,7 +150,7 @@ namespace PrivTours.Controllers
             return View(usuarioViewModel);
         }
 
-        //[Authorize()]
+        [Authorize(Roles = "Administrador")]
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Editar(string id)
         {
@@ -175,7 +186,7 @@ namespace PrivTours.Controllers
         // POST: Clientes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-       // [Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(string id, [Bind("Id,Nombre,Apellido,Documento,Email,Telefono,RolSeleccionado")] UsuarioViewModel usuarioViewModel)
@@ -230,7 +241,15 @@ namespace PrivTours.Controllers
                             {
                                 errorMessage = error.Description.Replace("is already taken", "ya está siendo usado por otro usuario");
                             }
-                            ModelState.AddModelError("", errorMessage);
+
+                            if (error.Code.Equals("DuplicateEmail"))
+                            {
+                                ModelState.AddModelError("Email", errorMessage);
+                            }
+                            else
+                            {
+                                ModelState.AddModelError("", errorMessage);
+                            }
                         }
                     }
 
@@ -253,8 +272,9 @@ namespace PrivTours.Controllers
             ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
             return View(usuarioViewModel);
         }
+        
         // GET: Clientes/Delete/5
-        //[Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -277,7 +297,7 @@ namespace PrivTours.Controllers
             }
         }
 
-        //[Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> CambiarEstado(string id)
         {
             if (id == null)
@@ -336,11 +356,20 @@ namespace PrivTours.Controllers
             return View();
         }
 
+        [NoCache]
         [AllowAnonymous]
-        public async Task<IActionResult> CerrarSesion()
+        public async Task<IActionResult> CerrarSesion(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Usuarios");
+            if (returnUrl != null)
+            {
+                return LocalRedirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Usuarios");
+            }
+            
         }
 
         [AllowAnonymous]
@@ -425,13 +454,22 @@ namespace PrivTours.Controllers
             var result = await _userManager.ResetPasswordAsync(user, code, model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("Login", "Usuarios");
+                return RedirectToAction("ResetearContrasenaConfirmacion", "Usuarios");
             }
 
             foreach (var error in result.Errors)
             {
+                if (error.Description.Contains("Invalid token."))
+                {
+                    error.Description = error.Description.Replace("Invalid token.", "El token es inválido o enlace para restablecer contraseña fue usado");
+                }
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+            return View();
+        }
+
+        public IActionResult ResetearContrasenaConfirmacion()
+        {
             return View();
         }
     }
