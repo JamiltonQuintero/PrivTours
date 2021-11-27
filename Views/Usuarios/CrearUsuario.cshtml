@@ -27,7 +27,6 @@
     <div class="content">
         <div class="container-fluid">
             <hr />
-            <!--<div class="row ">-->
 
 
             <form method="post" asp-action="CrearUsuario" id="formulario" name="formulario">
@@ -81,21 +80,13 @@
                         </select>
                         <span asp-validation-for="RolSeleccionado" class="text-danger"></span>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <input type="button" value="Crear" class="btn btn-primary" onclick="guardarUsuario()" />
-                        </div>
-                    </div>
+                </div>
+                <div class="form-row d-flex justify-content-end">
+                    <a asp-action="Index" class="btn btn-outline-secondary mx-2">Volver</a>
+                    <!--<input type="button" value="Crear" class="btn btn-primary" onclick="guardarUsuario()" />-->
+                    <input type="submit" value="Crear" class="btn btn-primary"/>
                 </div>
             </form>
-
-
-            <!--</div>-->
-
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PrivTours.Filters;
 using PrivTours.Models.Abstract;
 using PrivTours.Models.Entities;
 using PrivTours.Models.Enums;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace PrivTours.Controllers
 {
+    [NoCache]
     public class TareasController : Controller
     {
 
