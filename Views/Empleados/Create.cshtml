@@ -20,13 +20,14 @@
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
+            <hr />
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
-            <hr />
+         
  
             <form method="post" asp-action="Create" id="formulario" name="formulario">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -83,19 +84,23 @@
                         <label asp-for="ConfirmarPassword" class="control-label">Confirmar contraseña <span style="color: red;">*</span></label>
                         <input type="password" asp-for="ConfirmarPassword" required placeholder="Confirmar contraseña" class="form-control" />
                         <span asp-validation-for="ConfirmarPassword" class="text-danger"></span>
+                        <input value="@ViewBag.Rol" asp-for="RolSeleccionado" class="form-control" style="display: none;" />
                     </div>
                 </div>
 
-                <input value="@ViewBag.Rol" asp-for="RolSeleccionado" class="form-control" style="visibility: hidden;" />
 
-                <div class="form-row">
-                    <div class="form-group col-md-6">
+                <div class="row col-4">
+                    <div>
                         <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
                     </div>
-                    <div class="form-group col-md-6">
+                    <br />
+                    <div class="form-group col-2">
                         <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
                     </div>
                 </div>
+
+
+
             </form>
            
         </div><!-- /.container-fluid -->

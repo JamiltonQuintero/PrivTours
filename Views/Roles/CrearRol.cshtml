@@ -26,46 +26,50 @@
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
+        <hr />
     </div>
     <!-- /.content-header -->
     <!-- Main content -->
     <div class="content">
 
         <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-lg-11 align-self-center">
-                                   
-                    <div class="row">
-                        <div class="col-md-6">
-                            <form method="post" asp-action="CrearRol" id="formulario" name="formulario">
-                                <div asp-validation-summary="All" class="text-danger"></div>
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <div class="form-group">
-                                    <label asp-for="NombreRol" class="control-label"></label>
-                                    <input asp-for="NombreRol" class="form-control" />
-                                    <span asp-validation-for="NombreRol" class="text-danger"></span>
-                                </div>
+            <div class="row">
 
-                                <div class="form-group">
+                <div class="col-md-6">
+                    <div class="col-md-8">
+                        <form method="post" asp-action="CrearRol" id="formulario" name="formulario">
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="NombreRol" class="control-label"></label>
+                                <input asp-for="NombreRol" class="form-control" />
+                                <span asp-validation-for="NombreRol" class="text-danger"></span>
+                            </div>
+
+
+
+                            <div class="row col-auto">
+                                <div>
+                                    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                                </div>
+                                <br />
+                                <div class="form-group col-auto">
                                     <input type="button" value="Guardar" class="btn btn-primary" onclick="guardarRol()" />
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+
+                        </form>
                     </div>
 
-                    <div>
-                        <a asp-action="Index">Volver</a>
-                    </div>
                 </div>
                 <!-- /.col-md-6 -->
-            </div>
-            <!-- /.row -->
-        </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
 
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+</div>
 @section Scripts {
 
     <script>
