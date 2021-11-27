@@ -23,50 +23,55 @@
         </div><!-- /.container-fluid -->
         <hr />
     </div>
-    <!-- /.content-header -->
-    <!-- Main content -->
+
     <div class="content">
         <div class="container-fluid">
 
-        
-                        <form method="post" asp-action="Edit" id="formulario" name="formulario">
-                            <div asp-validation-summary="ModelOnly" class="text-danger">
-                            </div>
+            <form method="post" asp-action="Edit" id="formulario" name="formulario">
+                <div asp-validation-summary="ModelOnly" class="text-danger">
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Nombre" class="control-label"></label>
+                        <input asp-for="Nombre" class="form-control" id="nombre" name="nombre" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label asp-for="Descripcion" class="control-label"></label>
+                        <textarea asp-for="Descripcion" class="form-control" id="apellidos" name="descripcion"></textarea>
+                        <span asp-validation-for="Descripcion" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label asp-for="Restriccion" class="control-label"></label>
+                        <textarea asp-for="Restriccion" class="form-control" id="email" name="restriccion"></textarea>
+                        <span asp-validation-for="Restriccion" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label asp-for="Recomendacion" class="control-label"></label>
+                        <textarea asp-for="Recomendacion" class="form-control" id="telefono" name="recomendacion"></textarea>
+                        <span asp-validation-for="Recomendacion" class="text-danger"></span>
+                    </div>
+                </div>
 
-                            <div class="form-group">
-                                <label asp-for="Nombre" class="control-label"></label>
-                                <input asp-for="Nombre" class="form-control" id="nombre" name="nombre" />
-                                <span asp-validation-for="Nombre" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Descripcion" class="control-label"></label>
-                                <input asp-for="Descripcion" class="form-control" id="apellidos" name="descripcion" />
-                                <span asp-validation-for="Descripcion" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Restriccion" class="control-label"></label>
-                                <input asp-for="Restriccion" class="form-control" id="email" name="restriccion" />
-                                <span asp-validation-for="Restriccion" class="text-danger"></span>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Recomendacion" class="control-label"></label>
-                                <input asp-for="Recomendacion" class="form-control" id="telefono" name="recomendacion" />
-                                <span asp-validation-for="Recomendacion" class="text-danger"></span>
-                            </div>
+                <input asp-for="ServicioId" class="form-control" style="display: none;" />
+                <input asp-for="Estado" class="form-control" style="display: none;" />
 
-                            <input asp-for="ServicioId" class="form-control" style="display: none;" />
-                            <input asp-for="Estado" class="form-control" style="display: none;" />
-
-                            <div class="row col-4">
-                                <div>
-                                    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
-                                </div>
-                                <br />
-                                <div class="form-group col-2">
-                                    <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
-                                </div>
-                            </div>
-                        </form>
+                <div class="row col-4">
+                    <div>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                    </div>
+                    <br />
+                    <div class="form-group col-2">
+                        <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
+                    </div>
+                </div>
+            </form>
             </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
