@@ -12,6 +12,9 @@ namespace PrivTours.ViewModels
     {
         public int TareaId { get; set; }
         public string nombreOperacion { get; set; }
+        public string nombreEmpleado { get; set; }
+        public DateTime fechaInicioTarea { get; set; }
+        public DateTime fechaFinTarea { get; set; }
 
     }
 }
