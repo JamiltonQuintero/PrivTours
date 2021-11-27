@@ -20,6 +20,7 @@
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
+            <hr />
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
@@ -27,10 +28,10 @@
     <div class="content">
         <div class="container-fluid">
             <hr />
-
-
+            <!--<div class="row ">-->
             <form method="post" asp-action="CrearUsuario" id="formulario" name="formulario">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label asp-for="Documento" class="control-label">Documento <span style="color: red;">*</span></label>
@@ -81,6 +82,7 @@
                         <span asp-validation-for="RolSeleccionado" class="text-danger"></span>
                     </div>
                 </div>
+
                 <div class="form-row d-flex justify-content-end">
                     <a asp-action="Index" class="btn btn-outline-secondary mx-2">Volver</a>
                     <!--<input type="button" value="Crear" class="btn btn-primary" onclick="guardarUsuario()" />-->

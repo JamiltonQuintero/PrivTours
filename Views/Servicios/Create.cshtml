@@ -25,6 +25,7 @@
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
+        <hr />
     </div>
     <!-- /.content-header -->
     <!-- Main content -->
@@ -58,14 +59,14 @@
                             <span asp-validation-for="Recomendacion" class="text-danger"></span>
                         </div>
 
-                        <div class="row">
+                        <div class="row col-4">
                             <div>
                                 <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
                             </div>
                             <br />
-                            <div class="form-group">
-                                <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
-                            </div>
+                            <div class="form-group col-2">
+                            <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
+                        </div>
 
                         </div>
                     </form>

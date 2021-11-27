@@ -21,20 +21,16 @@
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
+        <hr />
     </div>
     <!-- /.content-header -->
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
 
-            <hr />
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="col-md-8">
+        
                         <form method="post" asp-action="Edit" id="formulario" name="formulario">
-                            <div asp-validation-summary="All" class="text-danger"></div>
                             <div asp-validation-summary="ModelOnly" class="text-danger">
-                                <!--<input type="hidden" name="Id" id="Id" />-->
                             </div>
 
                             <div class="form-group">
@@ -69,12 +65,8 @@
                                 <div class="form-group col-2">
                                     <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
                                 </div>
-
                             </div>
                         </form>
-                    </div>
-                </div>
-                </div>
             </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->

@@ -6,10 +6,8 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Usuarios</h1>
-                    <p>
-                        <a asp-action="CrearUsuario" asp-controller="Usuarios">Crear nuevo usuario</a>
-                    </p>
+                    <h1 class="m-0">Editar rol</h1>
+
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -19,14 +17,17 @@
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
+        <hr />
     </div>
     <!-- /.content-header -->
     <!-- Main content -->
+
     <div class="content">
 
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
+
                     <form method="post" class="mt-3">
                         <div class="form-group row">
                             <label asp-for="Id" class="col-sm-2 col-form-label"></label>
@@ -44,12 +45,16 @@
 
                         <div asp-validation-summary="All" class="text-danger"></div>
 
-                        <div class="form-group row">
-                            <div class="col-sm-10">
+
+                        <div class="form-row">
+                            <div class="form-group col-md-2">
+                                <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                            </div>
+                            <div class="form-group col-md-6">
                                 <button type="submit" class="btn btn-primary">Actualizar</button>
-                                <a asp-action="ListarRoles" class="btn btn-primary">Cancelar</a>
                             </div>
                         </div>
+
 
                     </form>
                 </div>
