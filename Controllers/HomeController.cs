@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PrivTours.Filters;
 using PrivTours.Models;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace PrivTours.Controllers
 {
+    [NoCache]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,6 +21,7 @@ namespace PrivTours.Controllers
             _logger = logger;
         }
 
+        [Authorize(Roles = "Administrador")]
         public IActionResult Index()
         {
             return View();

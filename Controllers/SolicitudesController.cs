@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PrivTours.Filters;
 using PrivTours.Models.Abstract;
 using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
@@ -13,8 +14,7 @@ using System.Threading.Tasks;
 
 namespace PrivTours.Controllers
 {
-
-    
+    [NoCache]
     public class SolicitudesController : Controller
     {
 
@@ -306,15 +306,18 @@ namespace PrivTours.Controllers
 
             var tareas = await _tareasBusiness.ObtenerTareasPorSolicitudId(id.Value);
                 var tareasVM = new List<TareaViewModel>();
-                foreach(Tarea tarea in tareas)
+                foreach (Tarea tarea in tareas)
                 {
 
                     var operacion = await _tareasBusiness.obtenerOperacionPorId(tarea.OperacionId);
-
+                    var empleado =  await _userManager.FindByIdAsync(tarea.UsuarioIdentityId);
                     var tvm = new TareaViewModel
                     {
                         TareaId = tarea.TareaId,
-                        nombreOperacion = operacion.Nombre
+                        nombreOperacion = operacion.Nombre,
+                        nombreEmpleado = empleado.Nombre,
+                        fechaInicioTarea = tarea.FechaInicioTarea,
+                        fechaFinTarea = tarea.FechaFinTarea
                     };
                     tareasVM.Add(tvm);
                 }
@@ -359,8 +362,10 @@ namespace PrivTours.Controllers
                         fechasDefinTareas.Add(t.FechaFinTarea);
                     }
 
-                    fechasDefinTareas.OrderByDescending(e => e).ToList();
-                    fechasDeInicioTareas.OrderByDescending(e => e).ToList();
+          
+                    fechasDeInicioTareas.Sort((x, y) => x.CompareTo(y));
+                    fechasDefinTareas.Sort((x, y) => x.CompareTo(y));
+ 
                     solicitud.FechaFin = fechasDefinTareas[fechasDefinTareas.Count - 1];
                     solicitud.FechaInicio = fechasDeInicioTareas[0];
                     var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud);
