@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PrivTours.Filters;
 using PrivTours.Models.Abstract;
 using PrivTours.Models.Entities;
 using PrivTours.Models.Enums;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace PrivTours.Controllers
 {
+    [NoCache]
     public class TareasController : Controller
     {
 
@@ -554,8 +556,8 @@ namespace PrivTours.Controllers
                         fechasDefinTareas.Add(ta.FechaFinTarea);
                     }
 
-                    fechasDefinTareas.OrderByDescending(e => e).ToList();
-                    fechasDeInicioTareas.OrderByDescending(e => e).ToList();
+                    fechasDeInicioTareas.Sort((x, y) => x.CompareTo(y));
+                    fechasDefinTareas.Sort((x, y) => x.CompareTo(y));
                     solicitud.FechaFin = fechasDefinTareas[fechasDefinTareas.Count - 1];
                     solicitud.FechaInicio = fechasDeInicioTareas[0];
                     var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud);
@@ -583,6 +585,42 @@ namespace PrivTours.Controllers
 
         }
 
+        
+
+    public async Task<IActionResult> ObtenerTareaPorIdEdit(int id)
+        {
+            try
+            {
+                var t = await _tareasBusiness.ObtenerTareaPorId(id);
+
+                if (t != null)
+                {
+                    var operacion = await _tareasBusiness.obtenerOperacionPorId(t.OperacionId);
+                    var empleado = await _userManager.FindByIdAsync(t.UsuarioIdentityId);
+                    var tvm = new TareaViewModel
+                    {
+                        TareaId = t.TareaId,
+                        nombreOperacion = operacion.Nombre,
+                        nombreEmpleado = empleado.Nombre,
+                        fechaInicioTarea = t.FechaInicioTarea,
+                        fechaFinTarea = t.FechaFinTarea
+                    };
+
+                    return Json(new { status = true, data = tvm });
+                }
+                else
+                {
+                    return Json(new { status = false });
+                }
+
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+
+        }
+
         public async Task<IActionResult> Guardar(Tarea tarea)
         {
             try
@@ -591,16 +629,43 @@ namespace PrivTours.Controllers
 
                 if (t)
                 {
+                    var tareas = await _tareasBusiness.ObtenerTareasPorSolicitudId(tarea.SolicitudId);
+                    var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                    var fechasDeInicioTareas = new List<DateTime>();
+                    var fechasDefinTareas = new List<DateTime>();
 
-                    var operacion = await _tareasBusiness.obtenerOperacionPorId(tarea.OperacionId);
-
-                    var tvm = new TareaViewModel
+                    foreach (var ta in tareas)
                     {
-                        TareaId = tarea.TareaId,
-                        nombreOperacion = operacion.Nombre
-                    };
+                        fechasDeInicioTareas.Add(ta.FechaInicioTarea);
+                        fechasDefinTareas.Add(ta.FechaFinTarea);
+                    }
 
-                    return Json(new { status = true, data = tvm });
+                    fechasDeInicioTareas.Sort((x, y) => x.CompareTo(y));
+                    fechasDefinTareas.Sort((x, y) => x.CompareTo(y));
+                    solicitud.FechaFin = fechasDefinTareas[fechasDefinTareas.Count - 1];
+                    solicitud.FechaInicio = fechasDeInicioTareas[0];
+                    var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud);
+                    if (respuesta)
+                    {
+
+                        var operacion = await _tareasBusiness.obtenerOperacionPorId(tarea.OperacionId);
+                        var empleado = await _userManager.FindByIdAsync(tarea.UsuarioIdentityId);
+                        var tvm = new TareaViewModel
+                        {
+                            TareaId = tarea.TareaId,
+                            nombreOperacion = operacion.Nombre,
+                            nombreEmpleado = empleado.Nombre,
+                            fechaInicioTarea = tarea.FechaInicioTarea,
+                            fechaFinTarea = tarea.FechaFinTarea
+                        };
+
+                        return Json(new { status = true, data = tvm });
+                    }
+                    else
+                    {
+                        return Json(new { status = false });
+                    }
+
                 }
                 else
                 {
@@ -619,12 +684,46 @@ namespace PrivTours.Controllers
         public async Task<IActionResult> EliminarTareaPorId(int id)
         {
             try
-            {               
-                var t = await _tareasBusiness.EliminarTareaPorId(id);
+            {
+                var tarea = await _tareasBusiness.ObtenerTareaPorId(id);
+                
 
-                if (t)
+                if (tarea != null)
                 {
-                    return Json(new { status = true, data = id });
+
+                    var t = await _tareasBusiness.EliminarTareaPorId(id);
+
+                    if (t)
+                    {
+                        var tareas = await _tareasBusiness.ObtenerTareasPorSolicitudId(tarea.SolicitudId);
+                        var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                        var fechasDeInicioTareas = new List<DateTime>();
+                        var fechasDefinTareas = new List<DateTime>();
+
+                        foreach (var ta in tareas)
+                        {
+                            fechasDeInicioTareas.Add(ta.FechaInicioTarea);
+                            fechasDefinTareas.Add(ta.FechaFinTarea);
+                        }
+
+                        fechasDeInicioTareas.Sort((x, y) => x.CompareTo(y));
+                        fechasDefinTareas.Sort((x, y) => x.CompareTo(y));
+                        solicitud.FechaFin = fechasDefinTareas[fechasDefinTareas.Count - 1];
+                        solicitud.FechaInicio = fechasDeInicioTareas[0];
+                        var respuesta = await _solicitudesBuseness.EditarSolicitud(solicitud);
+                        if (respuesta)
+                        {
+                            return Json(new { status = true, data = tarea.TareaId });
+                        }
+                        else
+                        {
+                            return Json(new { status = false });
+                        }
+                    }
+                    else
+                    {
+                        return Json(new { status = false });
+                    }
                 }
                 else
                 {

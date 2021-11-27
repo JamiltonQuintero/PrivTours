@@ -115,6 +115,7 @@ function limpiarModal() {
         $("#SolicitudId").val(0);
         $("#SolicitudEstado").val(0);
         $('#formularioTarea').hide()
+        listar()
     });
 
     $("#modalSolicitudDetalle").on("hidden.bs.modal", function () {
@@ -148,6 +149,7 @@ function limpiarModal() {
         $("#SolicitudIdD").val(0);
         $("#SolicitudEstadoD").val(0);
         $('#formularioTareaEdit').hide()
+        listar()
     });
 }
 
@@ -197,8 +199,10 @@ function guardarTarea() {
             "UsuarioIdentityId": document.getElementById('UsuarioIdentityId').value,
             "OperacionId": document.getElementById('OperacionId').value
         }
-            
-        $("#d").append("<tr id=" + "tr" + count + ">" + "<td>" + $('#OperacionId option:selected').text() + "</td> <td>" + "<a class='btn btn-danger' onclick = 'eliminarTarea(" + tarea.Id + ")'> <i class='fas fa-user-minus'></i></a >" + "</td>" +
+
+        var fechaTarea = "Inicio: " + document.getElementById("FechaInicioTarea").value + "<br />"+ "Fin: "+document.getElementById("FechaFinTarea").value;
+
+        $("#d").append("<tr id=" + "tr" + count + ">" + "<td>" + $('#UsuarioIdentityId option:selected').text() + "</td> <td>" + $('#OperacionId option:selected').text() + "<td>" + fechaTarea + "</td> <td>" + "<a class='btn btn-danger' onclick = 'eliminarTarea(" + tarea.Id + ")'> <i class='fas fa-user-minus'></i></a >" + "</td>" +
             "</tr>")
         lTareas.push(tarea)
 
@@ -525,9 +529,11 @@ function obtenerServicioPorId(id) {
             $("#SolicitudEstadoD").val(respuesta.data.estadoSoliciud);
 
             for (var tarea = 0; tarea < respuesta.data.tareas.length; tarea++) {
-                $("#e").append("<tr id=" + "tr" + respuesta.data.tareas[tarea].tareaId + ">" + "<td>" + respuesta.data.tareas[tarea].nombreOperacion + "</td> <td>" + "<a class='btn btn-secondary' onclick='obtenerTareaporId(" + respuesta.data.tareas[tarea].tareaId + ")'> <i class='fas fa-user-edit'></i></a >" +
-                    "</td>  <td>" + "<a class='btn btn-danger' onclick='eliminarTareaEditar(" + respuesta.data.tareas[tarea].tareaId + ")'> <i class='fas fa-user-minus'></i></a >" + "</td>" +
-        "</tr>")
+ 
+                var fechaTarea = "Inicio: " + respuesta.data.tareas[tarea].fechaInicioTarea + "<br />" + "Fin: " + respuesta.data.tareas[tarea].fechaFinTarea;
+                $("#e").append("<tr id=" + "tr" + respuesta.data.tareas[tarea].tareaId + ">" + "<td>" + respuesta.data.tareas[tarea].nombreEmpleado + "</td> <td>" + respuesta.data.tareas[tarea].nombreOperacion + "<td>" + fechaTarea + "</td> <td>" + "<a class='btn btn-secondary' onclick='obtenerTareaporId(" + respuesta.data.tareas[tarea].tareaId + ")'> <i class='fas fa-user-edit'></i></a > <a class='btn btn-danger' onclick='eliminarTareaEditar(" + respuesta.data.tareas[tarea].tareaId + ")'> <i class='fas fa-user-minus'></i></a >" + "</td>" +
+                    "</tr>")
+
             }
             
         } else {
@@ -804,9 +810,37 @@ function editarTareaConfirm() {
         type: "POST",
         contentType: false,
         processData: false,
+        processData: false,
         data: formData,
     }).done(function (respuesta) {
         if (respuesta.status) {
+
+            $.ajax({
+                url: '/Tareas/ObtenerTareaPorIdEdit',
+                data: jQuery.param({ id: document.getElementById('TareaIdD').value }),
+                type: 'get',
+                dataType: 'json',
+            }).done(function (respuesta) {
+                if (respuesta.status) {
+
+                    $("#tr" + respuesta.data.tareaId).remove()
+
+                    var fechaTarea = "Inicio: " + respuesta.data.fechaInicioTarea + "<br />" + "Fin: " + respuesta.data.fechaFinTarea;
+                    $("#e").append("<tr id=" + "tr" + respuesta.data.tareaId + ">" + "<td>" + respuesta.data.nombreEmpleado + "</td> <td>" + respuesta.data.nombreOperacion + "<td>" + fechaTarea + "</td> <td>" + "<a class='btn btn-secondary' onclick='obtenerTareaporId(" + respuesta.data.tareaId + ")'> <i class='fas fa-user-edit'></i></a > <a class='btn btn-danger' onclick='eliminarTareaEditar(" + respuesta.data.tareaId + ")'> <i class='fas fa-user-minus'></i></a >" + "</td>" +
+                        "</tr>")
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No fue posible obtenr la tarea. Por favor intente nuevamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                }
+            })
+
+            
+
             Swal.fire({
                 icon: 'success',
                 title: 'Tarea editada correctamente',
@@ -905,8 +939,8 @@ function editarAgregarTareaConfirm() {
     }).done(function (respuesta) {
         if (respuesta.status) {
 
-            $("#e").append("<tr id=" + "tr" + respuesta.data.tareaId + ">" + "<td>" + respuesta.data.nombreOperacion + "</td> <td>" + "<button  onclick='obtenerTareaporId(" + respuesta.data.tareaId + ")'class='btn' <i class='fas fa - user - edit'></i>></button>" +
-                "</td> <td>" + "<button onclick='eliminarTareaEditar(" + respuesta.data.tareaId + ")'>Eliminar</button>" + "</td>" +
+            var fechaTarea = "Inicio: " + respuesta.data.fechaInicioTarea + "<br />" + "Fin: " + respuesta.data.fechaFinTarea;
+            $("#e").append("<tr id=" + "tr" + respuesta.data.tareaId + ">" + "<td>" + respuesta.data.nombreEmpleado + "</td> <td>" + respuesta.data.nombreOperacion + "<td>" + fechaTarea + "</td> <td>" + "<a class='btn btn-secondary' onclick='obtenerTareaporId(" + respuesta.data.tareaId + ")'> <i class='fas fa-user-edit'></i></a > <a class='btn btn-danger' onclick='eliminarTareaEditar(" + respuesta.data.tareaId + ")'> <i class='fas fa-user-minus'></i></a >" + "</td>" +
                 "</tr>")
 
             Swal.fire({

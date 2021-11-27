@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using PrivTours.Filters;
 using PrivTours.Models.Abstract;
 using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
 
 namespace PrivTours.Controllers
 {
+    [NoCache]
     public class ServiciosController : Controller
     {
         private readonly IServiciosBusiness _serviciosBusiness;

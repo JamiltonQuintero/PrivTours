@@ -9,9 +9,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using PrivTours.ViewModels;
 using PrivTours.Models.Entities;
+using PrivTours.Filters;
 
 namespace PrivTours.Controllers
 {
+    [NoCache]
     public class RolesController : Controller
     {
 

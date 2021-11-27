@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using PrivTours.Filters;
 using PrivTours.Models.Abstract;
 using PrivTours.Models.Entities;
 
 namespace PrivTours.Controllers
 {
+    [NoCache]
     public class ClientesController : Controller
     {
         private readonly IClientesBusiness _clientesBusiness;
