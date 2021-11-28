@@ -11,5 +11,7 @@ namespace PrivTours.Models.Abstract
         Task GuardarServicio(Servicio servicio);
         Task EditarServicio(Servicio servicio);
         Task EliminarServicio(Servicio servicio);
+
+        Task<List<DetallePermiso>> ObtenerPermisosPorRolId(string id);
     }
 }

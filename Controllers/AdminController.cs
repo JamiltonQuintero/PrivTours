@@ -22,7 +22,7 @@ namespace PrivTours.Controllers
             _iAdminBusiness = adminBusiness;
         }
 
-        [Authorize(Roles = "Administrador")]
+        //[Authorize(Roles = "Administrador")]
         public IActionResult Dashboard()
         {
             var reporte = _iAdminBusiness.ReporteDashboar();

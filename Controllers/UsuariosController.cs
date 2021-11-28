@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text.Encodings.Web;
 using System.Web;
 using PrivTours.Filters;
+using PrivTours.Models.Abstract;
+using System.Security.Claims;
 
 namespace PrivTours.Controllers
 {
@@ -25,18 +27,60 @@ namespace PrivTours.Controllers
         private readonly SignInManager<UsuarioIdentity> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
+        private readonly IRolBusiness _iRolBusiness;
 
-        public UsuariosController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager, RoleManager<IdentityRole> roleManager, IEmailSender emailSender)
+        public UsuariosController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, IRolBusiness rolBusiness)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _emailSender = emailSender;
+            _roleManager = roleManager;
+            _iRolBusiness = rolBusiness;
         }
 
-        [Authorize(Roles = "Administrador")]
+        [Authorize()]
         public async Task<IActionResult> Index()
         {
+
+            var usuariosPermiso = false;
+            var usuariosCrear = false;
+            var usuariosEditar = false;
+            var usuariosActivarInactivar = false;
+            var usuariosEliminar = false;
+
+            var usuarioLogeado = await ObtenerUsuarioLogeado();
+            var role = _roleManager.Roles.Where(r => usuarioLogeado.RolSeleccionado.Contains(r.Name)).ToList();
+            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(role[0].Id);
+
+            foreach (var p in permisos)
+            {
+                var permiso = await _iRolBusiness.ObtenerPermisoPorId(p.PermisoId);
+
+
+                if (permiso.Nombre == "Usuarios")
+                {
+                    usuariosPermiso = true;
+                }
+                else if (permiso.Nombre == "Usuarios-crear")
+                {
+                    usuariosCrear = true;
+                }
+                else if (permiso.Nombre == "Usuarios-editar")
+                {
+                    usuariosEditar = true;
+                }
+                else if (permiso.Nombre == "Usuarios-activar/inactivar")
+                {
+                    usuariosActivarInactivar = true;
+                }
+                else if (permiso.Nombre == "Usuarios-eliminar")
+                {
+                    usuariosEliminar = true;
+                }
+
+            }
+
             var usuarios = await _userManager.Users.ToListAsync();
             var listaUsuariosViewModel = new List<UsuarioViewModel>();
 
@@ -57,11 +101,43 @@ namespace PrivTours.Controllers
                 listaUsuariosViewModel.Add(usuarioViewModel);
             }
 
-            return View(listaUsuariosViewModel);
+            var usuariosvm = new UsuariosConPermisosViewModel
+            {
+                Usuarios = listaUsuariosViewModel,
+                Usuarios_Permiso = usuariosPermiso,
+                Usuarios_crear_Permiso = usuariosCrear,
+                Usuarios_editar_Permiso = usuariosEditar,
+                Usuarios_activar_inactivar_Permiso = usuariosActivarInactivar,
+                Usuarios_eliminar_Permiso = usuariosEliminar
+            };
+            return View(usuariosvm);
 
         }
 
-        [Authorize(Roles = "Administrador")]
+        private async Task<UsuarioViewModel> ObtenerUsuarioLogeado()
+        {
+            var usuarioViewModel = new UsuarioViewModel();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId != null && userId != "")
+            {
+                var usuario = await _userManager.FindByIdAsync(userId);
+                var RolesUsuario = await ObtenerRolUsuario(usuario);
+                usuarioViewModel.Id = usuario.Id;
+                usuarioViewModel.Nombre = usuario.Nombre;
+                usuarioViewModel.Apellido = usuario.Apellido;
+                usuarioViewModel.Documento = usuario.Documento;
+                usuarioViewModel.Email = usuario.Email;
+                usuarioViewModel.Telefono = usuario.Telefono;
+                usuarioViewModel.Password = usuario.PasswordHash;
+                usuarioViewModel.ConfirmarPassword = usuario.PasswordHash;
+                usuarioViewModel.RolSeleccionado = RolesUsuario.Count == 0 ? "" : RolesUsuario.First();
+            }
+
+            return usuarioViewModel;
+        }
+
+        [Authorize()]
         private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
         {
             return new List<string>(await _userManager.GetRolesAsync(usuario));
@@ -75,7 +151,7 @@ namespace PrivTours.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Administrador")]
+        [Authorize()]
         [HttpPost]
         public async Task<IActionResult> Crearusuario(UsuarioViewModel usuarioViewModel)
         {
@@ -150,7 +226,7 @@ namespace PrivTours.Controllers
             return View(usuarioViewModel);
         }
 
-        [Authorize(Roles = "Administrador")]
+        [Authorize()]
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Editar(string id)
         {
@@ -186,7 +262,7 @@ namespace PrivTours.Controllers
         // POST: Clientes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize(Roles = "Administrador")]
+        [Authorize()]
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(string id, [Bind("Id,Nombre,Apellido,Documento,Email,Telefono,RolSeleccionado")] UsuarioViewModel usuarioViewModel)
@@ -274,7 +350,7 @@ namespace PrivTours.Controllers
         }
         
         // GET: Clientes/Delete/5
-        [Authorize(Roles = "Administrador")]
+        [Authorize()]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -297,7 +373,7 @@ namespace PrivTours.Controllers
             }
         }
 
-        [Authorize(Roles = "Administrador")]
+        [Authorize()]
         public async Task<IActionResult> CambiarEstado(string id)
         {
             if (id == null)

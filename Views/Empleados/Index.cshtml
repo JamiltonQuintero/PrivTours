@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PrivTours.ViewModels.UsuarioViewModel>
+﻿@model PrivTours.ViewModels.EmpleadosConPermisosViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -28,21 +28,25 @@
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
+            @if (@Model.Empleados_crear_Permiso)
+            {
             <p>
                 <a class="btn btn-outline-success" asp-action="Create"><i class="fa fa-plus-circle"></i> Crear nuevo empleado</a>
             </p>
+            }
+            
             <table id="tabla" class="table">
                 <thead>
                     <tr>
 
                         <th>
-                            @Html.DisplayNameFor(model => model.Documento)
+                            Documento
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Nombre)
+                            Nombre
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Email)
+                            Email
                         </th>
                         <th>Tipo de contrato</th>
                         <th>Estado</th>
@@ -50,45 +54,53 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var usuario in Model)
+                    @foreach (var usuario in Model.Empleados)
                     {
-                    <tr>
+                        <tr>
 
+                            <td>
+                                @Html.DisplayFor(modelUsuario => usuario.Documento)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelUsuario => usuario.Nombre)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelUsuario => usuario.Email)
+                            </td>
+
+                            @if (usuario.TipoContrato == 1)
+                            {
+                                <td>Interno</td>
+                            }
+                            else if (usuario.TipoContrato == 2)
+                            {
+                                <td> Externo</td>
+                            }
+
+                            @if (usuario.Estado == true)
+                            {
+                                <td>Activo</td>
+                            }
+                            else
+                            {
+                                <td>Inactivo</td>
+                            }
                         <td>
-                            @Html.DisplayFor(modelUsuario => usuario.Documento)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelUsuario => usuario.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelUsuario => usuario.Email)
-                        </td>
-
-                        @if (usuario.TipoContrato == 1)
-                        {
-                            <td>Interno</td>
-                        }
-                        else if (usuario.TipoContrato == 2)
-                        {
-                            <td> Externo</td>
-                        }
-
-                        @if (usuario.Estado == true)
-                        {
-                            <td>Activo</td>
-                        }
-                        else
-                        {
-                            <td>Inactivo</td>
-                        }
-                        <td>
-
-                            <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@usuario.Id"><i class="fas fa-user-edit"></i></a>
-                            <a class="btn  @(@usuario.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@usuario.Id', '@usuario.Nombre', @usuario.Estado.ToString().ToLower());"><i class="fas @(@usuario.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
-                            <a class="btn btn-danger" onclick="eliminar('@usuario.Id', '@usuario.Nombre');"><i class="fas fa-user-minus"></i></a>
+                            @if (Model.Empleados_editar_Permiso)
+                            {
+                                <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@usuario.Id"><i class="fas fa-user-edit"></i></a>
+                            }
+                            @if (Model.Empleados_activar_inactivar_Permiso)
+                            {
+                                <a class="btn  @(@usuario.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@usuario.Id', '@usuario.Nombre', @usuario.Estado.ToString().ToLower());"><i class="fas @(@usuario.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
+                            }
+                            @if (Model.Empleados_eliminar_Permiso)
+                            {
+                                <a class="btn btn-danger" onclick="eliminar('@usuario.Id', '@usuario.Nombre');"><i class="fas fa-user-minus"></i></a>
+                            }                                                
                         </td>
 
-                    </tr>
+                        </tr>
                     }
                 </tbody>
 

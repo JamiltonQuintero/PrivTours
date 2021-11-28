@@ -35,9 +35,7 @@ namespace PrivTours
             services.AddControllersWithViews();
             var conexion = Configuration["ConnectionStrings:conexion"];
             services.AddDbContext<DbContextPriv>(option => option.UseSqlServer(conexion));
-
             services.AddIdentity<UsuarioIdentity, IdentityRole>().AddEntityFrameworkStores<DbContextPriv>().AddDefaultTokenProviders();
-            
             services.AddScoped<ISolicitudesBusiness, SolicitudesBusiness>();
             services.AddScoped<IEmpleadosBusiness, EmpleadosBusiness>();
             services.AddScoped<ITareasBusiness, TareasBusiness>();

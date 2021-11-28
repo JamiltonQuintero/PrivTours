@@ -175,7 +175,7 @@ function filtar() {
                         "<p>" + e.fechaFinTarea + "</p>" +
 
                         "<div class='row-cols-3'>" +
-                        "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 3 + ", null )'" + " class='btn btn-success'>Iniciar tarea</a>" +
+                        "<a onclick='cambiarEstadoTarea("+ e.tareaId + "," + 3 + ", null)'" + " class='btn btn-success'>Iniciar tarea</a>" +
                         "<a onclick='cambiarEstadoTareaCancelar(" + e.tareaId + "," + 1 + ", null )'" + " class='btn btn-danger'>Cancelar tarea</a>" +
                         "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 2 + ", null )'" + " class='btn btn-primary'>Terminar tarea</a>" +
 
@@ -184,6 +184,7 @@ function filtar() {
                         "</div>" +
                         "</div >"
                     )
+                    
 
                 });
 

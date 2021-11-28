@@ -38,7 +38,8 @@ namespace PrivTours.Controllers
         // GET: TareasController
         public async Task<ActionResult> Index()
         {
-            var tareasActivas = new List<Tarea>();
+            
+               var tareasActivas = new List<Tarea>();
             
             var usuarioLogeado = await ObtenerUsuarioLogeado();
 
@@ -47,8 +48,8 @@ namespace PrivTours.Controllers
             if (usuarioLogeado.Id != null)
             {
                 if (usuarioLogeado.RolSeleccionado.ToUpper() == "ADMINISTRADOR")
-                {
-                    tareas = await _tareasBusiness.ObterTareas();
+                {                   
+                       tareas = await _tareasBusiness.ObterTareas();
 
                 } else if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
                 {

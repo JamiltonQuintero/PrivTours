@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using PrivTours.Models.Abstract;
 using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
@@ -34,12 +35,22 @@ namespace PrivTours.Models.Business
             {
                 _dbContext.Add(servicio);
                 await _dbContext.SaveChangesAsync();
+                
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
+
+        public async Task<List<DetallePermiso>> ObtenerPermisosPorRolId(string id)
+        {
+           var permisos = await _dbContext.DetallePermisos.ToListAsync();
+            permisos.FindAll(dp => dp.RoleIdentityId == id);
+            return permisos;
+        }
+
+
         public async Task EditarServicio(Servicio servicio)
         {
 

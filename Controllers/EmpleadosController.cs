@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,18 +19,59 @@ namespace PrivTours.Controllers
     {
         private readonly UserManager<UsuarioIdentity> _userManager;
         private readonly SignInManager<UsuarioIdentity> _signInManager;
+        private readonly IRolBusiness _iRolBusiness;
         private readonly RoleManager<IdentityRole> _roleManager;
 
 
-        public EmpleadosController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager, RoleManager<IdentityRole> roleManager)
+        public EmpleadosController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager, RoleManager<IdentityRole> roleManager, IRolBusiness rolBusiness)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _iRolBusiness = rolBusiness;
         }
 
         public async Task<IActionResult> Index()
         {
+
+            var empleadosPermiso = false;
+            var empleadosCrear = false;
+            var empleadosEditar = false;
+            var empleadosActivarInactivar = false;
+            var empleadosEliminar = false;
+
+            var usuarioLogeado = await ObtenerUsuarioLogeado();
+            var role = _roleManager.Roles.Where(r => usuarioLogeado.RolSeleccionado.Contains(r.Name)).ToList();
+            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(role[0].Id);
+
+            foreach (var p in permisos)
+            {
+                var permiso = await _iRolBusiness.ObtenerPermisoPorId(p.PermisoId);
+
+
+                if (permiso.Nombre == "Empleados")
+                {
+                    empleadosPermiso = true;
+                }
+                else if (permiso.Nombre == "Empleados-crear")
+                {
+                    empleadosCrear = true;
+                }
+                else if (permiso.Nombre == "Empleados-editar")
+                {
+                    empleadosEditar = true;
+                }
+                else if (permiso.Nombre == "Empleados-activar/inactivar")
+                {
+                    empleadosActivarInactivar = true;
+                }
+                else if (permiso.Nombre == "Empleados-eliminar")
+                {
+                    empleadosEliminar = true;
+                }
+
+            }
+
             var usuarios = await _userManager.Users.ToListAsync();
             var listaUsuariosViewModel = new List<UsuarioViewModel>();
 
@@ -50,10 +92,46 @@ namespace PrivTours.Controllers
                         Estado = usuario.LockoutEnd == null
                     };
                     listaUsuariosViewModel.Add(usuarioViewModel);
-                }      
+                }
             }
+         
+
+            var empleadosvm = new EmpleadosConPermisosViewModel
+            {
+                Empleados = listaUsuariosViewModel,
+                Empleados_Permiso = empleadosPermiso,
+                Empleados_crear_Permiso = empleadosCrear,
+                Empleados_editar_Permiso = empleadosEditar,
+                Empleados_activar_inactivar_Permiso = empleadosActivarInactivar,
+                Empleados_eliminar_Permiso = empleadosEliminar
+            };
             return View(listaUsuariosViewModel);
         }
+
+
+        private async Task<UsuarioViewModel> ObtenerUsuarioLogeado()
+        {
+            var usuarioViewModel = new UsuarioViewModel();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId != null && userId != "")
+            {
+                var usuario = await _userManager.FindByIdAsync(userId);
+                var RolesUsuario = await ObtenerRolUsuario(usuario);
+                usuarioViewModel.Id = usuario.Id;
+                usuarioViewModel.Nombre = usuario.Nombre;
+                usuarioViewModel.Apellido = usuario.Apellido;
+                usuarioViewModel.Documento = usuario.Documento;
+                usuarioViewModel.Email = usuario.Email;
+                usuarioViewModel.Telefono = usuario.Telefono;
+                usuarioViewModel.Password = usuario.PasswordHash;
+                usuarioViewModel.ConfirmarPassword = usuario.PasswordHash;
+                usuarioViewModel.RolSeleccionado = RolesUsuario.Count == 0 ? "" : RolesUsuario.First();
+            }
+
+            return usuarioViewModel;
+        }
+
         private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
         {
             return new List<string>(await _userManager.GetRolesAsync(usuario));
