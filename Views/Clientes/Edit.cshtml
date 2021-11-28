@@ -23,15 +23,14 @@
         </div><!-- /.container-fluid -->
         <hr />
     </div>
-    <!-- /.content-header -->
-    <!-- Main content -->
+
     <div class="content">
         <div class="container-fluid">
             
        
             <form method="post" asp-action="Edit" id="formulario" name="formulario">
                 <div asp-validation-summary="ModelOnly" class="text-danger">
-                </div> <!--<div asp-validation-summary="ModelOnly" class="text-danger"></div>-->
+                </div> 
 
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -108,9 +107,9 @@
 
                 <div class="form-row">
 
-                    <div class="form-group col-md-8">
+                    <div class="form-group col-md-12">
                         <label asp-for="Notas" class="control-label"></label>
-                        <input asp-for="Notas" class="form-control" />
+                        <textarea asp-for="Notas" class="form-control"></textarea>
                         <span asp-validation-for="Notas" class="text-danger"></span>
                     </div>
                 </div>
