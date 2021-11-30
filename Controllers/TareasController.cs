@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,10 @@ namespace PrivTours.Controllers
         private readonly IServiciosBusiness _serviciosBusiness;
         private readonly ITareasBusiness _tareasBusiness;
         private readonly SignInManager<UsuarioIdentity> _signInManager;
-        public TareasController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager, ISolicitudesBusiness solicitudesBuseness, IClientesBusiness clientesBusiness, IServiciosBusiness serviciosBusiness, ITareasBusiness tareasBusiness)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IRolBusiness _iRolBusiness;
+        public TareasController(UserManager<UsuarioIdentity> userManager, SignInManager<UsuarioIdentity> signInManager, ISolicitudesBusiness solicitudesBuseness, 
+            IClientesBusiness clientesBusiness, IServiciosBusiness serviciosBusiness, ITareasBusiness tareasBusiness, RoleManager<IdentityRole> roleManager, IRolBusiness rolBusiness)
         {
             _solicitudesBuseness = solicitudesBuseness;
             _userManager = userManager;
@@ -33,27 +37,66 @@ namespace PrivTours.Controllers
             _clientesBusiness = clientesBusiness;
             _serviciosBusiness = serviciosBusiness;
             _tareasBusiness = tareasBusiness;
+            _roleManager = roleManager;
+            _iRolBusiness = rolBusiness;
         }
 
         // GET: TareasController
+        [Authorize()]
         public async Task<ActionResult> Index()
         {
-            
-               var tareasActivas = new List<Tarea>();
-            
+
+            var TareasPermiso = false;
+            var TareasInicarTareaPermiso = false;
+            var TareasCancelarTareaPermiso = false;
+            var TareasTerminarTareaPermiso = false;
+            var TareasFiltrarPermiso = false;
+
             var usuarioLogeado = await ObtenerUsuarioLogeado();
+            var role = _roleManager.Roles.Where(r => usuarioLogeado.RolSeleccionado.Contains(r.Name)).ToList();
+            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(role[0].Id);
+
+            foreach (var p in permisos)
+            {
+                var permiso = await _iRolBusiness.ObtenerPermisoPorId(p.PermisoId);
+
+
+                if (permiso.Nombre == "Tareas")
+                {
+                    TareasPermiso = true;
+                }
+                else if (permiso.Nombre == "Tareas-inicar tarea")
+                {
+                    TareasInicarTareaPermiso = true;
+                }
+                else if (permiso.Nombre == "Tareas-cancelar tarea")
+                {
+                    TareasCancelarTareaPermiso = true;
+                }
+                else if (permiso.Nombre == "Tareas-terminar tarea")
+                {
+                    TareasTerminarTareaPermiso = true;
+                }
+                else if (permiso.Nombre == "Tareas-filtrar")
+                {
+                    TareasFiltrarPermiso = true;
+                }
+
+            }
+
+            var tareasActivas = new List<Tarea>();
 
             var tareas = new List<Tarea>();
 
             if (usuarioLogeado.Id != null)
             {
-                if (usuarioLogeado.RolSeleccionado.ToUpper() == "ADMINISTRADOR")
+                if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
                 {                   
-                       tareas = await _tareasBusiness.ObterTareas();
-
-                } else if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
-                {
+                       
                     tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+                } else 
+                {
+                    tareas = await _tareasBusiness.ObterTareas();
                 } 
             } 
 
@@ -93,9 +136,96 @@ namespace PrivTours.Controllers
                 };
                 lSolicitudes.Add(solicitudVM);
             }
-            return View(lSolicitudes);
+
+            var tareasvm = new TareasConPermisosViewModel
+            {
+                Tareas = lSolicitudes,
+                Tareas_Permiso = TareasPermiso,
+                Tareas_inicar_tarea_Permiso = TareasInicarTareaPermiso,
+                Tareas_cancelar_tarea_Permiso = TareasCancelarTareaPermiso,
+                Tareas_terminar_tarea_Permiso = TareasTerminarTareaPermiso,
+                Tareas_filtrar_Permiso = TareasFiltrarPermiso 
+            };
+            return View(tareasvm);
         }
 
+
+
+        [Authorize()]
+        public async Task<ActionResult> ObtenerTodasLasTareas()
+        {
+
+            try
+            {
+                var tareasActivas = new List<Tarea>();
+
+                var tareas = new List<Tarea>();
+
+                var usuarioLogeado = await ObtenerUsuarioLogeado();
+
+                if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
+                {
+                    tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+                }
+                else
+                {
+                    tareas = await _tareasBusiness.ObtenerListaTareas();
+                }
+
+                foreach (Tarea tarea in tareas)
+                {
+                    if (tarea.EstadoTarea == (byte)EEstadoTarea.RESERVADA ||
+                        tarea.EstadoTarea == (byte)EEstadoTarea.INICIADA)
+                    {
+                        var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                        if (solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.RESERVADO ||
+                            solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.EN_PROCESO)
+                        {
+                            tareasActivas.Add(tarea);
+                        }
+                    }
+                }
+
+                var lTareas = new List<SolicitudViewModel>();
+
+                foreach (var t in tareasActivas)
+                {
+                    var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(t.SolicitudId);
+                    var cliente = await _clientesBusiness.ObtenerClientePorId(solicitud.ClienteId);
+                    var servicio = await _serviciosBusiness.ObtenerServicioPorId(solicitud.ServicioId);
+                    var operacion = await _tareasBusiness.obtenerOperacionPorId(t.OperacionId);
+                    SolicitudViewModel solicitudVM = new SolicitudViewModel
+                    {
+                        TareaId = t.TareaId,
+                        FechaInicioTarea = t.FechaInicioTarea,
+                        FechaFinTarea = t.FechaFinTarea,
+                        DescripcionTarea = t.DescripcionTarea,
+                        Cliente = cliente,
+                        Servicio = servicio,
+                        Operacion = operacion,
+                        EstadoTarea = t.EstadoTarea
+                    };
+
+                    lTareas.Add(solicitudVM);
+                }
+
+                if (lTareas != null)
+                {
+                    return Json(new { status = true, data = lTareas });
+                }
+                else
+                {
+                    return Json(new { status = false });
+                }
+
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = false });
+            }
+        }
+
+        [Authorize()]
         public async Task<ActionResult> ObtenerTareasId()
         {
             var tareasActivas = new List<Tarea>();
@@ -106,14 +236,13 @@ namespace PrivTours.Controllers
 
             if (usuarioLogeado.Id != null)
             {
-                if (usuarioLogeado.RolSeleccionado.ToUpper() == "ADMINISTRADOR")
+                if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
+                {                   
+                    tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+                }
+                else 
                 {
                     tareas = await _tareasBusiness.ObterTareas();
-
-                }
-                else if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
-                {
-                    tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
                 }
             }
             var lTareasId = new List<int>();
@@ -141,6 +270,7 @@ namespace PrivTours.Controllers
         }
 
         [HttpPost]
+        [Authorize()]
         public async Task<ActionResult> CambiarEstadoSolicitud(int id, int tipo, string novedad)
         {
             try
@@ -164,9 +294,9 @@ namespace PrivTours.Controllers
                     {
                             tarea.EstadoTarea = (byte)EEstadoTarea.FINALIZADA_ADMIN;
                     }
-                    else if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
+                    else
                     {
-                            tarea.EstadoTarea = (byte)EEstadoTarea.FINALIZADA_EMPLEADO;
+                          tarea.EstadoTarea = (byte)EEstadoTarea.FINALIZADA_EMPLEADO;
                     }
                 }
                 else
@@ -219,7 +349,7 @@ namespace PrivTours.Controllers
                 return Json(new { data = false });
             }
         }
-
+        [Authorize()]
         private async Task<UsuarioViewModel> ObtenerUsuarioLogeado()
         {
             var usuarioViewModel = new UsuarioViewModel();
@@ -242,7 +372,7 @@ namespace PrivTours.Controllers
         
             return usuarioViewModel;
         }
-
+        [Authorize()]
         public async Task<IActionResult> ObtenerTareasPorEmpleadoId(string empleadoId)
         {
             try
@@ -292,6 +422,7 @@ namespace PrivTours.Controllers
 
         }
 
+        [Authorize()]
         public async Task<IActionResult> ObtenerTareasPorSolicitudId(int solicitudId)
         {
 
@@ -337,6 +468,7 @@ namespace PrivTours.Controllers
 
         }
 
+        [Authorize()]
         public async Task<IActionResult> ObtenerTareasPorRangoFechaDeInicio(DateTime fechaInicioFiltro, DateTime fechaFinFiltro)
         {
             try
@@ -347,19 +479,32 @@ namespace PrivTours.Controllers
 
                 var usuarioLogeado = await ObtenerUsuarioLogeado();
 
-                tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+                if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
+                {
+                    tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+                }
+                else
+                {
+                    tareas = await _tareasBusiness.ObtenerListaTareas();
+                }
 
                 var result = tareas.FindAll(a => {                
                     return (a.FechaInicioTarea >= fechaInicioFiltro && a.FechaInicioTarea <= fechaFinFiltro);
                 });
 
-                foreach (Tarea tarea in result)
+                foreach (Tarea tarea in tareas)
                 {
-
-                    tareasActivas.Add(tarea);
-
+                    if (tarea.EstadoTarea == (byte)EEstadoTarea.RESERVADA ||
+                        tarea.EstadoTarea == (byte)EEstadoTarea.INICIADA)
+                    {
+                        var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                        if (solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.RESERVADO ||
+                            solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.EN_PROCESO)
+                        {
+                            tareasActivas.Add(tarea);
+                        }
+                    }
                 }
-
                 var lTareas = new List<SolicitudViewModel>();
 
                 foreach (var t in tareasActivas)
@@ -400,6 +545,7 @@ namespace PrivTours.Controllers
 
         }
 
+        [Authorize()]
         public async Task<IActionResult> ObtenerListaTareasPorEstado(byte estado)
         {
             try
@@ -408,7 +554,15 @@ namespace PrivTours.Controllers
 
                 var usuarioLogeado = await ObtenerUsuarioLogeado();
 
-                tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+                if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
+                {
+                    tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+                }
+                else
+                {
+                    tareas = await _tareasBusiness.ObtenerListaTareas();
+                }
+
                 var tareasPorEstado = tareas.FindAll(tarea => tarea.EstadoTarea == estado);
                 var lTareas = new List<SolicitudViewModel>();
 
@@ -442,8 +596,8 @@ namespace PrivTours.Controllers
 
         }
 
-        
-    public async Task<IActionResult> ObtenerTareasPorRangoFechaDeFin(DateTime fechaInicioFiltro, DateTime fechaFinFiltro)
+        [Authorize()]
+        public async Task<IActionResult> ObtenerTareasPorRangoFechaDeFin(DateTime fechaInicioFiltro, DateTime fechaFinFiltro)
         {
             try
             {
@@ -453,17 +607,31 @@ namespace PrivTours.Controllers
 
                 var usuarioLogeado = await ObtenerUsuarioLogeado();
 
-                tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+                if (usuarioLogeado.RolSeleccionado.ToUpper() == "EMPLEADO")
+                {
+                    tareas = await _tareasBusiness.ObtenerListaTareasPorEmpleadoId(usuarioLogeado.Id);
+                }
+                else
+                {
+                    tareas = await _tareasBusiness.ObtenerListaTareas();
+                }
 
                 var result = tareas.FindAll(a => {
                     return (a.FechaFinTarea >= fechaInicioFiltro && a.FechaFinTarea <= fechaFinFiltro);
                 });
 
-                foreach (Tarea tarea in result)
+                foreach (Tarea tarea in tareas)
                 {
-
-                    tareasActivas.Add(tarea);
-
+                    if (tarea.EstadoTarea == (byte)EEstadoTarea.RESERVADA ||
+                        tarea.EstadoTarea == (byte)EEstadoTarea.INICIADA)
+                    {
+                        var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(tarea.SolicitudId);
+                        if (solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.RESERVADO ||
+                            solicitud.EstadoSoliciud == (byte)EEstadoSolicitud.EN_PROCESO)
+                        {
+                            tareasActivas.Add(tarea);
+                        }
+                    }
                 }
 
                 var lTareas = new List<SolicitudViewModel>();
@@ -471,12 +639,20 @@ namespace PrivTours.Controllers
                 foreach (var t in tareasActivas)
                 {
 
+                    var solicitud = await _solicitudesBuseness.ObtenerSolicitudPorId(t.SolicitudId);
+                    var cliente = await _clientesBusiness.ObtenerClientePorId(solicitud.ClienteId);
+                    var servicio = await _serviciosBusiness.ObtenerServicioPorId(solicitud.ServicioId);
+                    var operacion = await _tareasBusiness.obtenerOperacionPorId(t.OperacionId);
                     SolicitudViewModel solicitudVM = new SolicitudViewModel
                     {
                         TareaId = t.TareaId,
                         FechaInicioTarea = t.FechaInicioTarea,
                         FechaFinTarea = t.FechaFinTarea,
                         DescripcionTarea = t.DescripcionTarea,
+                        Cliente = cliente,
+                        Servicio = servicio,
+                        Operacion = operacion,
+                        EstadoTarea = t.EstadoTarea
                     };
 
                     lTareas.Add(solicitudVM);
@@ -498,6 +674,8 @@ namespace PrivTours.Controllers
             }
 
         }
+
+        [Authorize()]
         public async Task<IActionResult> ObtenerTareaPorId(int id)
         {
 
@@ -537,7 +715,7 @@ namespace PrivTours.Controllers
 
 
         }
-
+        [Authorize()]
         public async Task<IActionResult> Edit(Tarea tarea)
         {
             try
@@ -586,9 +764,9 @@ namespace PrivTours.Controllers
 
         }
 
-        
 
-    public async Task<IActionResult> ObtenerTareaPorIdEdit(int id)
+        [Authorize()]
+        public async Task<IActionResult> ObtenerTareaPorIdEdit(int id)
         {
             try
             {
@@ -621,7 +799,7 @@ namespace PrivTours.Controllers
             }
 
         }
-
+        [Authorize()]
         public async Task<IActionResult> Guardar(Tarea tarea)
         {
             try
@@ -681,7 +859,7 @@ namespace PrivTours.Controllers
             }
 
         }
-
+         [Authorize()]
         public async Task<IActionResult> EliminarTareaPorId(int id)
         {
             try

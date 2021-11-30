@@ -29,6 +29,13 @@ namespace PrivTours.Models.Business
             return tareasEmpleado;
         }
 
+        public async Task<List<Tarea>> ObtenerListaTareas()
+        {
+            var tareas = await _dbContext.Tareas.ToListAsync();
+            
+            return tareas;
+        }
+
         public async Task<List<Tarea>> ObtenerTareasPorSolicitudId(int solicitudId)
         {
 

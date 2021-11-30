@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -32,6 +33,7 @@ namespace PrivTours.Controllers
         }
 
         // GET: Servicios
+        [Authorize()]
         public async Task<IActionResult> Index()
         {
 
@@ -74,6 +76,10 @@ namespace PrivTours.Controllers
             }
 
             var servicios = await _serviciosBusiness.ObtenerListaServicios();
+            if (!servicioPermiso)
+            {
+                servicios = null;
+            }
 
             var serviciovm = new ServiciosConPermisosViewModel
                 {
@@ -88,6 +94,7 @@ namespace PrivTours.Controllers
             return View(serviciovm);
         }
 
+        [Authorize()]
         private async Task<UsuarioViewModel> ObtenerUsuarioLogeado()
         {
             var usuarioViewModel = new UsuarioViewModel();
@@ -110,13 +117,14 @@ namespace PrivTours.Controllers
 
             return usuarioViewModel;
         }
-
+        [Authorize()]
         private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
         {
             return new List<string>(await _userManager.GetRolesAsync(usuario));
         }
 
         // GET: Servicios/Details/5
+        [Authorize()]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -134,6 +142,7 @@ namespace PrivTours.Controllers
         }
 
         // GET: Servicios/Create
+        [Authorize()]
         public IActionResult Create()
         {
             return View();
@@ -143,7 +152,8 @@ namespace PrivTours.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
+        [Authorize()]
         public async Task<IActionResult> Create(Servicio servicio)
         {
             if (ModelState.IsValid)
@@ -168,6 +178,7 @@ namespace PrivTours.Controllers
         }
 
         // GET: Servicios/Edit/5
+        [Authorize()]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -187,7 +198,8 @@ namespace PrivTours.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
+        [Authorize()]
         public async Task<IActionResult> Edit(int id, Servicio servicio)
         {
             if (id != servicio.ServicioId)
@@ -216,6 +228,7 @@ namespace PrivTours.Controllers
         }
 
         // GET: Servicios/Delete/5
+        [Authorize()]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -239,6 +252,7 @@ namespace PrivTours.Controllers
 
 
         [HttpGet]
+        [Authorize()]
         public async Task<IActionResult> CambiarEstado(int? id)
         {
             if (id == null)

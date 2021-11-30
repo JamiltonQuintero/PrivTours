@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PrivTours.Filters;
@@ -29,6 +30,7 @@ namespace PrivTours.Controllers
         }
 
         // GET: Clientes
+        [Authorize()]
         public async Task<IActionResult> Index()
         {
             var servicioPermiso = false;
@@ -82,7 +84,7 @@ namespace PrivTours.Controllers
 
             return View(Clientevm);
         }
-
+        [Authorize()]
         private async Task<UsuarioViewModel> ObtenerUsuarioLogeado()
         {
             var usuarioViewModel = new UsuarioViewModel();
@@ -105,13 +107,14 @@ namespace PrivTours.Controllers
 
             return usuarioViewModel;
         }
-
+        [Authorize()]
         private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
         {
             return new List<string>(await _userManager.GetRolesAsync(usuario));
         }
 
         // GET: Clientes/Details/5
+        [Authorize()]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -139,7 +142,8 @@ namespace PrivTours.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
+        [Authorize()]
         public async Task<IActionResult> Create(Cliente cliente)
         {
             if (ModelState.IsValid)
@@ -161,6 +165,7 @@ namespace PrivTours.Controllers
         }
 
         // GET: Clientes/Edit/5
+        [Authorize()]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -180,7 +185,8 @@ namespace PrivTours.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
+        [Authorize()]
         public async Task<IActionResult> Edit(int id, Cliente cliente)
         {
             if (id != cliente.ClienteId)
@@ -208,6 +214,7 @@ namespace PrivTours.Controllers
         }
 
         // GET: Clientes/Delete/5
+        [Authorize()]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -231,6 +238,7 @@ namespace PrivTours.Controllers
         }
 
         [HttpGet]
+        [Authorize()]
         public async Task<IActionResult> CambiarEstado(int? id)
         {
             if (id == null)

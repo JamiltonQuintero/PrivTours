@@ -27,83 +27,109 @@
     <!-- /.content-header -->
     <!-- Main content -->
     <div class="content">
-        <div class="container-fluid">
-            @if (@Model.Usuarios_crear_Permiso)
-            {
-                <p>
-                    <a class="btn btn-outline-success" asp-action="Crearusuario"><i class="fa fa-plus-circle"></i> Crear nuevo usuario</a>
-                </p>
-            }
-            <table id="tabla" class="table">
-                <thead>
-                    <tr>
-
-                        <th>
-                            Documento
-                        </th>
-                        <th>
-                            Nombre
-                        </th>
-                        <th>
-                            Email
-                        </th>
-                        <th>Rol</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var usuario in Model.Usuarios)
-                    {
+        @if (Model.Usuarios_Permiso)
+        {
+            <div class="container-fluid">
+                @if (@Model.Usuarios_crear_Permiso)
+                {
+                    <p>
+                        <a class="btn btn-outline-success" asp-action="Crearusuario"><i class="fa fa-plus-circle"></i> Crear nuevo usuario</a>
+                    </p>
+                }
+                <table id="tabla" class="table">
+                    <thead>
                         <tr>
 
-                            <td>
-                                @Html.DisplayFor(modelUsuario => usuario.Documento)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelUsuario => usuario.Nombre)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelUsuario => usuario.Email)
-                            </td>
-                            <td>
-                                @string.Join(" ", usuario.Rol.ToList())
-                            </td>
-
-                            @if (usuario.Estado == true)
-                            {
-                                <td>Activo</td>
-                            }
-                            else
-                            {
-                                <td>Inactivo</td>
-                            }
-                            <td>
-
-                                @if (Model.Usuarios_editar_Permiso)
-                                {
-                                    <a class="btn btn-secondary" asp-action="Editar" asp-route-id="@usuario.Id"><i class="fas fa-user-edit"></i></a>
-                                }
-                                @if (Model.Usuarios_activar_inactivar_Permiso)
-                                {
-                                    <a class="btn  @(@usuario.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@usuario.Id', '@usuario.Nombre', @usuario.Estado.ToString().ToLower());"><i class="fas @(@usuario.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
-
-                                }
-                                @if (Model.Usuarios_eliminar_Permiso)
-                                {
-                                    <a class="btn btn-danger" onclick="eliminar('@usuario.Id', '@usuario.Nombre');"><i class="fas fa-user-minus"></i></a>
-                                }
-
-                            </td>
+                            <th>
+                                Documento
+                            </th>
+                            <th>
+                                Nombre
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
-                    }
-                </tbody>
+                    </thead>
+                    <tbody>
+                        @foreach (var usuario in Model.Usuarios)
+                        {
+                            <tr>
 
-            </table>
+                                <td>
+                                    @Html.DisplayFor(modelUsuario => usuario.Documento)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelUsuario => usuario.Nombre)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelUsuario => usuario.Email)
+                                </td>
+                                <td>
+                                    @string.Join(" ", usuario.Rol.ToList())
+                                </td>
+
+                                @if (usuario.Estado == true)
+                                {
+                                    <td>Activo</td>
+                                }
+                                else
+                                {
+                                    <td>Inactivo</td>
+                                }
+                                <td>
+
+                                    @if (Model.Usuarios_editar_Permiso)
+                                    {
+                                        <a class="btn btn-secondary" asp-action="Editar" asp-route-id="@usuario.Id"><i class="fas fa-user-edit"></i></a>
+                                    }
+                                    @if (Model.Usuarios_activar_inactivar_Permiso)
+                                    {
+                                        <a class="btn  @(@usuario.Estado == true ? "btn-warning" : "btn-success")" onclick="cambiarEstado('@usuario.Id', '@usuario.Nombre', @usuario.Estado.ToString().ToLower());"><i class="fas @(@usuario.Estado == true ? "fa-lock" : "fa-lock-open")"></i></a>
+
+                                    }
+                                    @if (Model.Usuarios_eliminar_Permiso)
+                                    {
+                                        <a class="btn btn-danger" onclick="eliminar('@usuario.Id', '@usuario.Nombre');"><i class="fas fa-user-minus"></i></a>
+                                    }
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
 
 
 
-        </div><!-- /.container-fluid -->
+            </div><!-- /.container-fluid -->
+        }
+        else
+        {
+    <div class="content-wrapper">
+        <div class="content">
+            <div class="container-fluid">
+
+                <div class="container py-5">
+                    <div class="row">
+                        <div class="col-md-2 text-center">
+                            <p><i class="fa fa-exclamation-triangle fa-5x"></i><br />Acceso denegado: 403</p>
+                        </div>
+                        <div class="col-md-10">
+                            <h3>OPPSSS!!!! Lo sentimos...</h3>
+                            <p>No tienes acceso al recurso.<br />Por favor regresa a la página en la que te encontrabas.</p>
+                            <a class="btn btn-danger" href="javascript:history.back()">Volver</a>
+                            <!--<a asp-action="Index">Volver</a>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        }
     </div>
     <!-- /.content -->
     <!-- /.content-wrapper -->

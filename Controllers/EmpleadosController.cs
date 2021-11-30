@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -30,7 +31,7 @@ namespace PrivTours.Controllers
             _roleManager = roleManager;
             _iRolBusiness = rolBusiness;
         }
-
+        [Authorize()]
         public async Task<IActionResult> Index()
         {
 
@@ -105,10 +106,10 @@ namespace PrivTours.Controllers
                 Empleados_activar_inactivar_Permiso = empleadosActivarInactivar,
                 Empleados_eliminar_Permiso = empleadosEliminar
             };
-            return View(listaUsuariosViewModel);
+            return View(empleadosvm);
         }
 
-
+        [Authorize()]
         private async Task<UsuarioViewModel> ObtenerUsuarioLogeado()
         {
             var usuarioViewModel = new UsuarioViewModel();
@@ -131,7 +132,7 @@ namespace PrivTours.Controllers
 
             return usuarioViewModel;
         }
-
+        [Authorize()]
         private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
         {
             return new List<string>(await _userManager.GetRolesAsync(usuario));
@@ -139,14 +140,16 @@ namespace PrivTours.Controllers
 
         //[Authorize(Roles = "Administrador")]
         [HttpGet]
+        [Authorize()]
         public IActionResult Create()
         {
             ViewData["Rol"] = "Empleado";
             return View();
         }
 
-        // [Authorize(Roles = "Administrador")]
+     
         [HttpPost]
+        [Authorize()]
         public async Task<IActionResult> Create(UsuarioViewModel usuarioViewModel)
         {
             if (ModelState.IsValid)
@@ -193,7 +196,7 @@ namespace PrivTours.Controllers
             return View(usuarioViewModel);
         }
 
-        // [Authorize(Roles = "Administrador")]
+        [Authorize()]
         // GET: Usuarios/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -229,6 +232,7 @@ namespace PrivTours.Controllers
 
 
         [HttpPost]
+        [Authorize()]
         public async Task<IActionResult> Editar(UsuarioViewModel usuarioViewModel)
         {
             ModelState.Remove("Password");
@@ -273,7 +277,7 @@ namespace PrivTours.Controllers
             return View(usuarioViewModel);
         }
         // GET: Clientes/Delete/5
-        //[Authorize(Roles = "Administrador")]
+        [Authorize()]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -296,7 +300,7 @@ namespace PrivTours.Controllers
             }
         }
 
-        // [Authorize(Roles = "Administrador")]
+        [Authorize()]
         public async Task<IActionResult> CambiarEstado(string id)
         {
             if (id == null)

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PrivTours.ViewModels.SolicitudViewModel>
+﻿@model PrivTours.ViewModels.TareasConPermisosViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -12,7 +12,7 @@
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
+
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -26,6 +26,16 @@
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
+        </div>
+    </div>
+    <!-- Content Header (Page header) -->
+    @if (Model.Tareas_Permiso)
+    {
+<div class="content-header">
+    @if (Model.Tareas_filtrar_Permiso)
+    {
+
+        <div class="container-fluid">
 
             <div class="row">
                 <div class="col-2">
@@ -63,91 +73,126 @@
                 </div>
             </div><!-- /.container-fluid -->
         </div>
-        <!-- /.content-header -->
-        <!-- Main content -->
-        <div class="content">
-            <div class="container-fluid">
+    }
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
 
-                <div class="row" id="cardTarea">
+            <div class="row" id="cardTarea">
 
-                    @foreach (var tarea in Model)
-                    {
+                @foreach (var tarea in Model.Tareas)
+                {
 
-                        <div class="courses-container" >
-                            <div class="course">
-                                <div class="course-preview">
+                    <div class="courses-container">
+                        <div class="course">
+                            <div class="course-preview">
 
-                                    <h4 class="card-subtitle mb-2 text-muted">Nombre cliente :  </h4>
-                                    <p>@tarea.Cliente.Nombre @tarea.Cliente.Apellidos</p>
-                                    <h4 class="card-subtitle mb-2 text-muted">Telefono cliente</h4>
-                                    <p>@tarea.Cliente.Telefono</p>
+                                <h4 class="card-subtitle mb-2 text-muted">Nombre cliente :  </h4>
+                                <p>@tarea.Cliente.Nombre @tarea.Cliente.Apellidos</p>
+                                <h4 class="card-subtitle mb-2 text-muted">Telefono cliente</h4>
+                                <p>@tarea.Cliente.Telefono</p>
 
-                                    <h4 class="card-subtitle mb-2 text-muted">Nombre tarea :  </h4>
-                                    <p>@tarea.Operacion.Nombre</p>
-                                    <h4 class="card-subtitle mb-2 text-muted">Descripcion tarea :  </h4>
-                                    <p>@tarea.DescripcionTarea</p>
+                                <h4 class="card-subtitle mb-2 text-muted">Nombre tarea :  </h4>
+                                <p>@tarea.Operacion.Nombre</p>
+                                <h4 class="card-subtitle mb-2 text-muted">Descripcion tarea :  </h4>
+                                <p>@tarea.DescripcionTarea</p>
 
+
+                            </div>
+                            <div class="course-info">
+                                <div class="progress-container">
+                                    <div class="progress"></div>
+
+                                    <span class="progress-text">
+
+                                        @if (tarea.EstadoTarea == 1)
+                                        {
+                                            <a>RESERVADA</a>
+                                        }
+                                        else if (tarea.EstadoTarea == 2)
+                                        {
+                                            <a>INICIADA</a>
+                                        }
+                                        else if (tarea.EstadoTarea == 3)
+                                        {
+                                            <a>VENCIDA</a>
+                                        }
+                                        else if (tarea.EstadoTarea == 4)
+                                        {
+                                            <a>CANCELADA</a>
+                                        }
+                                        else if (tarea.EstadoTarea == 5)
+                                        {
+                                            <a>FINALIZADA EMPLEADO</a>
+                                        }
+                                        else if (tarea.EstadoTarea == 6)
+                                        {
+                                            <a>FINALIZADA ADMIN</a>
+                                        }
+                                    </span>
+                                </div>
+                                <h6>Tarea # @tarea.TareaId</h6>
+                                <h4 class="card-subtitle mb-2 text-muted">Fecha inicio:</h4>
+                                <p>@tarea.FechaInicioTarea</p>
+                                <h4 class="card-subtitle mb-2 text-muted">Fecha Fin:</h4>
+                                <p>@tarea.FechaFinTarea </p>
+
+                                <div class="row-cols-3">
+
+                                    @if (Model.Tareas_inicar_tarea_Permiso)
+                                    {
+                                    <a onclick="cambiarEstadoTarea('@tarea.TareaId', 3, '@tarea.Operacion.Nombre');" class="btn btn-success">Iniciar tarea</a>
+                                    }
+                                    @if (Model.Tareas_cancelar_tarea_Permiso)
+                                    {
+                                <a onclick="cambiarEstadoTareaCancelar('@tarea.TareaId', 1, '@tarea.Operacion.Nombre');" class="btn btn-danger">Cancelar tarea</a>
+                                    }
+                                    @if (Model.Tareas_terminar_tarea_Permiso)
+                                    {
+                                <a onclick="cambiarEstadoTarea('@tarea.TareaId', 2, '@tarea.Operacion.Nombre');" class="btn btn-primary">Terminar tarea</a>
+                                    }
 
                                 </div>
-                                <div class="course-info">
-                                    <div class="progress-container">
-                                        <div class="progress"></div>
 
-                                        <span class="progress-text">
-
-                                            @if (tarea.EstadoTarea == 1)
-                                            {
-                                                <a>RESERVADA</a>
-                                            }
-                                            else if (tarea.EstadoTarea == 2)
-                                            {
-                                                <a>INICIADA</a>
-                                            }
-                                            else if (tarea.EstadoTarea == 3)
-                                            {
-                                                <a>VENCIDA</a>
-                                            }
-                                            else if (tarea.EstadoTarea == 4)
-                                            {
-                                                <a>CANCELADA</a>
-                                            }
-                                            else if (tarea.EstadoTarea == 5)
-                                            {
-                                                <a>FINALIZADA EMPLEADO</a>
-                                            }
-                                            else if (tarea.EstadoTarea == 6)
-                                            {
-                                                <a>FINALIZADA ADMIN</a>
-                                            }
-                                        </span>
-                                    </div>
-                                    <h6>Tarea # @tarea.TareaId</h6>
-                                    <h4 class="card-subtitle mb-2 text-muted">Fecha inicio:</h4>
-                                    <p>@tarea.FechaInicioTarea</p>
-                                    <h4 class="card-subtitle mb-2 text-muted">Fecha Fin:</h4>
-                                    <p>@tarea.FechaFinTarea </p>
-
-                                    <div class="row-cols-3">
-                                        <a onclick="cambiarEstadoTarea('@tarea.TareaId', 3, '@tarea.Operacion.Nombre');" class="btn btn-success">Iniciar tarea</a>
-                                        <a onclick="cambiarEstadoTareaCancelar('@tarea.TareaId', 1, '@tarea.Operacion.Nombre');" class="btn btn-danger">Cancelar tarea</a>
-                                        <a onclick="cambiarEstadoTarea('@tarea.TareaId', 2, '@tarea.Operacion.Nombre');" class="btn btn-primary">Terminar tarea</a>
-
-                                    </div>
-
-                                </div>
                             </div>
                         </div>
-                    }
-                </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
-    </div>
-    @section Scripts{
+</div>
+    }
+    else
+    {
+        <div class="content-wrapper">
+            <div class="content">
+                <div class="container-fluid">
 
-        <script src="~/js/Tabla.js"></script>
-        <script src="~/js/CardAnim.js"></script>
-        <script>
+                    <div class="container py-5">
+                        <div class="row">
+                            <div class="col-md-2 text-center">
+                                <p><i class="fa fa-exclamation-triangle fa-5x"></i><br />Acceso denegado: 403</p>
+                            </div>
+                            <div class="col-md-10">
+                                <h3>OPPSSS!!!! Lo sentimos...</h3>
+                                <p>No tienes acceso al recurso.<br />Por favor regresa a la página en la que te encontrabas.</p>
+                                <a class="btn btn-danger" href="javascript:history.back()">Volver</a>
+                                <!--<a asp-action="Index">Volver</a>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+            @section Scripts{
+
+                <script src="~/js/Tabla.js"></script>
+                <script src="~/js/CardAnim.js"></script>
+                <script>
 
 
         $(function () {
@@ -276,8 +321,8 @@
             })
         }
 
-        </script>
+                </script>
 
-        <script src="~/js/FiltrosTareas.js"></script>
-    }
+                <script src="~/js/FiltrosTareas.js"></script>
+            }
 

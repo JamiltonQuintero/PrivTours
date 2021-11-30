@@ -92,7 +92,6 @@ namespace PrivTours
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -101,7 +100,7 @@ namespace PrivTours
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Admin}/{action=Dashboard}/{id?}");
+                    pattern: "{controller=Usuarios}/{action=Login}/{id?}");
 
             });
         }

@@ -17,6 +17,7 @@ using System.Web;
 using PrivTours.Filters;
 using PrivTours.Models.Abstract;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace PrivTours.Controllers
 {
@@ -143,7 +144,7 @@ namespace PrivTours.Controllers
             return new List<string>(await _userManager.GetRolesAsync(usuario));
         }
 
-        [Authorize(Roles = "Administrador")]
+        [Authorize()]
         [HttpGet]
         public async Task<IActionResult> Crearusuario()
         {
@@ -422,8 +423,9 @@ namespace PrivTours.Controllers
 
                 if (result.Succeeded)
                 {
+                    //HttpContext.Session.SetString("_Configuration", "Configuration");
 
-                    return RedirectToAction("Index", "Usuarios");
+                    return RedirectToAction("Dashboard", "Admin");
 
                 }
                 ModelState.AddModelError("", "Credenciales incorrectas");

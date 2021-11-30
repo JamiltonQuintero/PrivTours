@@ -44,7 +44,7 @@
 
                         <div class="form group">
                             <label asp-for="Permisos" class="control-label"></label>
-                            <select asp-for="Permisos" id="choices-multiple-remove-button" placeholder="Select los permisos" multiple>
+                            <select asp-for="Permisos" id="choices-multiple-remove-button" placeholder="Seleccione los permisos" multiple>
                                 @foreach (var r in Model.Permisos)
                                 {
 
@@ -61,7 +61,7 @@
                             </div>
                             <br />
                             <div class="form-group">
-                                <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
+                                <input type="button" value="Editar" class="btn btn-primary" onclick="Crear()" />
                             </div>
 
                         </div>
