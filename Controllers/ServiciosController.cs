@@ -36,16 +36,25 @@ namespace PrivTours.Controllers
         [Authorize()]
         public async Task<IActionResult> Index()
         {
+        
+            var serviciovm =await ObtenerPermisosUsuarioLogeado();
+            if (serviciovm.Servicios_Permiso)
+            {
+               serviciovm.Servicios = await _serviciosBusiness.ObtenerListaServicios(); ;
+            }
+            
+            return View(serviciovm);
+        }
 
-            var servicioPermiso = false;
-            var serviciosCrear = false;
-            var serviciosEditar = false;
-            var SsrviciosActivarInactivar = false;
-            var serviciosEliminar = false;
+        [Authorize()]
+        private async Task<ServiciosConPermisosViewModel> ObtenerPermisosUsuarioLogeado()
+        {
 
+            var servicioPermiso = new ServiciosConPermisosViewModel();
             var usuarioLogeado = await ObtenerUsuarioLogeado();
-            var rol = _roleManager.Roles.Where(r => usuarioLogeado.RolSeleccionado.Contains(r.Name)).ToList();
-            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(rol[0].Id);
+            var roles = await _roleManager.Roles.ToListAsync();
+            var rolEmpleado = roles.Find(r => r.Name == usuarioLogeado.RolSeleccionado);
+            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(rolEmpleado.Id);
 
             foreach (var p in permisos)
             {
@@ -54,47 +63,31 @@ namespace PrivTours.Controllers
 
                 if (permiso.Nombre == "Servicios")
                 {
-                    servicioPermiso = true;
-                } 
+                    servicioPermiso.Servicios_Permiso = true;
+                }
                 else if (permiso.Nombre == "Servicios-crear")
                 {
-                    serviciosCrear = true;
+                    servicioPermiso.Servicios_crear_Permiso = true;
                 }
                 else if (permiso.Nombre == "Servicios-editar")
                 {
-                    serviciosEditar = true;
+                    servicioPermiso.Servicios_editar_Permiso = true;
                 }
                 else if (permiso.Nombre == "Servicios-activar/inactivar")
                 {
-                    SsrviciosActivarInactivar = true;
+                    servicioPermiso.Servicios_activar_inactivar_Permiso = true;
                 }
                 else if (permiso.Nombre == "Servicios-eliminar")
                 {
-                    serviciosEliminar = true;
+                    servicioPermiso.Servicios_eliminar_Permiso = true;
                 }
 
             }
-
-            var servicios = await _serviciosBusiness.ObtenerListaServicios();
-            if (!servicioPermiso)
-            {
-                servicios = null;
-            }
-
-            var serviciovm = new ServiciosConPermisosViewModel
-                {
-                    Servicios = servicios,
-                    Servicios_Permiso = servicioPermiso, 
-                    Servicios_crear_Permiso = serviciosCrear,
-                    Servicios_editar_Permiso = serviciosEditar,
-                    Servicios_activar_inactivar_Permiso = SsrviciosActivarInactivar,
-                    Servicios_eliminar_Permiso = serviciosEliminar
-        };
-                        
-            return View(serviciovm);
+            return servicioPermiso;
         }
 
-        [Authorize()]
+
+            [Authorize()]
         private async Task<UsuarioViewModel> ObtenerUsuarioLogeado()
         {
             var usuarioViewModel = new UsuarioViewModel();
@@ -143,9 +136,10 @@ namespace PrivTours.Controllers
 
         // GET: Servicios/Create
         [Authorize()]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var serviciovm = await ObtenerPermisosUsuarioLogeado();
+            return View(serviciovm);
         }
 
         // POST: Servicios/Create
@@ -185,13 +179,21 @@ namespace PrivTours.Controllers
             {
                 return NotFound();
             }
-
-            var servicio = await _serviciosBusiness.ObtenerServicioPorId(id.Value);
-            if (servicio == null)
+            var serviciovm = await ObtenerPermisosUsuarioLogeado();
+            if (serviciovm.Servicios_editar_Permiso)
             {
-                return NotFound();
+                var servicio = await _serviciosBusiness.ObtenerServicioPorId(id.Value);
+                if (servicio == null)
+                {
+                    return NotFound();
+                } else
+                {
+                    serviciovm.Servicio = servicio;
+                }
+                
             }
-            return View(servicio);
+   
+            return View(serviciovm);
         }
 
         // POST: Servicios/Edit/5

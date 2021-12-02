@@ -44,15 +44,41 @@ namespace PrivTours.Controllers
         public async Task<IActionResult> Index()
         {
 
-            var usuariosPermiso = false;
-            var usuariosCrear = false;
-            var usuariosEditar = false;
-            var usuariosActivarInactivar = false;
-            var usuariosEliminar = false;
+            var usuariovm = await ObtenerPermisosUsuarioLogeado();
+            if (usuariovm.Usuarios_Permiso)
+            {
+                var usuarios = await _userManager.Users.ToListAsync();
+                var listaUsuariosViewModel = new List<UsuarioViewModel>();
 
+                foreach (var usuario in usuarios)
+                {
+                    var usuarioViewModel = new UsuarioViewModel()
+                    {
+                        Id = usuario.Id,
+                        Nombre = usuario.Nombre,
+                        Apellido = usuario.Apellido,
+                        Documento = usuario.Documento,
+                        Telefono = usuario.Telefono,
+                        Email = usuario.Email,
+                        Rol = await ObtenerRolUsuario(usuario),
+                        Estado = usuario.LockoutEnd == null
+                    };
+
+                    listaUsuariosViewModel.Add(usuarioViewModel);
+                }
+                usuariovm.Usuarios = listaUsuariosViewModel;
+            }
+            return View(usuariovm);
+        }
+
+        [Authorize()]
+        private async Task<UsuariosConPermisosViewModel> ObtenerPermisosUsuarioLogeado()
+        {
+            var usuariosPermiso = new UsuariosConPermisosViewModel();
             var usuarioLogeado = await ObtenerUsuarioLogeado();
-            var role = _roleManager.Roles.Where(r => usuarioLogeado.RolSeleccionado.Contains(r.Name)).ToList();
-            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(role[0].Id);
+            var roles = await _roleManager.Roles.ToListAsync();
+            var rolEmpleado = roles.Find(r => r.Name == usuarioLogeado.RolSeleccionado);
+            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(rolEmpleado.Id);
 
             foreach (var p in permisos)
             {
@@ -61,58 +87,27 @@ namespace PrivTours.Controllers
 
                 if (permiso.Nombre == "Usuarios")
                 {
-                    usuariosPermiso = true;
+                    usuariosPermiso.Usuarios_Permiso = true;
                 }
                 else if (permiso.Nombre == "Usuarios-crear")
                 {
-                    usuariosCrear = true;
+                    usuariosPermiso.Usuarios_crear_Permiso = true;
                 }
                 else if (permiso.Nombre == "Usuarios-editar")
                 {
-                    usuariosEditar = true;
+                    usuariosPermiso.Usuarios_editar_Permiso = true;
                 }
                 else if (permiso.Nombre == "Usuarios-activar/inactivar")
                 {
-                    usuariosActivarInactivar = true;
+                    usuariosPermiso.Usuarios_activar_inactivar_Permiso = true;
                 }
                 else if (permiso.Nombre == "Usuarios-eliminar")
                 {
-                    usuariosEliminar = true;
+                    usuariosPermiso.Usuarios_eliminar_Permiso = true;
                 }
 
             }
-
-            var usuarios = await _userManager.Users.ToListAsync();
-            var listaUsuariosViewModel = new List<UsuarioViewModel>();
-
-            foreach (var usuario in usuarios)
-            {
-                var usuarioViewModel = new UsuarioViewModel()
-                {
-                    Id = usuario.Id,
-                    Nombre = usuario.Nombre,
-                    Apellido = usuario.Apellido,
-                    Documento = usuario.Documento,
-                    Telefono = usuario.Telefono,
-                    Email = usuario.Email,
-                    Rol = await ObtenerRolUsuario(usuario),
-                    Estado = usuario.LockoutEnd == null
-                };
-
-                listaUsuariosViewModel.Add(usuarioViewModel);
-            }
-
-            var usuariosvm = new UsuariosConPermisosViewModel
-            {
-                Usuarios = listaUsuariosViewModel,
-                Usuarios_Permiso = usuariosPermiso,
-                Usuarios_crear_Permiso = usuariosCrear,
-                Usuarios_editar_Permiso = usuariosEditar,
-                Usuarios_activar_inactivar_Permiso = usuariosActivarInactivar,
-                Usuarios_eliminar_Permiso = usuariosEliminar
-            };
-            return View(usuariosvm);
-
+            return usuariosPermiso;
         }
 
         private async Task<UsuarioViewModel> ObtenerUsuarioLogeado()
@@ -149,15 +144,17 @@ namespace PrivTours.Controllers
         public async Task<IActionResult> Crearusuario()
         {
             ViewData["Roles"] = new SelectList(await _roleManager.Roles.OrderBy(x => x.Name).ToListAsync(), "Name", "Name");
-            return View();
+            var usuariovm = await ObtenerPermisosUsuarioLogeado();
+            return View(usuariovm);
         }
 
         [Authorize()]
         [HttpPost]
-        public async Task<IActionResult> Crearusuario(UsuarioViewModel usuarioViewModel)
+        public async Task<IActionResult> Crearusuario(UsuariosConPermisosViewModel usuariosConPermisosViewModel)
         {
             if (ModelState.IsValid)
             {
+                var usuarioViewModel = usuariosConPermisosViewModel.Usuario;
                 UsuarioIdentity usuario = new UsuarioIdentity
                 {
 
@@ -224,7 +221,7 @@ namespace PrivTours.Controllers
                 
             }
             ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
-            return View(usuarioViewModel);
+            return View(usuariosConPermisosViewModel);
         }
 
         [Authorize()]
@@ -237,27 +234,37 @@ namespace PrivTours.Controllers
                 return NotFound();
             }
 
-            var usuario = await _userManager.FindByIdAsync(id);
-            if (usuario == null)
+            var usuariovm = await ObtenerPermisosUsuarioLogeado();
+            if (usuariovm.Usuarios_editar_Permiso)
             {
-                return NotFound();
+                var usuario = await _userManager.FindByIdAsync(id);
+                if (usuario == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var RolesUsuario = await ObtenerRolUsuario(usuario);
+                    var usuarioViewModel = new UsuarioViewModel()
+                    {
+                        Id = usuario.Id,
+                        Nombre = usuario.Nombre,
+                        Apellido = usuario.Apellido,
+                        Documento = usuario.Documento,
+                        Email = usuario.Email,
+                        Telefono = usuario.Telefono,
+                        Password = usuario.PasswordHash,
+                        ConfirmarPassword = usuario.PasswordHash,
+                        RolSeleccionado = RolesUsuario.Count == 0 ? "" : RolesUsuario.First()
+                    };
+                    ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
+                    usuariovm.Usuario = usuarioViewModel;
+                }
+
             }
 
-            var RolesUsuario = await ObtenerRolUsuario(usuario);
-            var usuarioViewModel = new UsuarioViewModel()
-            {
-                Id = usuario.Id,
-                Nombre = usuario.Nombre,
-                Apellido = usuario.Apellido,
-                Documento = usuario.Documento,
-                Email = usuario.Email,
-                Telefono = usuario.Telefono,
-                Password = usuario.PasswordHash,
-                ConfirmarPassword = usuario.PasswordHash,
-                RolSeleccionado = RolesUsuario.Count==0?"":RolesUsuario.First()
-            };
-            ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
-            return View(usuarioViewModel);
+            return View(usuariovm);
+
         }
 
         // POST: Clientes/Edit/5
@@ -266,20 +273,14 @@ namespace PrivTours.Controllers
         [Authorize()]
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Editar(string id, [Bind("Id,Nombre,Apellido,Documento,Email,Telefono,RolSeleccionado")] UsuarioViewModel usuarioViewModel)
+        public async Task<IActionResult> Editar(string id, UsuariosConPermisosViewModel usuariosConPermisosViewModel)
         {
-            try
+   
+                var usuarioViewModel = usuariosConPermisosViewModel.Usuario;
+                try
             {
                 ModelState.Remove("Password");
                 ModelState.Remove("ConfirmarPassword");
-                if (id != usuarioViewModel.Id)
-                {
-                    ModelState.AddModelError("", "Usuario a editar no corresponde");
-                    throw new Exception("ERROR: Usuario a editar no corresponde");
-                }
-
-                if (ModelState.IsValid)
-                {
 
                     var usuario = await _userManager.FindByIdAsync(id);
 
@@ -328,9 +329,7 @@ namespace PrivTours.Controllers
                                 ModelState.AddModelError("", errorMessage);
                             }
                         }
-                    }
-
-                }
+                    }              
             }
             catch (Exception e)
             {
@@ -347,7 +346,7 @@ namespace PrivTours.Controllers
                 return View(usuarioViewModel);
             }
             ViewData["Roles"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Name", "Name");
-            return View(usuarioViewModel);
+            return View(usuariosConPermisosViewModel);
         }
         
         // GET: Clientes/Delete/5

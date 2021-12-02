@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PrivTours.Filters;
 using PrivTours.Models.Abstract;
 using PrivTours.Models.Entities;
@@ -33,15 +34,26 @@ namespace PrivTours.Controllers
         [Authorize()]
         public async Task<IActionResult> Index()
         {
-            var servicioPermiso = false;
-            var serviciosCrear = false;
-            var serviciosEditar = false;
-            var SsrviciosActivarInactivar = false;
-            var serviciosEliminar = false;
+ 
+            var clientevm = await ObtenerPermisosUsuarioLogeado();
+            if (clientevm.Clientes_Permiso)
+            {
+                clientevm.Clientes = await _clientesBusiness.ObtenerListaClientes();
+            }
 
+            return View(clientevm);
+        }
+
+
+
+        [Authorize()]
+        private async Task<ClientesConPermisosViewModel> ObtenerPermisosUsuarioLogeado()
+        {
+            var clientePermiso = new ClientesConPermisosViewModel();
             var usuarioLogeado = await ObtenerUsuarioLogeado();
-            var rol = _roleManager.Roles.Where(r => usuarioLogeado.RolSeleccionado.Contains(r.Name)).ToList();
-            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(rol[0].Id);
+            var roles = await _roleManager.Roles.ToListAsync();
+            var rolEmpleado = roles.Find(r => r.Name == usuarioLogeado.RolSeleccionado);
+            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(rolEmpleado.Id);
 
             foreach (var p in permisos)
             {
@@ -49,41 +61,29 @@ namespace PrivTours.Controllers
 
                 if (permiso.Nombre == "Clientes")
                 {
-                    servicioPermiso = true;
+                    clientePermiso.Clientes_Permiso = true;
                 }
                 else if (permiso.Nombre == "Clientes-crear")
                 {
-                    serviciosCrear = true;
+                    clientePermiso.Clientes_crear_Permiso = true;
                 }
                 else if (permiso.Nombre == "Clientes-editar")
                 {
-                    serviciosEditar = true;
+                    clientePermiso.Clientes_editar_Permiso = true;
                 }
                 else if (permiso.Nombre == "Clientes-activar/inactivar")
                 {
-                    SsrviciosActivarInactivar = true;
+                    clientePermiso.Clientes_activar_inactivar_Permiso = true;
                 }
                 else if (permiso.Nombre == "Clientes-eliminar")
                 {
-                    serviciosEliminar = true;
+                    clientePermiso.Clientes_eliminar_Permiso = true;
                 }
 
             }
-
-            var clientes = await _clientesBusiness.ObtenerListaClientes();
-
-            var Clientevm = new ClientesConPermisosViewModel
-            {
-                Clientes = clientes,
-                Clientes_Permiso = servicioPermiso,
-                Clientes_crear_Permiso = serviciosCrear,
-                Clientes_editar_Permiso = serviciosEditar,
-                Clientes_activar_inactivar_Permiso = SsrviciosActivarInactivar,
-                Clientes_eliminar_Permiso = serviciosEliminar
-            };
-
-            return View(Clientevm);
+            return clientePermiso;
         }
+
         [Authorize()]
         private async Task<UsuarioViewModel> ObtenerUsuarioLogeado()
         {
@@ -133,9 +133,10 @@ namespace PrivTours.Controllers
         }
 
         // GET: Clientes/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var clientevm = await ObtenerPermisosUsuarioLogeado();
+            return View(clientevm);
         }
 
         // POST: Clientes/Create
@@ -173,12 +174,23 @@ namespace PrivTours.Controllers
                 return NotFound();
             }
 
-            var cliente = await _clientesBusiness.ObtenerClientePorId(id.Value);
-            if (cliente == null)
+            var clientevm = await ObtenerPermisosUsuarioLogeado();
+            if (clientevm.Clientes_editar_Permiso)
             {
-                return NotFound();
+                var servicio = await _clientesBusiness.ObtenerClientePorId(id.Value);
+                if (servicio == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    clientevm.Cliente = servicio;
+                }
+
             }
-            return View(cliente);
+
+            return View(clientevm);
+
         }
 
         // POST: Clientes/Edit/5

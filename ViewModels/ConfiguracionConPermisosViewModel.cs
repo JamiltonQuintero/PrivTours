@@ -10,14 +10,15 @@ namespace PrivTours.ViewModels
     {
 
         public List<RolViewModel> Roles { set; get; }
-
-        public bool Configuracion_Permiso { set; get; }
-        public bool Configuracion_crear_rol_Permiso { set; get; }
-        public bool Configuracion_editar_rol_Permiso { set; get; }
-        public bool Configuracion_eliminar_rol_Permiso { set; get; }
-        public bool Configuracion_editar_permi_Permiso { set; get; }
-        public bool Configuracion_eliminar_permi_Permiso { set; get; }
-        public bool Configuracion_asignar_permi_Permiso { set; get; }
+        public RolViewModel Rol { set; get; }
+        public EditarRolViewModel RolEdit { set; get; }
+        public bool Configuracion_Permiso { set; get; } = false;
+        public bool Configuracion_crear_rol_Permiso { set; get; } = false;
+        public bool Configuracion_editar_rol_Permiso { set; get; } = false;
+        public bool Configuracion_eliminar_rol_Permiso { set; get; } = false;
+        public bool Configuracion_editar_permi_Permiso { set; get; } = false;
+        public bool Configuracion_eliminar_permi_Permiso { set; get; } = false;
+        public bool Configuracion_asignar_permi_Permiso { set; get; } = false;
 
     }
 }

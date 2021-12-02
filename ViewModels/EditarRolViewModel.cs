@@ -13,6 +13,7 @@ namespace PrivTours.ViewModels
         [Required(ErrorMessage = "El nombre del rol es requerido")]
         public string NombreRol { get; set; }
         public List<string> Usuarios { get; set; }
+        public string Descripcion { get; set; }
 
     }
 }

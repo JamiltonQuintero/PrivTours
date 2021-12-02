@@ -471,6 +471,9 @@ namespace PrivTours.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
 
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasDiscriminator().HasValue("RoleIdentity");
                 });
 

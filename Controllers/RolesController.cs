@@ -33,85 +33,28 @@ namespace PrivTours.Controllers
         public async Task<IActionResult> Index()
         {
 
-
-            var configuracionPermiso = false;
-            var configuracionCrearRol = false;
-            var configuracionEditarRol = false;
-            var configuracionEliminarRol = false;
-            var configuracionEditarPermiso = false;
-            var configuracionEliminarPermiso = false;
-            var configuracionAsignarPermiso = false;
-
-            var usuarioLogeado = await ObtenerUsuarioLogeado();
-            var rol = _roleManager.Roles.Where(r => usuarioLogeado.RolSeleccionado.Contains(r.Name)).ToList();
-            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(rol[0].Id);
-
-            foreach (var p in permisos)
+            var configuracionvm = await ObtenerPermisosUsuarioLogeado();
+            if (configuracionvm.Configuracion_Permiso)
             {
-                var permiso = await _iRolBusiness.ObtenerPermisoPorId(p.PermisoId);
+                var roles = await _roleManager.Roles.ToListAsync();
 
+                var listarolesViewModel = new List<RolViewModel>();
 
-                if (permiso.Nombre == "Configuracion")
+                foreach (var role in roles)
                 {
-                    configuracionPermiso = true;
-                }
-                else if (permiso.Nombre == "Configuracion-crear rol")
-                {
-                    configuracionCrearRol = true;
-                }
-                else if (permiso.Nombre == "Configuracion-editar rol")
-                {
-                    configuracionEditarRol = true;
-                }
-                else if (permiso.Nombre == "Configuracion-eliminar rol")
-                {
-                    configuracionEliminarRol = true;
-                }
-                else if (permiso.Nombre == "Configuracion-asignar permisos")
-                {
-                    configuracionAsignarPermiso = true;
-                }
-                else if (permiso.Nombre == "Configuracion-eliminar permisos")
-                {
-                    configuracionEliminarPermiso = true;
-                }
-                else if (permiso.Nombre == "Configuracion-editar permisos")
-                {
-                    configuracionEditarPermiso = true;
-                }
+                    var PermisosDetalle = await _iRolBusiness.ObtenerPermisosPorRolId(role.Id);
 
+                    var rolViewModel = new RolViewModel()
+                    {
+                        Id = role.Id,
+                        NombreRol = role.Name,
+                        DetallePermiso = PermisosDetalle
+                    };
+
+                    listarolesViewModel.Add(rolViewModel);
+                }
+                configuracionvm.Roles = listarolesViewModel;
             }
-
-            var roles = await _roleManager.Roles.ToListAsync();
-           
-            var listarolesViewModel = new List<RolViewModel>();
-
-            foreach (var role in roles)
-            {
-                var PermisosDetalle = await _iRolBusiness.ObtenerPermisosPorRolId(role.Id);
-
-                var rolViewModel = new RolViewModel()
-                {
-                    Id = role.Id,
-                    NombreRol = role.Name,
-                    DetallePermiso = PermisosDetalle
-                };
-
-                listarolesViewModel.Add(rolViewModel);
-            }
-
-
-            var configuracionvm = new ConfiguracionConPermisosViewModel
-            {
-                Roles = listarolesViewModel,
-                Configuracion_Permiso = configuracionPermiso,
-                Configuracion_crear_rol_Permiso = configuracionCrearRol,
-                Configuracion_editar_rol_Permiso = configuracionEditarRol,
-                Configuracion_eliminar_rol_Permiso = configuracionEliminarRol,
-                Configuracion_editar_permi_Permiso = configuracionEditarPermiso,
-                Configuracion_eliminar_permi_Permiso = configuracionEliminarPermiso,
-                Configuracion_asignar_permi_Permiso = configuracionAsignarPermiso
-            };
             return View(configuracionvm);
         }
 
@@ -138,6 +81,56 @@ namespace PrivTours.Controllers
 
             return usuarioViewModel;
         }
+
+
+        [Authorize()]
+        private async Task<ConfiguracionConPermisosViewModel> ObtenerPermisosUsuarioLogeado()
+        {
+            var configuracionPermiso = new ConfiguracionConPermisosViewModel();
+            var usuarioLogeado = await ObtenerUsuarioLogeado();
+            var roles = await _roleManager.Roles.ToListAsync();
+            var rolEmpleado = roles.Find(r => r.Name == usuarioLogeado.RolSeleccionado);
+            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(rolEmpleado.Id);
+
+            foreach (var p in permisos)
+            {
+                var permiso = await _iRolBusiness.ObtenerPermisoPorId(p.PermisoId);
+
+
+                if (permiso.Nombre == "Configuracion")
+                {
+                    configuracionPermiso.Configuracion_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-crear rol")
+                {
+                    configuracionPermiso.Configuracion_crear_rol_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-editar rol")
+                {
+                    configuracionPermiso.Configuracion_editar_rol_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-eliminar rol")
+                {
+                    configuracionPermiso.Configuracion_eliminar_rol_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-asignar permisos")
+                {
+                    configuracionPermiso.Configuracion_asignar_permi_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-eliminar permisos")
+                {
+                    configuracionPermiso.Configuracion_editar_permi_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-editar permisos")
+                {
+                    configuracionPermiso.Configuracion_eliminar_permi_Permiso = true;
+                }
+
+            }
+       
+            return configuracionPermiso;
+        }
+
         [Authorize()]
         private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
         {
@@ -159,9 +152,10 @@ namespace PrivTours.Controllers
             if (ModelState.IsValid)
             {
 
-                IdentityRole rol = new IdentityRole
+                RoleIdentity rol = new RoleIdentity
                 {
-                    Name = rolViewModel.NombreRol
+                    Name = rolViewModel.NombreRol,
+                    Descripcion = rolViewModel.Descripcion
                 };
 
                 var result = await _roleManager.CreateAsync(rol);
@@ -223,7 +217,7 @@ namespace PrivTours.Controllers
             var editarRolViewModel = new EditarRolViewModel
             {
                 Id = rol.Id,
-                NombreRol = rol.Name
+                NombreRol = rol.Name,
             };
 
             return View(editarRolViewModel);

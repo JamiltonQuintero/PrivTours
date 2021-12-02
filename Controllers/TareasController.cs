@@ -53,8 +53,9 @@ namespace PrivTours.Controllers
             var TareasFiltrarPermiso = false;
 
             var usuarioLogeado = await ObtenerUsuarioLogeado();
-            var role = _roleManager.Roles.Where(r => usuarioLogeado.RolSeleccionado.Contains(r.Name)).ToList();
-            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(role[0].Id);
+            var roles = await _roleManager.Roles.ToListAsync();
+            var rolEmpleado = roles.Find(r => r.Name == usuarioLogeado.RolSeleccionado);
+            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(rolEmpleado.Id);
 
             foreach (var p in permisos)
             {

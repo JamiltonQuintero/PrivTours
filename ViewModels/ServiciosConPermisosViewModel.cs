@@ -10,11 +10,12 @@ namespace PrivTours.ViewModels
     {
 
         public IEnumerable<Servicio> Servicios { set; get; }
-        public bool Servicios_Permiso { set; get; }
-        public bool Servicios_crear_Permiso { set; get; }
-        public bool Servicios_editar_Permiso { set; get; }
-        public bool Servicios_activar_inactivar_Permiso { set; get; }
-        public bool Servicios_eliminar_Permiso { set; get; }
+        public Servicio Servicio { set; get; }
+        public bool Servicios_Permiso { set; get; } = false;
+        public bool Servicios_crear_Permiso { set; get; } = false;
+        public bool Servicios_editar_Permiso { set; get; } = false;
+        public bool Servicios_activar_inactivar_Permiso { set; get; } = false;
+        public bool Servicios_eliminar_Permiso { set; get; } = false;
 
     }
 }

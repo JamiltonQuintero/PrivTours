@@ -11,10 +11,10 @@ namespace PrivTours.ViewModels
 
         public  List<SolicitudViewModel> Tareas { set; get; }
 
-        public bool Tareas_Permiso { set; get; }
-        public bool Tareas_inicar_tarea_Permiso { set; get; }
-        public bool Tareas_cancelar_tarea_Permiso { set; get; }
-        public bool Tareas_terminar_tarea_Permiso { set; get; }
-        public bool Tareas_filtrar_Permiso { set; get; }
+        public bool Tareas_Permiso { set; get; } = false;
+        public bool Tareas_inicar_tarea_Permiso { set; get; } = false;
+        public bool Tareas_cancelar_tarea_Permiso { set; get; } = false;
+        public bool Tareas_terminar_tarea_Permiso { set; get; } = false;
+        public bool Tareas_filtrar_Permiso { set; get; } = false;
     }
 }

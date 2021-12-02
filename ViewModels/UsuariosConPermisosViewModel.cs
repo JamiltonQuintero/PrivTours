@@ -10,12 +10,12 @@ namespace PrivTours.ViewModels
     {
 
         public List<UsuarioViewModel> Usuarios { set; get; }
-
-        public bool Usuarios_Permiso { set; get; }
-        public bool Usuarios_crear_Permiso { set; get; }
-        public bool Usuarios_editar_Permiso { set; get; }
-        public bool Usuarios_activar_inactivar_Permiso { set; get; }
-        public bool Usuarios_eliminar_Permiso { set; get; }
+        public UsuarioViewModel Usuario { set; get; }
+        public bool Usuarios_Permiso { set; get; } = false;
+        public bool Usuarios_crear_Permiso { set; get; } = false;
+        public bool Usuarios_editar_Permiso { set; get; } = false;
+        public bool Usuarios_activar_inactivar_Permiso { set; get; } = false;
+        public bool Usuarios_eliminar_Permiso { set; get; } = false;
 
     }
 }

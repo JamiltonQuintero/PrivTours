@@ -11,13 +11,13 @@ namespace PrivTours.ViewModels
 
         public  SolicitudViewModel Solicitud { set; get; }
 
-        public bool SolicitudesDeServicio_Permiso { set; get; }
-        public bool SolicitudesDeServicio_crear_Permiso { set; get; }
-        public bool SolicitudesDeServicio_editar_Permiso { set; get; }
-        public bool SolicitudesDeServicio_filtrar_Permiso { set; get; }
-        public bool SolicitudesDeServicio_eliminar_tarea_Permiso { set; get; }
-        public bool SolicitudesDeServicio_editar_tareaPermiso { set; get; }
-        public bool SolicitudesDeServicio_crear_tareaPermiso { set; get; }
+        public bool SolicitudesDeServicio_Permiso { set; get; } = false;
+        public bool SolicitudesDeServicio_crear_Permiso { set; get; } = false;
+        public bool SolicitudesDeServicio_editar_Permiso { set; get; } = false;
+        public bool SolicitudesDeServicio_filtrar_Permiso { set; get; } = false;
+        public bool SolicitudesDeServicio_eliminar_tarea_Permiso { set; get; } = false;
+        public bool SolicitudesDeServicio_editar_tareaPermiso { set; get; } = false;
+        public bool SolicitudesDeServicio_crear_tareaPermiso { set; get; } = false;
 
     }
 }
