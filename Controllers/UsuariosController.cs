@@ -133,6 +133,25 @@ namespace PrivTours.Controllers
             return usuarioViewModel;
         }
 
+        private async Task<UsuarioViewModel> ObtenerUsuarioLogeadoPorEmail(string email)
+        {
+            var usuarioViewModel = new UsuarioViewModel();
+    
+                var usuario = await _userManager.FindByEmailAsync(email);
+                var RolesUsuario = await ObtenerRolUsuario(usuario);
+                usuarioViewModel.Id = usuario.Id;
+                usuarioViewModel.Nombre = usuario.Nombre;
+                usuarioViewModel.Apellido = usuario.Apellido;
+                usuarioViewModel.Documento = usuario.Documento;
+                usuarioViewModel.Email = usuario.Email;
+                usuarioViewModel.Telefono = usuario.Telefono;
+                usuarioViewModel.Password = usuario.PasswordHash;
+                usuarioViewModel.ConfirmarPassword = usuario.PasswordHash;
+                usuarioViewModel.RolSeleccionado = RolesUsuario.Count == 0 ? "" : RolesUsuario.First();
+            
+            return usuarioViewModel;
+        }
+
         [Authorize()]
         private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
         {
@@ -422,7 +441,47 @@ namespace PrivTours.Controllers
 
                 if (result.Succeeded)
                 {
-                    //HttpContext.Session.SetString("_Configuration", "Configuration");
+
+                    var usuarioLogeado = await ObtenerUsuarioLogeadoPorEmail(loginViewModel.Email);
+                    var roles = await _roleManager.Roles.ToListAsync();
+                    var rolEmpleado = roles.Find(r => r.Name == usuarioLogeado.RolSeleccionado);
+                    var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(rolEmpleado.Id);
+
+                    foreach (var p in permisos)
+                    {
+                        var permiso = await _iRolBusiness.ObtenerPermisoPorId(p.PermisoId);
+
+
+                        if (permiso.Nombre == "Configuracion")
+                        {
+                            HttpContext.Session.SetString("_Configuration", "Configuration");
+                        }
+                        else if (permiso.Nombre == "Usuarios")
+                        {
+                            HttpContext.Session.SetString("_Usuarios", "Usuarios");
+                        }
+                        else if (permiso.Nombre == "Empleados")
+                        {
+                            HttpContext.Session.SetString("_Empleados", "Empleados");
+                        }
+                        else if (permiso.Nombre == "Clientes")
+                        {
+                            HttpContext.Session.SetString("_Clientes", "Clientes");
+                        }
+                        else if (permiso.Nombre == "Servicios")
+                        {
+                            HttpContext.Session.SetString("_Servicios", "Servicios");
+                        }
+                        else if (permiso.Nombre == "Solicitudes de servicio")
+                        {
+                            HttpContext.Session.SetString("_SolicitudesDeServicio", "Solicitudes de servicio");
+                        }
+                        else if (permiso.Nombre == "Tareas")
+                        {
+                            HttpContext.Session.SetString("_Tareas", "Tareas");
+                        }
+
+                    }
 
                     return RedirectToAction("Dashboard", "Admin");
 

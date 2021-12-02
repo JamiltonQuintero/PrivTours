@@ -56,7 +56,12 @@ namespace PrivTours
                 options.User.RequireUniqueEmail = true;
 
             });
-
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = ".AdventureWorks.Session";
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.IsEssential = true;
+            });
             services.ConfigureApplicationCookie(options =>
             {
 
@@ -95,7 +100,7 @@ namespace PrivTours
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
