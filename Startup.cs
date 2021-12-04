@@ -59,7 +59,7 @@ namespace PrivTours
             services.AddSession(options =>
             {
                 options.Cookie.Name = ".AdventureWorks.Session";
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.IdleTimeout = TimeSpan.FromDays(1);
                 options.Cookie.IsEssential = true;
             });
             services.ConfigureApplicationCookie(options =>
@@ -69,7 +69,7 @@ namespace PrivTours
                 options.LoginPath = new PathString("/Usuarios/Login");
                 options.Cookie.Name = "Cookie";
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.ExpireTimeSpan = TimeSpan.FromDfixays(1);
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = true;
 

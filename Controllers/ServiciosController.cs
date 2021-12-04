@@ -148,10 +148,10 @@ namespace PrivTours.Controllers
         [HttpPost]
         //[ValidateAntiForgeryToken]
         [Authorize()]
-        public async Task<IActionResult> Create(Servicio servicio)
+        public async Task<IActionResult> Create(ServiciosConPermisosViewModel serviciosConPermisosViewModel)
         {
-            if (ModelState.IsValid)
-            {
+            var servicio = serviciosConPermisosViewModel.Servicio;
+  
                 try
                 {
 
@@ -167,8 +167,7 @@ namespace PrivTours.Controllers
                 {
                     return Json(new { data = "error" });
                 }
-            }
-            return Json(new { data = "error" });
+
         }
 
         // GET: Servicios/Edit/5
@@ -202,15 +201,9 @@ namespace PrivTours.Controllers
         [HttpPost]
         //[ValidateAntiForgeryToken]
         [Authorize()]
-        public async Task<IActionResult> Edit(int id, Servicio servicio)
+        public async Task<IActionResult> Edit(int id, ServiciosConPermisosViewModel serviciosConPermisosViewModel)
         {
-            if (id != servicio.ServicioId)
-            {
-                return Json(new { data = "error" });
-            }
-
-            if (ModelState.IsValid)
-            {
+            var servicio = serviciosConPermisosViewModel.Servicio;
                 try
                 {
 
@@ -225,8 +218,7 @@ namespace PrivTours.Controllers
 
                     return Json(new { data = "error" });
                 }
-            }
-            return Json(new { data = "error" });
+           
         }
 
         // GET: Servicios/Delete/5
