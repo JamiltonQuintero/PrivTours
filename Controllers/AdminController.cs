@@ -29,5 +29,10 @@ namespace PrivTours.Controllers
             return View(reporte);
         }
 
+        public ActionResult Reportes()
+        {
+            return View();
+        }
+
     }
 }

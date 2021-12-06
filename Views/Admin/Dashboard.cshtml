@@ -75,7 +75,7 @@
                     </div>
                 </div>
 
- 
+
             </div>
             <!-- /.row -->
             <!-- Main row -->
@@ -94,13 +94,135 @@
                     <br />
                     <div class="col-auto row justify-content-center">
                         <div>
-                            <a asp-action="" class="btn btn-outline-secondary btn-outline-success">Descargar Excel</a>
-                        </div>
-                        <br />
-                        <div>
-                            <a asp-action="" class="btn btn-outline-secondary btn-outline-success ml-3">Descargar PDF</a>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#exampleModalCenter">
+                                Generar reportes
+                            </button>
                         </div>
                     </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="ModalLongTitle">Generar reporte</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+
+                                        <div class="content">
+                                            <div class="container-fluid">
+                                                <h4>Selecciona el reporte que deseas generar: </h4>
+
+                                                <form id='external-events-list'>
+                                                    <select class="selectorReporte form-control input w-full border mt-2 flex-1" required id="TipoReporte" onChange="mostrar(this.value);">
+                                                        <option value="">-- Selecciona una opcion -- </option>
+                                                        <option value="CanSer">Cancelación de servicios</option>
+                                                        <option value="ProcCli">Procedencia de clientes</option>
+                                                        <option value="UsoServ">Uso de Servicios</option>
+                                                    </select>
+
+                                                    @*----------------------*@
+                                                    <div id="CanSer" style="display: none;" class="col-auto">
+                                                        <br />
+                                                        <h2>Cancelación de Servicios</h2>
+                                                        <br />
+                                                        <div class="col-auto" id="fechasFiltros">
+                                                            <div class="form group">
+                                                                <label class="control-label">Desde</label>
+                                                                <input class="form-control input w-full border mt-2 flex-1" type="datetime-local" id="FechaInicioFiltro" />
+                                                            </div>
+                                                            <div class="form group">
+                                                                <label class="control-label">Hasta</label>
+                                                                <input class="form-control input w-full border mt-2 flex-1" type="datetime-local" id="FechaFinFiltro" />
+                                                            </div>
+                                                        </div>
+
+                                                        @*<button type="button" class="btn btn-primary align-content-center" onclick="filtar()">Aplicar filtro</button>*@
+
+                                                        <br />
+                                                        <br />
+                                                        <div class="row justify-content-center">
+                                                            <button type="button" class="btn btn-primary" href="/Admin/Reportes">Generar reporte</button>
+
+
+                                                            <br />
+                                                            <br />
+                                                        </div>
+                                                    </div>
+
+                                                    @*----------------------*@
+                                                    <div id="ProcCli" style="display: none;">
+                                                        <br />
+                                                        <h2>Procedencia de Clientes</h2>
+                                                        <br />
+
+                                                        <div class="row justify-content-center">
+                                                            <button asp-action="Reportes" type="button" class="btn btn-primary">Generar reporte</button>
+
+
+                                                            <br />
+                                                            <br />
+                                                        </div>
+
+
+                                                    </div>
+
+
+
+                                                    @*----------------------*@
+                                                    <div id="UsoServ" style="display: none;">
+                                                        <br />
+                                                        <h2>Uso de Servicios</h2>
+                                                        <br />
+                                                        <div class="col-auto" id="fechasFiltros">
+                                                            <div class="form group">
+                                                                <label class="control-label">Desde</label>
+                                                                <input class="form-control input w-full border mt-2 flex-1" type="datetime-local" id="FechaInicioFiltro" />
+                                                            </div>
+                                                            <div class="form group">
+                                                                <label class="control-label">Hasta</label>
+                                                                <input class="form-control input w-full border mt-2 flex-1" type="datetime-local" id="FechaFinFiltro" />
+                                                            </div>
+                                                        </div>
+
+                                                        @*<button type="button" class="btn btn-primary align-content-center" onclick="filtar()">Aplicar filtro</button>*@
+                                                        <br />
+                                                        <br />
+                                                        <div class="row justify-content-center">
+                                                            <button type="button" class="btn btn-primary" href="/Admin/Reportes">Generar reporte</button>
+
+
+                                                            <br />
+                                                            <br />
+                                                        </div>
+                                                    </div>
+                                                    @*----------------------*@
+                                                </form>
+                                            </div>
+
+
+                                            <br />
+                                            <br />
+
+
+
+
+                                        </div><!-- /.container-fluid -->
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal -->
                     <br />
 
                 </section>
@@ -194,4 +316,33 @@
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="~/adminlte/dist/js/pages/dashboard.js"></script>
 
+
+    <script src="~/js/Tabla.js"></script>
+    <script src="~/js/CardAnim.js"></script>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript">
+
+        function mostrar(id) {
+            if (id == "UsoServ") {
+                $("#UsoServ").show();
+                $("#ProcCli").hide();
+                $("#CanSer").hide();
+            }
+
+            if (id == "ProcCli") {
+                $("#UsoServ").hide();
+                $("#ProcCli").show();
+                $("#CanSer").hide();
+            }
+
+            if (id == "CanSer") {
+                $("#UsoServ").hide();
+                $("#ProcCli").hide();
+                $("#CanSer").show();
+            }
+
+
+        }
+
+    </script>
 }
