@@ -147,7 +147,7 @@
                                                         <br />
                                                         <br />
                                                         <div class="row justify-content-center">
-                                                            <button type="button" class="btn btn-primary" href="/Admin/Reportes">Generar reporte</button>
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#CanSer">Generar reporte</button>
 
 
                                                             <br />
@@ -162,8 +162,7 @@
                                                         <br />
 
                                                         <div class="row justify-content-center">
-                                                            <button asp-action="Reportes" type="button" class="btn btn-primary">Generar reporte</button>
-
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalProcCli">Generar reporte</button>
 
                                                             <br />
                                                             <br />
@@ -194,7 +193,8 @@
                                                         <br />
                                                         <br />
                                                         <div class="row justify-content-center">
-                                                            <button type="button" class="btn btn-primary" href="/Admin/Reportes">Generar reporte</button>
+                                                            
+                                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalUsoServ">Generar reporte</button>
 
 
                                                             <br />
@@ -223,6 +223,72 @@
                         </div>
                     </div>
                     <!-- Modal -->
+                    <!-- Modal CanSer-->
+                    <div class="modal fade" id="modalCanSer" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modalCanSerLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalCanSerLabel">Reporte de Cancelación de Servicios</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    ...
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    @* generar botones de exportacion aca *@
+                                    <button type="button" class="btn btn-primary">Understood</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal CanSer-->
+                    <!-- Modal ProcCli-->
+                    <div class="modal fade" id="modalProcCli" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modalProcCliLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalProcCliLabel">Reporte de procedencia de Clientes</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    ...
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    @* generar botones de exportacion aca *@
+                                    <button type="button" class="btn btn-primary">Understood</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal ProcCli-->
+                    <!-- Modal UsoServ-->
+                    <div class="modal fade" id="modalUsoServ" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modalUsoServLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalUsoServLabel">Reporte de procedencia de Clientes</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    ...
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    @* generar botones de exportacion aca *@
+                                    <button type="button" class="btn btn-primary">Understood</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal UsoServ-->
                     <br />
 
                 </section>
