@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using PrivTours.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace PrivTours.Controllers
@@ -22,15 +24,71 @@ namespace PrivTours.Controllers
         private readonly ISolicitudesBusiness _solicitudesBuseness;
         private readonly UserManager<UsuarioIdentity> _userManager;
         private readonly ITareasBusiness _tareasBusiness;
-        public SolicitudesController(UserManager<UsuarioIdentity> userManager, ISolicitudesBusiness solicitudesBuseness, ITareasBusiness tareasBusiness)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IRolBusiness _iRolBusiness;
+        public SolicitudesController(UserManager<UsuarioIdentity> userManager, ISolicitudesBusiness solicitudesBuseness, ITareasBusiness tareasBusiness,
+            RoleManager<IdentityRole> roleManager, IRolBusiness rolBusiness)
         {
             _solicitudesBuseness = solicitudesBuseness;
             _userManager = userManager;
-            _tareasBusiness = tareasBusiness;
+            _tareasBusiness = tareasBusiness; 
+            _roleManager = roleManager;
+            _iRolBusiness = rolBusiness;
         }
-
+        [Authorize()]
         public async Task<IActionResult> Index()
         {
+
+
+
+            var SolicitudesDeServicio = false;
+            var SolicitudesDeServicioEditar = false;
+            var SolicitudesDeServicioCrear = false;
+            var SolicitudesDeServicioFiltrar = false;
+            var SolicitudesDeServicioCrearTarea = false;
+            var SolicitudesDeServicioEditarTarea = false;
+            var SolicitudesDeServicioEliminarTarea = false;
+
+            var usuarioLogeado = await ObtenerUsuarioLogeado();
+            var role = _roleManager.Roles.Where(r => usuarioLogeado.RolSeleccionado.Contains(r.Name)).ToList();
+            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(role[0].Id);
+
+            foreach (var p in permisos)
+            {
+                var permiso = await _iRolBusiness.ObtenerPermisoPorId(p.PermisoId);
+
+
+                if (permiso.Nombre == "Solicitudes de servicio")
+                {
+                    SolicitudesDeServicio = true;
+                }
+                else if (permiso.Nombre == "Solicitudes de servicio-filtrar")
+                {
+                    SolicitudesDeServicioEditar = true;
+                }
+                else if (permiso.Nombre == "Solicitudes de servicio-crear")
+                {
+                    SolicitudesDeServicioCrear = true;
+                }
+                else if (permiso.Nombre == "Solicitudes de servicio-editar")
+                {
+                    SolicitudesDeServicioFiltrar = true;
+                }
+                else if (permiso.Nombre == "Solicitudes de servicio-crear tarea")
+                {
+                    SolicitudesDeServicioCrearTarea = true;
+                }
+                else if (permiso.Nombre == "Solicitudes de servicio-editar tarea")
+                {
+                    SolicitudesDeServicioEditarTarea = true;
+                }
+                else if (permiso.Nombre == "Solicitudes de servicio-eliminar tarea")
+                {
+                    SolicitudesDeServicioEliminarTarea = true;
+                }
+
+            }
+
             var usuarios = await _userManager.Users.ToListAsync();
             var listaUsuarios = new List<UsuarioIdentity>();
 
@@ -49,12 +107,51 @@ namespace PrivTours.Controllers
             ViewData["Servicios"] = new SelectList(await _solicitudesBuseness.ObtenerListaServicios(), "ServicioId", "Nombre");
             ViewData["Operaciones"] = new SelectList(await _solicitudesBuseness.ObtenerListaOperaciones(), "OperacionId", "Nombre");
 
-            return View();
+
+            var solicitudesvm = new SolicitudesConPermisosViewModel
+            {
+                Solicitud = null,
+                SolicitudesDeServicio_Permiso = SolicitudesDeServicio,
+                SolicitudesDeServicio_crear_Permiso = SolicitudesDeServicioEditar,
+                SolicitudesDeServicio_editar_Permiso = SolicitudesDeServicioCrear,
+                SolicitudesDeServicio_filtrar_Permiso = SolicitudesDeServicioFiltrar,
+                SolicitudesDeServicio_eliminar_tarea_Permiso = SolicitudesDeServicioCrearTarea,
+                SolicitudesDeServicio_editar_tareaPermiso = SolicitudesDeServicioEditarTarea,
+                SolicitudesDeServicio_crear_tareaPermiso = SolicitudesDeServicioEliminarTarea
+            };
+            return View(solicitudesvm);
         }
+
+        private async Task<UsuarioViewModel> ObtenerUsuarioLogeado()
+        {
+            var usuarioViewModel = new UsuarioViewModel();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId != null && userId != "")
+            {
+                var usuario = await _userManager.FindByIdAsync(userId);
+                var RolesUsuario = await ObtenerRolUsuario(usuario);
+                usuarioViewModel.Id = usuario.Id;
+                usuarioViewModel.Nombre = usuario.Nombre;
+                usuarioViewModel.Apellido = usuario.Apellido;
+                usuarioViewModel.Documento = usuario.Documento;
+                usuarioViewModel.Email = usuario.Email;
+                usuarioViewModel.Telefono = usuario.Telefono;
+                usuarioViewModel.Password = usuario.PasswordHash;
+                usuarioViewModel.ConfirmarPassword = usuario.PasswordHash;
+                usuarioViewModel.RolSeleccionado = RolesUsuario.Count == 0 ? "" : RolesUsuario.First();
+            }
+
+            return usuarioViewModel;
+        }
+
+        [Authorize()]
         private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
         {
             return new List<string>(await _userManager.GetRolesAsync(usuario));
         }
+
+        [Authorize()]
         public async Task<IActionResult> ObtenerListaClientes()
 
         {
@@ -70,7 +167,7 @@ namespace PrivTours.Controllers
 
         }
 
-
+        [Authorize()]
         public async Task<IActionResult> ObtenerListaEmpleados()
 
         {
@@ -98,7 +195,7 @@ namespace PrivTours.Controllers
             }
 
         }
-
+        [Authorize()]
         public async Task<IActionResult> ObtenerListaServicios()
 
         {
@@ -113,7 +210,7 @@ namespace PrivTours.Controllers
             }
 
         }
-
+        [Authorize()]
         public async Task<IActionResult> ObtenerSolicitudesValidadndoDisponibilidad(SolicitudViewModel solicitudViewModel)
         {
             if (!ModelState.IsValid)
@@ -172,7 +269,7 @@ namespace PrivTours.Controllers
             }
         }
 
-
+        [Authorize()]
         public async Task<IActionResult> GuardarTarea(SolicitudViewModel solicitudViewModel)
         {
             try
@@ -201,6 +298,7 @@ namespace PrivTours.Controllers
             }
 
         }
+        [Authorize()]
         public async Task<IActionResult> Listar()
         {
 
@@ -216,7 +314,7 @@ namespace PrivTours.Controllers
             }
 
         }
-
+        [Authorize()]
         public async Task<IActionResult> ObtenerListaSolicitudesPorCliente(int clienteId)
         {
 
@@ -234,7 +332,7 @@ namespace PrivTours.Controllers
 
         }
 
-        
+        [Authorize()]
         public async Task<IActionResult> ObtenerListaSolicitudesPorEmpleado(string id)
         {
 
@@ -251,7 +349,7 @@ namespace PrivTours.Controllers
             }
 
         }
-
+       [Authorize()]
         public async Task<IActionResult> ObtenerListaSolicitudesPorServicio(int servicioId)
         {
 
@@ -268,7 +366,7 @@ namespace PrivTours.Controllers
             }
 
         }
-
+        [Authorize()]
         public async Task<IActionResult> ObtenerListaSolicitudesPorEstado(byte estado)
         {
             try
@@ -283,7 +381,7 @@ namespace PrivTours.Controllers
             }
 
         }
-
+        [Authorize()]
         public async Task<IActionResult> ObtenerDetalle(int? id)
         {
 
@@ -344,6 +442,7 @@ namespace PrivTours.Controllers
         }
 
         [HttpPost]
+        [Authorize()]
         public async Task<IActionResult> Edit(Solicitud solicitud)
         {
            
@@ -387,7 +486,7 @@ namespace PrivTours.Controllers
             }
             return Json(new { data = "error" });
         }
-
+        [Authorize()]
         public async Task<IActionResult> Guardar(string Descripcion, int ClienteId, int ServicioId, Tarea[] lTareas)
             {
 
@@ -432,7 +531,5 @@ namespace PrivTours.Controllers
             }
 
         }
-
-
     }
 }

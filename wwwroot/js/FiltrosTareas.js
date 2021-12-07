@@ -75,7 +75,94 @@ async function filtroSeleccionado(tipoFiltro) {
 function filtar() {
 
     if (this.filtro == "1") {
-        listar();
+        $.ajax({
+            url: '/Tareas/ObtenerTodasLasTareas',
+            type: 'get',
+            dataType: 'json',
+        }).done(function (respuesta) {
+            if (respuesta.status) {
+                $("#cardTarea").html("")
+                respuesta.data.map(function (e) {
+
+                    var estado = "";
+                    if (e.estadoTarea == 1) {
+                        estado = "RESERVADA"
+                    }
+                    else if (e.estadoTarea == 2) {
+                        estado = "INICIADA"
+                    }
+                    else if (e.estadoTarea == 3) {
+                        estado = "VENCIDA"
+                    }
+                    else if (e.estadoTarea == 4) {
+                        estado = "CANCELADA"
+                    }
+                    else if (e.estadoTarea == 5) {
+                        estado = "FINALIZADA EMPLEADO"
+                    }
+                    else if (e.estadoTarea == 6) {
+                        estado = "FINALIZADA ADMIN"
+                    }
+
+                    $("#cardTarea").append(
+
+                        "<div class='courses-container'>" +
+                        "<div class= 'course'>" +
+                        "<div class='course-preview'>" +
+
+                        "<h4 class='card-subtitle mb-2 text-muted'>Nombre cliente :  </h4>" +
+                        "<p>" + e.cliente.nombre + " " + e.cliente.apellidos + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Telefono cliente</h4>" +
+                        "<p>" + e.cliente.telefono + "</p>" +
+
+                        "<h4 class='ard-subtitle mb-2 text-muted'>Nombre tarea :  </h4>" +
+                        "<p>" + e.operacion.nombre + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Descripcion tarea :  </h4>" +
+                        "<p>" + e.descripcionTarea + "</p>" +
+
+
+                        "</div>" +
+                        "<div class='course-info'>" +
+                        "<div class='progress-container'>" +
+                        "<div class='progress'></div>" +
+
+                        "<span class='progress-text'>" +
+
+                        "<a>" + estado + "</a>" +
+
+                        "</span>" +
+                        "</div>" +
+                        "<h6>Tarea # " + e.tareaId + "</h6>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Fecha inicio:</h4>" +
+                        "<p>" + e.fechaInicioTarea + "</p>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Fecha Fin:</h4>" +
+                        "<p>" + e.fechaFinTarea + "</p>" +
+
+                        "<div class='row-cols-3'>" +
+                        "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 3 + ", null)'" + " class='btn btn-success'>Iniciar tarea</a>" +
+                        "<a onclick='cambiarEstadoTareaCancelar(" + e.tareaId + "," + 1 + ", null )'" + " class='btn btn-danger'>Cancelar tarea</a>" +
+                        "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 2 + ", null )'" + " class='btn btn-primary'>Terminar tarea</a>" +
+
+                        "</div>" +
+                        "</div>" +
+                        "</div>" +
+                        "</div >"
+                    )
+
+
+                });
+
+                if (!respuesta.data || respuesta.data.length == 0) {
+                    var titulo = 'El Estado seleccionado, no tiene registros';
+                    Swal.fire({
+                        icon: 'warning',
+                        title: titulo,
+                        showConfirmButton: false,
+                        timer: 3000
+                    })
+                }
+            }
+        })
     } else if (this.filtro == "2") {
         $.ajax({
             url: '/Solicitudes/ObtenerListaSolicitudesPorEmpleado/',
@@ -175,7 +262,7 @@ function filtar() {
                         "<p>" + e.fechaFinTarea + "</p>" +
 
                         "<div class='row-cols-3'>" +
-                        "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 3 + ", null )'" + " class='btn btn-success'>Iniciar tarea</a>" +
+                        "<a onclick='cambiarEstadoTarea("+ e.tareaId + "," + 3 + ", null)'" + " class='btn btn-success'>Iniciar tarea</a>" +
                         "<a onclick='cambiarEstadoTareaCancelar(" + e.tareaId + "," + 1 + ", null )'" + " class='btn btn-danger'>Cancelar tarea</a>" +
                         "<a onclick='cambiarEstadoTarea(" + e.tareaId + "," + 2 + ", null )'" + " class='btn btn-primary'>Terminar tarea</a>" +
 
@@ -184,6 +271,7 @@ function filtar() {
                         "</div>" +
                         "</div >"
                     )
+                    
 
                 });
 

@@ -35,9 +35,7 @@ namespace PrivTours
             services.AddControllersWithViews();
             var conexion = Configuration["ConnectionStrings:conexion"];
             services.AddDbContext<DbContextPriv>(option => option.UseSqlServer(conexion));
-
             services.AddIdentity<UsuarioIdentity, IdentityRole>().AddEntityFrameworkStores<DbContextPriv>().AddDefaultTokenProviders();
-            
             services.AddScoped<ISolicitudesBusiness, SolicitudesBusiness>();
             services.AddScoped<IEmpleadosBusiness, EmpleadosBusiness>();
             services.AddScoped<ITareasBusiness, TareasBusiness>();
@@ -58,7 +56,12 @@ namespace PrivTours
                 options.User.RequireUniqueEmail = true;
 
             });
-
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = ".AdventureWorks.Session";
+                options.IdleTimeout = TimeSpan.FromDays(1);
+                options.Cookie.IsEssential = true;
+            });
             services.ConfigureApplicationCookie(options =>
             {
 
@@ -66,7 +69,7 @@ namespace PrivTours
                 options.LoginPath = new PathString("/Usuarios/Login");
                 options.Cookie.Name = "Cookie";
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+                options.ExpireTimeSpan = TimeSpan.FromDays(1);
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = true;
 
@@ -94,16 +97,15 @@ namespace PrivTours
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSession();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Admin}/{action=Dashboard}/{id?}");
+                    pattern: "{controller=Usuarios}/{action=Login}/{id?}");
 
             });
         }

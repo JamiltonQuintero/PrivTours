@@ -14,5 +14,6 @@ namespace PrivTours.Models.Abstract
         Task GuardarDetallePermisos(RolViewModel rolViewModel);
         Task<List<DetallePermiso>> ObtenerPermisosPorRolId(string roleIdentityId);
         Task<bool> EliminarPermisosPorRolId(string roleIdentityId);
+        Task<Permiso> ObtenerPermisoPorId(int permisoId);
     }
 }

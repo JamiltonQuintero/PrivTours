@@ -1,10 +1,10 @@
-﻿@model PrivTours.ViewModels.UsuarioViewModel
+﻿@model PrivTours.ViewModels.UsuariosConPermisosViewModel
 
 @{
     ViewData["Title"] = "Editar";
 }
 
-@Html.HiddenFor(u => u.Id)
+@Html.HiddenFor(u => u.Usuario.Id)
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -27,58 +27,84 @@
     <!-- /.content-header -->
     <!-- Main content -->
     <div class="content">
-        <div class="container-fluid">
-            <hr />
-            <form method="post" asp-action="Editar" id="formulario" name="formulario">
-                <!--<div asp-validation-summary="All" class="text-danger"></div>-->
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Documento" class="control-label">Documento <span style="color: red;">*</span></label>
-                        <input asp-for="Documento" required placeholder="Documento" class="form-control" />
-                        <span asp-validation-for="Documento" class="text-danger"></span>
+        @if (Model.Usuarios_crear_Permiso)
+        {
+            <div class="container-fluid">
+                <hr />
+                <form method="post" asp-action="Editar" id="formulario" name="formulario">
+                    <!--<div asp-validation-summary="All" class="text-danger"></div>-->
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Usuario.Documento" class="control-label">Documento <span style="color: red;">*</span></label>
+                            <input asp-for="Usuario.Documento" required placeholder="Documento" class="form-control" />
+                            <span asp-validation-for="Usuario.Documento" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Usuario.Telefono" class="control-label">Teléfono</label>
+                            <input asp-for="Usuario.Telefono" required placeholder="Teléfono" class="form-control" />
+                            <span asp-validation-for="Usuario.Telefono" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Telefono" class="control-label">Teléfono</label>
-                        <input asp-for="Telefono" required placeholder="Teléfono" class="form-control" />
-                        <span asp-validation-for="Telefono" class="text-danger"></span>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Usuario.Nombre" class="control-label">Nombre <span style="color: red;">*</span></label>
+                            <input asp-for="Usuario.Nombre" required placeholder="Nombre" class="form-control" />
+                            <span asp-validation-for="Usuario.Nombre" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Usuario.Apellido" class="control-label">Apellido <span style="color: red;">*</span></label>
+                            <input asp-for="Usuario.Apellido" required placeholder="Apellido" class="form-control" />
+                            <span asp-validation-for="Usuario.Apellido" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Nombre" class="control-label">Nombre <span style="color: red;">*</span></label>
-                        <input asp-for="Nombre" required placeholder="Nombre" class="form-control" />
-                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Usuario.Email" class="control-label">E-mail <span style="color: red;">*</span></label>
+                            <input asp-for="Usuario.Email" required placeholder="E-mail" class="form-control" />
+                            <span asp-validation-for="Usuario.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Usuario.RolSeleccionado" class="control-label">Seleccionar rol <span style="color: red;">*</span></label>
+                            <select asp-for="Usuario.RolSeleccionado" class="form-control" asp-items="ViewBag.Roles">
+                                <option value="">Seleccione...</option>
+                            </select>
+                            <span asp-validation-for="Usuario.RolSeleccionado" class="text-danger"></span>
+                        </div>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Apellido" class="control-label">Apellido <span style="color: red;">*</span></label>
-                        <input asp-for="Apellido" required placeholder="Apellido" class="form-control" />
-                        <span asp-validation-for="Apellido" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Email" class="control-label">E-mail <span style="color: red;">*</span></label>
-                        <input asp-for="Email" required placeholder="E-mail" class="form-control" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="RolSeleccionado" class="control-label">Seleccionar rol <span style="color: red;">*</span></label>
-                        <select asp-for="RolSeleccionado" class="form-control" asp-items="ViewBag.Roles">
-                            <option value="">Seleccione...</option>
-                        </select>
-                        <span asp-validation-for="RolSeleccionado" class="text-danger"></span>
-                    </div>
-                </div>
 
-                <div class="form-row d-flex justify-content-end">
-                    <a asp-action="Index" class="btn btn-outline-secondary mx-2">Volver</a>
-                    <!--<input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />-->
-                    <input type="submit" value="Editar" class="btn btn-primary"/>
+                    <div class="form-row d-flex justify-content-end">
+                        <a asp-action="Index" class="btn btn-outline-secondary mx-2">Volver</a>
+                        <!--<input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />-->
+                        <input type="submit" value="Editar" class="btn btn-primary" />
+                    </div>
+
+                </form>
+            </div><!-- /.container-fluid -->
+        }
+        else
+        {
+            <div class="content-wrapper">
+                <div class="content">
+                    <div class="container-fluid">
+
+                        <div class="container py-5">
+                            <div class="row">
+                                <div class="col-md-2 text-center">
+                                    <p><i class="fa fa-exclamation-triangle fa-5x"></i><br />Acceso denegado: 403</p>
+                                </div>
+                                <div class="col-md-10">
+                                    <h3>OPPSSS!!!! Lo sentimos...</h3>
+                                    <p>No tienes acceso al recurso.<br />Por favor regresa a la página en la que te encontrabas.</p>
+                                    <a class="btn btn-danger" href="javascript:history.back()">Volver</a>
+                                    <!--<a asp-action="Index">Volver</a>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              
-            </form>
-        </div><!-- /.container-fluid -->
+            </div>
+        }
     </div>
     <!-- /.content -->
     <!-- /.content-wrapper -->

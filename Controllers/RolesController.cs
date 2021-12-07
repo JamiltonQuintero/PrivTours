@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using PrivTours.ViewModels;
 using PrivTours.Models.Entities;
 using PrivTours.Filters;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace PrivTours.Controllers
 {
@@ -27,76 +29,115 @@ namespace PrivTours.Controllers
             _roleManager = roleManager;
             _iRolBusiness = rolBusiness;
         }
-
+        [Authorize()]
         public async Task<IActionResult> Index()
         {
 
-            var roles = await _roleManager.Roles.ToListAsync();
-           
-            var listarolesViewModel = new List<RolViewModel>();
-
-            foreach (var rol in roles)
+            var configuracionvm = await ObtenerPermisosUsuarioLogeado();
+            if (configuracionvm.Configuracion_Permiso)
             {
-                var PermisosDetalle = await _iRolBusiness.ObtenerPermisosPorRolId(rol.Id);
+                var roles = await _roleManager.Roles.ToListAsync();
 
-                var textoPermisos = "";
-                var texto = "";
-                var count = 0;
-                foreach(var i in PermisosDetalle)
-                {
-                    count++;
-                    if (i.PermisoId == 1)
-                    {
-                        texto = "MenuEmpleados";
-                    }
-                    else if (i.PermisoId == 2)
-                    {
-                        texto = "Listar";
-                    }
-                    else if (i.PermisoId == 3)
-                    {
-                        texto = "Crear";
-                    }
-                    else if (i.PermisoId == 4)
-                    {
-                        texto = "Editar";
-                    }
-                    else if (i.PermisoId == 5)
-                    {
-                        texto = "Actualizar";
-                    }
-                    else if (i.PermisoId == 6)
-                    {
-                        texto = "Eliminar";
-                    }
-                    if (PermisosDetalle.Count == count)
-                    {
-                        textoPermisos += texto + ". ";
-                    } else
-                    {
-                        textoPermisos += texto + ", ";
-                    }
-                    
-                }
-                if(textoPermisos == "")
-                {
-                    textoPermisos = "Permisos no configurados";
-                }
-                var rolViewModel = new RolViewModel()
-                {
-                    Id = rol.Id,
-                    NombreRol = rol.Name,
-                    DetallePermiso = PermisosDetalle,
-                    TextoPermisos = textoPermisos 
-                };
+                var listarolesViewModel = new List<RolViewModel>();
 
-                listarolesViewModel.Add(rolViewModel);
+                foreach (var role in roles)
+                {
+                    var PermisosDetalle = await _iRolBusiness.ObtenerPermisosPorRolId(role.Id);
+
+                    var rolViewModel = new RolViewModel()
+                    {
+                        Id = role.Id,
+                        NombreRol = role.Name,
+                        DetallePermiso = PermisosDetalle
+                    };
+
+                    listarolesViewModel.Add(rolViewModel);
+                }
+                configuracionvm.Roles = listarolesViewModel;
+            }
+            return View(configuracionvm);
+        }
+
+        [Authorize()]
+        private async Task<UsuarioViewModel> ObtenerUsuarioLogeado()
+        {
+            var usuarioViewModel = new UsuarioViewModel();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId != null && userId != "")
+            {
+                var usuario = await _userManager.FindByIdAsync(userId);
+                var RolesUsuario = await ObtenerRolUsuario(usuario);
+                usuarioViewModel.Id = usuario.Id;
+                usuarioViewModel.Nombre = usuario.Nombre;
+                usuarioViewModel.Apellido = usuario.Apellido;
+                usuarioViewModel.Documento = usuario.Documento;
+                usuarioViewModel.Email = usuario.Email;
+                usuarioViewModel.Telefono = usuario.Telefono;
+                usuarioViewModel.Password = usuario.PasswordHash;
+                usuarioViewModel.ConfirmarPassword = usuario.PasswordHash;
+                usuarioViewModel.RolSeleccionado = RolesUsuario.Count == 0 ? "" : RolesUsuario.First();
             }
 
-            return View(listarolesViewModel);
+            return usuarioViewModel;
         }
 
 
+        [Authorize()]
+        private async Task<ConfiguracionConPermisosViewModel> ObtenerPermisosUsuarioLogeado()
+        {
+            var configuracionPermiso = new ConfiguracionConPermisosViewModel();
+            var usuarioLogeado = await ObtenerUsuarioLogeado();
+            var roles = await _roleManager.Roles.ToListAsync();
+            var rolEmpleado = roles.Find(r => r.Name == usuarioLogeado.RolSeleccionado);
+            var permisos = await _iRolBusiness.ObtenerPermisosPorRolId(rolEmpleado.Id);
+
+            foreach (var p in permisos)
+            {
+                var permiso = await _iRolBusiness.ObtenerPermisoPorId(p.PermisoId);
+
+
+                if (permiso.Nombre == "Configuracion")
+                {
+                    configuracionPermiso.Configuracion_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-crear rol")
+                {
+                    configuracionPermiso.Configuracion_crear_rol_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-editar rol")
+                {
+                    configuracionPermiso.Configuracion_editar_rol_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-eliminar rol")
+                {
+                    configuracionPermiso.Configuracion_eliminar_rol_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-asignar permisos")
+                {
+                    configuracionPermiso.Configuracion_asignar_permi_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-eliminar permisos")
+                {
+                    configuracionPermiso.Configuracion_editar_permi_Permiso = true;
+                }
+                else if (permiso.Nombre == "Configuracion-editar permisos")
+                {
+                    configuracionPermiso.Configuracion_eliminar_permi_Permiso = true;
+                }
+
+            }
+       
+            return configuracionPermiso;
+        }
+
+        [Authorize()]
+        private async Task<List<string>> ObtenerRolUsuario(UsuarioIdentity usuario)
+        {
+            return new List<string>(await _userManager.GetRolesAsync(usuario));
+        }
+
+        [Authorize()]
         public IActionResult CrearRol()
         {
             return View();
@@ -104,15 +145,17 @@ namespace PrivTours.Controllers
 
 
         [HttpPost]
+        [Authorize()]
         public async Task<IActionResult> CrearRol(RolViewModel rolViewModel)
         {
 
             if (ModelState.IsValid)
             {
 
-                IdentityRole rol = new IdentityRole
+                RoleIdentity rol = new RoleIdentity
                 {
-                    Name = rolViewModel.NombreRol
+                    Name = rolViewModel.NombreRol,
+                    Descripcion = rolViewModel.Descripcion
                 };
 
                 var result = await _roleManager.CreateAsync(rol);
@@ -134,13 +177,13 @@ namespace PrivTours.Controllers
 
             return View(rolViewModel);
         }
-
+        [Authorize()]
         public IActionResult ListarRoles()
         {
             return View(_roleManager.Roles);
         }
 
-
+        [Authorize()]
         public async Task<IActionResult> EliminarRol(string roleIdentityId)
         {
 
@@ -162,7 +205,7 @@ namespace PrivTours.Controllers
 
         }
 
-
+        [Authorize()]
         public async Task<IActionResult> EditarRol(string id)
         {
             var rol = await _roleManager.FindByIdAsync(id);
@@ -174,7 +217,7 @@ namespace PrivTours.Controllers
             var editarRolViewModel = new EditarRolViewModel
             {
                 Id = rol.Id,
-                NombreRol = rol.Name
+                NombreRol = rol.Name,
             };
 
             return View(editarRolViewModel);
@@ -182,6 +225,7 @@ namespace PrivTours.Controllers
 
         
         [HttpPost]
+        [Authorize()]
         public async Task<IActionResult> EditarRol(EditarRolViewModel editarRolViewModel)
         {
             var rol = await _roleManager.FindByIdAsync(editarRolViewModel.Id);
@@ -210,6 +254,7 @@ namespace PrivTours.Controllers
         }
         
         [HttpGet]
+        [Authorize()]
         public async Task<IActionResult> AsignarPermisos(string id)
         {
             ViewData["RoleIdentity"] = id;
@@ -218,6 +263,7 @@ namespace PrivTours.Controllers
         }
 
         [HttpPost]
+        [Authorize()]
         public async Task<IActionResult> AsignarPermisos(string roleIdentityId, string[] permisos)
         {
             try
@@ -237,6 +283,7 @@ namespace PrivTours.Controllers
         }
 
         [HttpGet]
+        [Authorize()]
         public async Task<IActionResult> EditarPermisos(string id)
         {
 
@@ -262,6 +309,7 @@ namespace PrivTours.Controllers
         }
 
         [HttpPost]
+        [Authorize()]
         public async Task<IActionResult> EditarPermisos(string roleIdentityId, string[] permisos)
         {
             try
@@ -290,6 +338,7 @@ namespace PrivTours.Controllers
         }
 
         [HttpGet]
+        [Authorize()]
         public async Task<IActionResult> EliminarPermisos(string roleIdentityId)
         {
             try
@@ -312,6 +361,7 @@ namespace PrivTours.Controllers
         }
 
         [HttpGet]
+        [Authorize()]
         public async Task<IActionResult> ObtenerPermisosPorRolId(string roleIdentityId)
         {
             try

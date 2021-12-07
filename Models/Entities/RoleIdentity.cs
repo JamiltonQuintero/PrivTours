@@ -8,6 +8,7 @@ namespace PrivTours.Models.Entities
 {
     public class RoleIdentity: IdentityRole
     {
+        public string Descripcion { get; set; }
         public ICollection<DetallePermiso> DetallePermiso { get; set; }
 
     }

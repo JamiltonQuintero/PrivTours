@@ -63,6 +63,11 @@ namespace PrivTours.Models.Business
             return permisos = permisos.FindAll(d => d.RoleIdentityId == roleIdentityId);
         }
 
+        public async Task<Permiso> ObtenerPermisoPorId(int permisoId)
+        {
+            return  await _dbContext.Permisos.FirstOrDefaultAsync(p => p.PermisoId == permisoId);
+        }
+
         public async Task<bool> EliminarPermisosPorRolId(string roleIdentityId)
         {
             try

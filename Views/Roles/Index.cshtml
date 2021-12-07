@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PrivTours.ViewModels.RolViewModel>
+﻿@model PrivTours.ViewModels.ConfiguracionConPermisosViewModel
 
 
 @{
@@ -31,57 +31,90 @@
     <!-- Main content -->
 
     <div class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <p>
-                    <a class="btn btn-outline-success" asp-action="CrearRol"><i class="fa fa-plus-circle"></i> Crear nuevo rol</a>
-                </p>
+        @if (Model.Configuracion_Permiso)
+        {
+            <div class="container-fluid">
+                <div class="row">
+                    <p>
+                        <a class="btn btn-outline-success" asp-action="CrearRol"><i class="fa fa-plus-circle"></i> Crear nuevo rol</a>
+                    </p>
 
+                </div>
+
+                <table id="tabla" class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                               Nombre Rol
+                            </th>
+
+
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var rol in Model.Roles)
+                        {
+                            var sel = rol.DetallePermiso.Count > 0 ? "" : "disabled";
+                            var sel2 = rol.DetallePermiso.Count > 0 ? "disabled" : "";
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => rol.NombreRol)
+                                </td>
+
+                                <td>
+
+                                    @if (Model.Configuracion_editar_rol_Permiso)
+                                    {
+                                        <a class="btn btn-secondary" asp-action="EditarRol" asp-route-id="@rol.Id"><i class="fas fa-user-edit"></i> Editar Rol</a>
+                                    }
+                                    @if (Model.Configuracion_eliminar_rol_Permiso)
+                                    {
+                                        <a class="btn btn-danger" onclick="eliminarRol('@rol.Id', '@rol.NombreRol');"><i class="fas fa-user-minus"></i> Eliminar Rol</a>
+
+                                    }
+                                    @if (Model.Configuracion_editar_permi_Permiso)
+                                    {
+                                        <a asp-action="EditarPermisos" asp-route-id="@rol.Id" class="btn btn-secondary @sel"><i class="fas fa-user-edit"></i> Editar Permisos</a>
+                                    }
+                                    @if (Model.Configuracion_eliminar_permi_Permiso)
+                                    {
+                                        <a class="btn btn-danger @sel" onclick="eliminar('@rol.Id', '@rol.NombreRol');"><i class="fas fa-user-minus"></i> Eliminar Permisos</a>
+                                    }
+                                    @if (Model.Configuracion_asignar_permi_Permiso)
+                                    {
+                                        <a class="btn btn-success @sel2" asp-action="AsignarPermisos" asp-route-id="@rol.Id"><i class="fa fa-plus-circle"></i> Asignar Permisos</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div><!-- /.container-fluid -->
+        }
+        else
+        {
+    <div class="content-wrapper">
+        <div class="content">
+            <div class="container-fluid">
+
+                <div class="container py-5">
+                    <div class="row">
+                        <div class="col-md-2 text-center">
+                            <p><i class="fa fa-exclamation-triangle fa-5x"></i><br />Acceso denegado: 403</p>
+                        </div>
+                        <div class="col-md-10">
+                            <h3>OPPSSS!!!! Lo sentimos...</h3>
+                            <p>No tienes acceso al recurso.<br />Por favor regresa a la página en la que te encontrabas.</p>
+                            <a class="btn btn-danger" href="javascript:history.back()">Volver</a>
+                            <!--<a asp-action="Index">Volver</a>-->
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <table id="tabla" class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.NombreRol)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Permisos)
-                        </th>
-
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var rol in Model)
-                    {
-                        var sel = rol.DetallePermiso.Count > 0 ? "" : "disabled";
-                        var sel2 = rol.DetallePermiso.Count > 0 ? "disabled" : "";
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => rol.NombreRol)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => rol.TextoPermisos)
-                        </td>
-                        <td>
-                            
-                            <a class="btn btn-secondary" asp-action="EditarRol" asp-route-id="@rol.Id"><i class="fas fa-user-edit"></i> Editar Rol</a> |
-
-                            <a class="btn btn-danger" onclick="eliminarRol('@rol.Id', '@rol.NombreRol');"><i class="fas fa-user-minus"></i> Eliminar Rol</a> |
-
-                            <a asp-action="EditarPermisos" asp-route-id="@rol.Id" class="btn btn-secondary @sel"><i class="fas fa-user-edit"></i> Editar Permisos</a> |
-
-                            <a class="btn btn-danger @sel" onclick="eliminar('@rol.Id', '@rol.NombreRol');"><i class="fas fa-user-minus"></i> Eliminar Permisos</a> |
-
-                            <a class="btn btn-success @sel2" asp-action="AsignarPermisos" asp-route-id="@rol.Id"><i class="fa fa-plus-circle"></i> Asignar Permisos</a>
-
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-            </table>
-        </div><!-- /.container-fluid -->
+        </div>
+    </div>
+        }
     </div>
     <!-- /.content -->
 </div>

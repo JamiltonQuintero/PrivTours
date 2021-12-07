@@ -1,4 +1,4 @@
-﻿@model PrivTours.Models.Entities.Cliente
+﻿@model PrivTours.ViewModels.ClientesConPermisosViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -25,109 +25,132 @@
     </div>
 
     <div class="content">
-        <div class="container-fluid">
-            
-       
-            <form method="post" asp-action="Edit" id="formulario" name="formulario">
-                <div asp-validation-summary="ModelOnly" class="text-danger">
-                </div> 
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Nombre" class="control-label"></label>
-                        <input asp-for="Nombre" class="form-control" />
-                        <span asp-validation-for="Nombre" class="text-danger"></span>
+        @if (Model.Clientes_crear_Permiso)
+        {
+            <div class="container-fluid">
+                <form method="post" asp-action="Edit" id="formulario" name="formulario">
+                    <div asp-validation-summary="ModelOnly" class="text-danger">
                     </div>
 
-                    <div class="form-group col-md-6">
-                        <label asp-for="Apellidos" class="control-label"></label>
-                        <input asp-for="Apellidos" class="form-control" />
-                        <span asp-validation-for="Apellidos" class="text-danger"></span>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Cliente.Nombre" class="control-label"></label>
+                            <input asp-for="Cliente.Nombre" class="form-control" />
+                            <span asp-validation-for="Cliente.Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label asp-for="Cliente.Apellidos" class="control-label"></label>
+                            <input asp-for="Cliente.Apellidos" class="form-control" />
+                            <span asp-validation-for="Cliente.Apellidos" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Cliente.Email" class="control-label"></label>
+                            <input asp-for="Cliente.Email" class="form-control" />
+                            <span asp-validation-for="Cliente.Email" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group col-md-6">
+                            <label asp-for="Cliente.FechaNac" class="control-label"></label>
+                            <input type=date asp-for="Cliente.FechaNac" class="form-control" />
+                            <span asp-validation-for="Cliente.FechaNac" class="text-danger"></span>
+                        </div>
+
+
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Cliente.Telefono" class="control-label"></label>
+                            <input asp-for="Cliente.Telefono" class="form-control" />
+                            <span asp-validation-for="Cliente.Telefono" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label asp-for="Cliente.TelefonoEmer" class="control-label"></label>
+                            <input asp-for="Cliente.TelefonoEmer" class="form-control" />
+                            <span asp-validation-for="Cliente.TelefonoEmer" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Cliente.IdTipoDoc" class="control-label"></label>
+                            <select asp-for="Cliente.IdTipoDoc" class="form-control">
+                                <option value="1">Cedula</option>
+                                <option value="2">Cedula extranjera</option>
+                                <option value="3">Pasaporte</option>
+                            </select>
+                            <span asp-validation-for="Cliente.IdTipoDoc" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Cliente.NumDoc" class="control-label"></label>
+                            <input asp-for="Cliente.NumDoc" class="form-control" />
+                            <span asp-validation-for="Cliente.NumDoc" class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group col-md-2">
+                            <label asp-for="Cliente.Pais" class="control-label"></label>
+                            <input asp-for="Cliente.Pais" class="form-control" />
+                            <span asp-validation-for="Cliente.Pais" class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group col-md-12">
+                            <label asp-for="Cliente.Notas" class="control-label"></label>
+                            <textarea asp-for="Cliente.Notas" class="form-control"></textarea>
+                            <span asp-validation-for="Cliente.Notas" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row col-4">
+                        <div>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                        </div>
+                        <br />
+                        <div class="form-group col-2">
+                            <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="content-wrapper">
+                <div class="content">
+                    <div class="container-fluid">
+
+                        <div class="container py-5">
+                            <div class="row">
+                                <div class="col-md-2 text-center">
+                                    <p><i class="fa fa-exclamation-triangle fa-5x"></i><br />Acceso denegado: 403</p>
+                                </div>
+                                <div class="col-md-10">
+                                    <h3>OPPSSS!!!! Lo sentimos...</h3>
+                                    <p>No tienes acceso al recurso.<br />Por favor regresa a la página en la que te encontrabas.</p>
+                                    <a class="btn btn-danger" href="javascript:history.back()">Volver</a>
+                                    <!--<a asp-action="Index">Volver</a>-->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Email" class="control-label"></label>
-                        <input asp-for="Email" class="form-control" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-
-
-                    <div class="form-group col-md-6">
-                        <label asp-for="FechaNac" class="control-label"></label>
-                        <input type=date asp-for="FechaNac" class="form-control" />
-                        <span asp-validation-for="FechaNac" class="text-danger"></span>
-                    </div>
-
-
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Telefono" class="control-label"></label>
-                        <input asp-for="Telefono" class="form-control" />
-                        <span asp-validation-for="Telefono" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label asp-for="TelefonoEmer" class="control-label"></label>
-                        <input asp-for="TelefonoEmer" class="form-control" />
-                        <span asp-validation-for="TelefonoEmer" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="IdTipoDoc" class="control-label"></label>
-                        <select asp-for="IdTipoDoc" class="form-control">
-                            <option value="1">Cedula</option>
-                            <option value="2">Cedula extranjera</option>
-                            <option value="3">Pasaporte</option>
-                        </select>
-                        <span asp-validation-for="IdTipoDoc" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="NumDoc" class="control-label"></label>
-                        <input asp-for="NumDoc" class="form-control" />
-                        <span asp-validation-for="NumDoc" class="text-danger"></span>
-                    </div>
-                </div>
-
-
-                <div class="form-row">
-
-                    <div class="form-group col-md-2">
-                        <label asp-for="Pais" class="control-label"></label>
-                        <input asp-for="Pais" class="form-control" />
-                        <span asp-validation-for="Pais" class="text-danger"></span>
-                    </div>
-                </div>
-
-
-                <div class="form-row">
-
-                    <div class="form-group col-md-12">
-                        <label asp-for="Notas" class="control-label"></label>
-                        <textarea asp-for="Notas" class="form-control"></textarea>
-                        <span asp-validation-for="Notas" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row col-4">
-                    <div>
-                        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
-                    </div>
-                    <br />
-                    <div class="form-group col-2">
-                        <input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />
-                    </div>
-                </div>
-
-
-            </form>
-                    </div>
-          
+            </div>
+        }
         <!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>

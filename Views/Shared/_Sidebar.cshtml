@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<PrivTours.Models.Entities.UsuarioIdentity> SignInManager
 @inject UserManager<PrivTours.Models.Entities.UsuarioIdentity> UserManager
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 @section Styles{
 
 }
@@ -24,7 +26,8 @@
                 @if (SignInManager.IsSignedIn(User))
                 {
                     <a class="d-block">@User.Identity.Name</a>
-                } else
+                }
+                else
                 {
                     <a class="d-block">Usuario</a>
                 }
@@ -47,7 +50,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <!-- Add icons to the links using the .nav-icon class
-    with font-awesome or any other icon font library -->
+                with font-awesome or any other icon font library -->
 
                 <li class="nav-item">
                     <a asp-action="Dashboard" asp-controller="Admin" class="nav-link">
@@ -60,79 +63,103 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a asp-action="Index" asp-controller="Roles" class="nav-link">
-                        <i class="nav-icon fas fa-user-cog"></i>
-                        <p>
-                            Configuración
-                        </p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a asp-action="Index" asp-controller="Usuarios" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>
-                            Usuarios
-                        </p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a asp-action="Index" asp-controller="Empleados" class="nav-link">
-
-                        <i class="nav-icon far fa-address-card"></i>
-                        <p>
-                            Empleados
-
-                        </p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a asp-action="Index" asp-controller="Clientes" class="nav-link">
-
-                        <i class="nav-icon fas fa-people-arrows"></i>
-
-                        <p>
-                            Clientes
-
-                        </p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a asp-action="Index" asp-controller="Servicios" class="nav-link">
-
-                        <i class="nav-icon fas fa-exchange-alt"></i>
-                        <p>
-                            Servicios
-
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a asp-action="Index" asp-controller="Solicitudes" class="nav-link">
 
 
-                        <i class="nav-icon fas fa-route"></i>
-                        <p>
-                            Solicitud Servicios
+                @if (HttpContextAccessor.HttpContext.Session.GetString("_Configuration") == "Configuration")
+                {
 
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a asp-action="Index" asp-controller="Roles" class="nav-link">
+                            <i class="nav-icon fas fa-user-cog"></i>
+                            <p>
+                                Configuración
+                            </p>
+                        </a>
+                    </li>
+                }
 
-                <li class="nav-item">
-                    <a asp-action="Index" asp-controller="Tareas" class="nav-link">
+                @if (HttpContextAccessor.HttpContext.Session.GetString("_Usuarios") == "Usuarios")
+                {
 
-                        <i class="nav-icon fas fa-clipboard-list"></i>
-                        <p>
-                            Tareas
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a asp-action="Index" asp-controller="Usuarios" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                Usuarios
+                            </p>
+                        </a>
+                    </li>
+                }
+                @if (HttpContextAccessor.HttpContext.Session.GetString("_Empleados") == "Empleados")
+                {
+                    <li class="nav-item">
+                        <a asp-action="Index" asp-controller="Empleados" class="nav-link">
 
+                            <i class="nav-icon far fa-address-card"></i>
+                            <p>
+                                Empleados
+
+                            </p>
+                        </a>
+                    </li>
+                }
+                @if (HttpContextAccessor.HttpContext.Session.GetString("_Clientes") == "Clientes")
+                {
+
+                    <li class="nav-item">
+                        <a asp-action="Index" asp-controller="Clientes" class="nav-link">
+
+                            <i class="nav-icon fas fa-people-arrows"></i>
+
+                            <p>
+                                Clientes
+
+                            </p>
+                        </a>
+                    </li>
+                }
+                @if (HttpContextAccessor.HttpContext.Session.GetString("_Servicios") == "Servicios")
+                {
+
+                    <li class="nav-item">
+                        <a asp-action="Index" asp-controller="Servicios" class="nav-link">
+
+                            <i class="nav-icon fas fa-exchange-alt"></i>
+                            <p>
+                                Servicios
+
+                            </p>
+                        </a>
+                    </li>
+                }
+                @if (HttpContextAccessor.HttpContext.Session.GetString("_SolicitudesDeServicio") == "Solicitudes de servicio")
+                {
+
+                    <li class="nav-item">
+                        <a asp-action="Index" asp-controller="Solicitudes" class="nav-link">
+
+
+                            <i class="nav-icon fas fa-route"></i>
+                            <p>
+                                Solicitud Servicios
+
+                            </p>
+                        </a>
+                    </li>
+                }
+                @if (HttpContextAccessor.HttpContext.Session.GetString("_Tareas") == "Tareas")
+                {
+
+                    <li class="nav-item">
+                        <a asp-action="Index" asp-controller="Tareas" class="nav-link">
+
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>
+                                Tareas
+                            </p>
+                        </a>
+                    </li>
+                }
                 @if (SignInManager.IsSignedIn(User))
                 {
                     <li class="nav-item">

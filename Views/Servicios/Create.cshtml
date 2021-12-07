@@ -1,4 +1,4 @@
-﻿@model PrivTours.Models.Entities.Servicio
+﻿@model PrivTours.ViewModels.ServiciosConPermisosViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -10,6 +10,7 @@
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
+
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -30,55 +31,81 @@
     <!-- /.content-header -->
     <!-- Main content -->
     <div class="content">
-        <div class="container-fluid">
-          
+        @if (Model.Servicios_crear_Permiso)
+        {
+            <div class="container-fluid">
 
-            <form method="post" asp-action="Create" id="formulario" name="formulario">
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Nombre" class="control-label"></label>
-                        <input asp-for="Nombre" class="form-control" id="nombre" name="nombre" />
-                        <span asp-validation-for="Nombre" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <label asp-for="Descripcion" class="control-label"></label>
-                        <textarea asp-for="Descripcion" class="form-control" id="apellidos" name="descripcion"></textarea>
-                        <span asp-validation-for="Descripcion" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <label asp-for="Restriccion" class="control-label"></label>
-                        <textarea asp-for="Restriccion" class="form-control" id="email" name="restriccion"></textarea>
-                        <span asp-validation-for="Restriccion" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-12">
-                        <label asp-for="Recomendacion" class="control-label"></label>
-                        <textarea asp-for="Recomendacion" class="form-control" id="telefono" name="recomendacion"></textarea>
-                        <span asp-validation-for="Recomendacion" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="row col-4">
-                    <div>
-                        <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
-                    </div>
-                    <br />
-                    <div class="form-group col-2">
-                        <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
-                    </div>
+                <form method="post" asp-action="Create" id="formulario" name="formulario">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Servicio.Nombre" class="control-label"></label>
+                            <input asp-for="Servicio.Nombre" class="form-control" id="nombre" name="nombre" />
+                            <span asp-validation-for="Servicio.Nombre" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label asp-for="Servicio.Descripcion" class="control-label"></label>
+                            <textarea asp-for="Servicio.Descripcion" class="form-control" id="apellidos" name="descripcion"></textarea>
+                            <span asp-validation-for="Servicio.Descripcion" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label asp-for="Servicio.Restriccion" class="control-label"></label>
+                            <textarea asp-for="Servicio.Restriccion" class="form-control" id="email" name="restriccion"></textarea>
+                            <span asp-validation-for="Servicio.Restriccion" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label asp-for="Servicio.Recomendacion" class="control-label"></label>
+                            <textarea asp-for="Servicio.Recomendacion" class="form-control" id="telefono" name="recomendacion"></textarea>
+                            <span asp-validation-for="Servicio.Recomendacion" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row col-4">
+                        <div>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                        </div>
+                        <br />
+                        <div class="form-group col-2">
+                            <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
+                        </div>
+
+                    </div>
+                </form>
+
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        }
+        else
+        {
+            <div class="content-wrapper">
+                <div class="content">
+                    <div class="container-fluid">
+
+                        <div class="container py-5">
+                            <div class="row">
+                                <div class="col-md-2 text-center">
+                                    <p><i class="fa fa-exclamation-triangle fa-5x"></i><br />Acceso denegado: 403</p>
+                                </div>
+                                <div class="col-md-10">
+                                    <h3>OPPSSS!!!! Lo sentimos...</h3>
+                                    <p>No tienes acceso al recurso.<br />Por favor regresa a la página en la que te encontrabas.</p>
+                                    <a class="btn btn-danger" href="javascript:history.back()">Volver</a>
+                                    <!--<a asp-action="Index">Volver</a>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </form>
-              
-            <!-- /.row -->
-        </div><!-- /.container-fluid -->
+            </div>
+        }
     </div>
     <!-- /.content -->
 </div>

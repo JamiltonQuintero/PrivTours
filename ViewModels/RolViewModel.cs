@@ -20,6 +20,7 @@ namespace PrivTours.ViewModels
         public string RoleIdentityId { get; set; }
         public RoleIdentity RoleIdentity { get; set; }
         public List<DetallePermiso> DetallePermiso { get; set; }
+        public string Descripcion { get; set; }
 
         public string TextoPermisos { get; set; }
     }
