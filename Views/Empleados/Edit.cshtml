@@ -1,9 +1,9 @@
-﻿@model PrivTours.ViewModels.EmpleadosConPermisosViewModel
+﻿@model PrivTours.ViewModels.UsuarioViewModel
 @{
     ViewData["Title"] = "Editar";
 }
 
-@Html.HiddenFor(u => u.Empleado.Id)
+@Html.HiddenFor(u => u.Id)
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -26,8 +26,7 @@
     <!-- /.content-header -->
     <!-- Main content -->
     <div class="content">
-        @if (Model.Empleados_crear_Permiso)
-        {
+
             <div class="container-fluid">
 
 
@@ -38,87 +37,87 @@
                     </div>
 
                     @*<div class="form-group">
-                        <label asp-for="Nombre" class="control-label"></label>
-                        <input asp-for="Nombre" class="form-control" />
-                        <span asp-validation-for="Nombre" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Apellido" class="control-label"></label>
-                        <input asp-for="Apellido" class="form-control" />
-                        <span asp-validation-for="Apellido" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Documento" class="control-label"></label>
-                        <input asp-for="Documento" class="form-control" />
-                        <span asp-validation-for="Documento" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Email" class="control-label"></label>
-                        <input asp-for="Email" class="form-control" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Telefono" class="control-label"></label>
-                        <input asp-for="Telefono" class="form-control" />
-                        <span asp-validation-for="Telefono" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="TipoContrato" class="control-label"></label>
-                        <select asp-for="TipoContrato" class="form-control">
-                            <option value="1">Interno</option>
-                            <option value="2">Externo</option>
-                        </select>
-                        <span asp-validation-for="TipoContrato" class="text-danger"></span>
-                    </div>*@
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Empleado.Nombre" class="control-label"> Nombre <span style="color: red;">*</span></label>
-                            <input asp-for="Empleado.Nombre" required placeholder="Nombre" class="form-control" />
-                            <span asp-validation-for="Empleado.Nombre" class="text-danger"></span>
+                            <label asp-for="Nombre" class="control-label"></label>
+                            <input asp-for="Nombre" class="form-control" />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Empleado.Apellido" class="control-label"> Apellido <span style="color: red;">*</span></label>
-                            <input asp-for="Empleado.Apellido" required placeholder="Apellido" class="form-control" />
-                            <span asp-validation-for="Empleado.Apellido" class="text-danger"></span>
+                        <div class="form-group">
+                            <label asp-for="Apellido" class="control-label"></label>
+                            <input asp-for="Apellido" class="form-control" />
+                            <span asp-validation-for="Apellido" class="text-danger"></span>
                         </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Empleado.Documento" class="control-label">Documento <span style="color: red;">*</span></label>
-                            <input asp-for="Empleado.Documento" required placeholder="Documento" class="form-control" />
-                            <span asp-validation-for="Empleado.Documento" class="text-danger"></span>
+                        <div class="form-group">
+                            <label asp-for="Documento" class="control-label"></label>
+                            <input asp-for="Documento" class="form-control" />
+                            <span asp-validation-for="Documento" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Telefono" class="control-label"></label>
+                            <input asp-for="Telefono" class="form-control" />
+                            <span asp-validation-for="Telefono" class="text-danger"></span>
                         </div>
 
-                        <div class="form-group col-md-6">
-                            <label asp-for="Empleado.Email" class="control-label">Email <span style="color: red;">*</span></label>
-                            <input asp-for="Empleado.Email" required placeholder="Email" class="form-control" />
-                            <span asp-validation-for="Empleado.Email" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Empleado.Telefono" class="control-label">Teléfono <span style="color: red;">*</span></label>
-                            <input asp-for="Empleado.Telefono" required placeholder="Teléfono" class="form-control" />
-                            <span asp-validation-for="Empleado.Telefono" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Empleado.TipoContrato" class="control-label">Tipo de contrato<span style="color: red;">*</span></label>
-                            <select asp-for="Empleado.TipoContrato" class="form-control">
+                        <div class="form-group">
+                            <label asp-for="TipoContrato" class="control-label"></label>
+                            <select asp-for="TipoContrato" class="form-control">
                                 <option value="1">Interno</option>
                                 <option value="2">Externo</option>
                             </select>
-                            <span asp-validation-for="Empleado.TipoContrato" class="text-danger"></span>
+                            <span asp-validation-for="TipoContrato" class="text-danger"></span>
+                        </div>*@
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Nombre" class="control-label"> Nombre <span style="color: red;">*</span></label>
+                            <input asp-for="Nombre" required placeholder="Nombre" class="form-control" />
+                            <span asp-validation-for="Nombre" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Apellido" class="control-label"> Apellido <span style="color: red;">*</span></label>
+                            <input asp-for="Apellido" required placeholder="Apellido" class="form-control" />
+                            <span asp-validation-for="Apellido" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Documento" class="control-label">Documento <span style="color: red;">*</span></label>
+                            <input asp-for="Documento" required placeholder="Documento" class="form-control" />
+                            <span asp-validation-for="Documento" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label asp-for="Email" class="control-label">Email <span style="color: red;">*</span></label>
+                            <input asp-for="Email" required placeholder="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Telefono" class="control-label">Teléfono <span style="color: red;">*</span></label>
+                            <input asp-for="Telefono" required placeholder="Teléfono" class="form-control" />
+                            <span asp-validation-for="Telefono" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="TipoContrato" class="control-label">Tipo de contrato<span style="color: red;">*</span></label>
+                            <select asp-for="TipoContrato" class="form-control">
+                                <option value="1">Interno</option>
+                                <option value="2">Externo</option>
+                            </select>
+                            <span asp-validation-for="TipoContrato" class="text-danger"></span>
                         </div>
                     </div>
 
                     @*<input asp-for="EmpleadoId" class="form-control" style="visibility: hidden" />*@
-                    <input asp-for="Empleado.Estado" class="form-control" style="display: none;" />
-                    <input asp-for="Empleado.Id" class="form-control" style="display: none;" />
-                    <input asp-for="Empleado.RolSeleccionado" class="form-control" style="display: none;" />
+                    <input asp-for="Estado" class="form-control" style="display: none;" />
+                    <input asp-for="Id" class="form-control" style="display: none;" />
+                    <input asp-for="RolSeleccionado" class="form-control" style="display: none;" />
 
 
                     <div class="row col-4">
@@ -133,31 +132,6 @@
 
                 </form>
             </div>
-
-        }
-        else
-        {
-            <div class="content-wrapper">
-                <div class="content">
-                    <div class="container-fluid">
-
-                        <div class="container py-5">
-                            <div class="row">
-                                <div class="col-md-2 text-center">
-                                    <p><i class="fa fa-exclamation-triangle fa-5x"></i><br />Acceso denegado: 403</p>
-                                </div>
-                                <div class="col-md-10">
-                                    <h3>OPPSSS!!!! Lo sentimos...</h3>
-                                    <p>No tienes acceso al recurso.<br />Por favor regresa a la página en la que te encontrabas.</p>
-                                    <a class="btn btn-danger" href="javascript:history.back()">Volver</a>
-                                    <!--<a asp-action="Index">Volver</a>-->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
     </div>
 </div>
 

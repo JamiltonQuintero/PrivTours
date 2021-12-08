@@ -138,8 +138,7 @@ namespace PrivTours.Controllers
         public async Task<IActionResult> Create()
         {
             ViewData["Rol"] = "Empleado";
-            var empleadovm = await ObtenerPermisosUsuarioLogeado();
-            return View(empleadovm);
+            return View();
             
         }
 

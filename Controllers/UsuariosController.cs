@@ -497,6 +497,7 @@ namespace PrivTours.Controllers
         public async Task<IActionResult> CerrarSesion(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
+            HttpContext.Session.Clear();
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);
@@ -504,6 +505,7 @@ namespace PrivTours.Controllers
             else
             {
                 return RedirectToAction("Login", "Usuarios");
+
             }
             
         }

@@ -135,8 +135,7 @@ namespace PrivTours.Controllers
         // GET: Clientes/Create
         public async Task<IActionResult> Create()
         {
-            var clientevm = await ObtenerPermisosUsuarioLogeado();
-            return View(clientevm);
+            return View();
         }
 
         // POST: Clientes/Create
@@ -175,9 +174,10 @@ namespace PrivTours.Controllers
             }
 
             var clientevm = await ObtenerPermisosUsuarioLogeado();
+            var servicio = await _clientesBusiness.ObtenerClientePorId(id.Value);
             if (clientevm.Clientes_editar_Permiso)
             {
-                var servicio = await _clientesBusiness.ObtenerClientePorId(id.Value);
+                
                 if (servicio == null)
                 {
                     return NotFound();
@@ -189,7 +189,7 @@ namespace PrivTours.Controllers
 
             }
 
-            return View(clientevm);
+            return View(servicio);
 
         }
 
