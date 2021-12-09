@@ -38,12 +38,12 @@
                 <div class="col-md-6">
                     <div class="col-md-8">
                         <form method="post" asp-action="CrearRol" id="formulario" name="formulario">
-                            <div asp-validation-summary="All" class="text-danger"></div>
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group">
                                 <label asp-for="NombreRol" class="control-label"></label>
                                 <input asp-for="NombreRol" class="form-control" />
                                 <span asp-validation-for="NombreRol" class="text-danger"></span>
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                             </div>
 
                             <div class="form-group">

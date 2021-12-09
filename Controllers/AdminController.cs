@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PrivTours.Models.Abstract;
+using PrivTours.Models.DAL;
+using PrivTours.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using PrivTours.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -16,6 +18,11 @@ namespace PrivTours.Controllers
     {
 
         private readonly IAdminBusiness _iAdminBusiness;
+        private readonly IClientesBusiness _clientesBusiness;
+        private readonly DbContextPriv _dbContext;
+
+        
+
 
         public AdminController(IAdminBusiness adminBusiness)
         {
@@ -33,6 +40,8 @@ namespace PrivTours.Controllers
         {
             return View();
         }
+
+        
 
     }
 }

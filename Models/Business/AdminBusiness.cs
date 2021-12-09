@@ -35,7 +35,14 @@ namespace PrivTours.Models.Business
             return reporte;
         }
 
+        public async Task<List<Cliente>> ObtenerListaClientes()
+        {
+            var clientes = await _dbContext.Clientes.ToListAsync();
 
+            return clientes;
+        }
+
+        
 
     }
 }
