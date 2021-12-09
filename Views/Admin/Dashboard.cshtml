@@ -1,4 +1,5 @@
-﻿@model PrivTours.ViewModels.ReporteDashboardViewModel
+﻿@model PrivTours.ViewModels.ReportesConPermisosViewModel
+
 
 @section Styles{
 
@@ -30,12 +31,6 @@
                 <div class="col-sm-6">
                     <h1 class="m-0">Dashboard</h1>
                 </div><!-- /.col -->
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
-                        <li class="breadcrumb-item active">Dashboard</li>
-                    </ol>
-                </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -51,7 +46,7 @@
                         <div class="inner">
                             <p>Total Usuarios del sistema</p>
 
-                            <h3>@Model.TotUsuario</h3>
+                            <h3>@Model.Reporte.TotUsuario</h3>
                         </div>
                         <div class="icon">
                             <i class="fas fa-user-cog"></i>
@@ -66,7 +61,7 @@
                         <div class="inner">
                             <p>Total Clientes</p>
 
-                            <h3>@Model.TotCliente</h3>
+                            <h3>@Model.Reporte.TotCliente</h3>
                         </div>
                         <div class="icon">
                             <i class="fas fa-user-tie"></i>
@@ -92,15 +87,18 @@
                     <!-- /.card -->
                     <br />
                     <br />
-                    <div class="col-auto row justify-content-center">
-                        <div>
-                            <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#exampleModalCenter">
-                                Generar reportes
-                            </button>
-                        </div>
-                    </div>
 
+                    @if (Model.Reporte_Generar_Permiso)
+                    {
+                        <div class="col-auto row justify-content-center">
+                            <div>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#exampleModalCenter">
+                                    Generar reportes
+                                </button>
+                            </div>
+                        </div>
+                    }
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -301,7 +299,7 @@
                             <div class="inner">
                                 <p>total Empleados</p>
 
-                                <h3>@Model.TotEmpleado</h3>
+                                <h3>@Model.Reporte.TotEmpleado</h3>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-id-card"></i>
@@ -316,7 +314,7 @@
                             <div class="inner">
                                 <p>Total Solicitudes</p>
 
-                                <h3>@Model.TotSolicitudes</h3>
+                                <h3>@Model.Reporte.TotSolicitudes</h3>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-hands-helping"></i>
@@ -331,7 +329,7 @@
                             <div class="inner">
                                 <p>Total Servicios</p>
 
-                                <h3>@Model.TotServicio</h3>
+                                <h3>@Model.Reporte.TotServicio</h3>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-store"></i>

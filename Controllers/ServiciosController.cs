@@ -138,8 +138,7 @@ namespace PrivTours.Controllers
         [Authorize()]
         public async Task<IActionResult> Create()
         {
-            var serviciovm = await ObtenerPermisosUsuarioLogeado();
-            return View(serviciovm);
+            return View();
         }
 
         // POST: Servicios/Create
@@ -148,10 +147,10 @@ namespace PrivTours.Controllers
         [HttpPost]
         //[ValidateAntiForgeryToken]
         [Authorize()]
-        public async Task<IActionResult> Create(ServiciosConPermisosViewModel serviciosConPermisosViewModel)
+        public async Task<IActionResult> Create(Servicio servicio)
         {
-            var servicio = serviciosConPermisosViewModel.Servicio;
-  
+
+
                 try
                 {
 
@@ -201,9 +200,8 @@ namespace PrivTours.Controllers
         [HttpPost]
         //[ValidateAntiForgeryToken]
         [Authorize()]
-        public async Task<IActionResult> Edit(int id, ServiciosConPermisosViewModel serviciosConPermisosViewModel)
+        public async Task<IActionResult> Edit(int id, Servicio servicio)
         {
-            var servicio = serviciosConPermisosViewModel.Servicio;
                 try
                 {
 

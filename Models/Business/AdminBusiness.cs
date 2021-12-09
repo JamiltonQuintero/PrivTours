@@ -26,7 +26,7 @@ namespace PrivTours.Models.Business
             ReporteDashboardViewModel reporte = new ReporteDashboardViewModel
             {
                 TotCliente = _dbContext.Clientes.Count(),
-                TotEmpleado = _dbContext.Empleados.Count(),
+                TotEmpleado = 0,
                 TotUsuario = _dbContext.UsuariosIdentity.Count(),
                 TotServicio = _dbContext.Servicios.Count(),
                 TotSolicitudes = _dbContext.Solicitudes.Count(),

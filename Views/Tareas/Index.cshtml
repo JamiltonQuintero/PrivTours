@@ -148,9 +148,16 @@
                                     {
                                 <a onclick="cambiarEstadoTareaCancelar('@tarea.TareaId', 1, '@tarea.Operacion.Nombre');" class="btn btn-danger">Cancelar tarea</a>
                                     }
+
+                                    
                                     @if (Model.Tareas_terminar_tarea_Permiso)
                                     {
-                                <a onclick="cambiarEstadoTarea('@tarea.TareaId', 2, '@tarea.Operacion.Nombre');" class="btn btn-primary">Terminar tarea</a>
+
+                                    if (tarea.EstadoTarea == 2)
+                                    {
+                                    <a onclick="cambiarEstadoTarea('@tarea.TareaId', 2, '@tarea.Operacion.Nombre');" class="btn btn-primary">Terminar tarea</a>
+                                     }
+                                
                                     }
 
                                 </div>

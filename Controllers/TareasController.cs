@@ -493,7 +493,7 @@ namespace PrivTours.Controllers
                     return (a.FechaInicioTarea >= fechaInicioFiltro && a.FechaInicioTarea <= fechaFinFiltro);
                 });
 
-                foreach (Tarea tarea in tareas)
+                foreach (Tarea tarea in result)
                 {
                     if (tarea.EstadoTarea == (byte)EEstadoTarea.RESERVADA ||
                         tarea.EstadoTarea == (byte)EEstadoTarea.INICIADA)
