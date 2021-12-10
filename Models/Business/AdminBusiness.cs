@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PrivTours.Models.Abstract;
 using PrivTours.Models.DAL;
 using PrivTours.Models.Entities;
@@ -35,14 +36,6 @@ namespace PrivTours.Models.Business
             return reporte;
         }
 
-        public async Task<List<Cliente>> ObtenerListaClientes()
-        {
-            var clientes = await _dbContext.Clientes.ToListAsync();
-
-            return clientes;
-        }
-
-        
-
+       
     }
 }

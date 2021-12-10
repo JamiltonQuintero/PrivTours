@@ -17,18 +17,20 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Crear Servicio</h1>
+                    <h1>Asignar permisos</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Servicios">Gestión Servicios</a></li>
-                        <li class="breadcrumb-item active">Crear Servicio</li>
+                        <li class="breadcrumb-item"><a asp-action="Index">Configuracion</a></li>
+                        <li class="breadcrumb-item active">Asignar permisos</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
+        <hr />
     </div>
     <!-- /.content-header -->
+
     <!-- Main content -->
     <div class="content">
         <div class="container-fluid">
@@ -37,7 +39,6 @@
 
                     <form method="post" asp-action="AsignarPermisos" id="formulario" name="formulario">
                         <div asp-validation-summary="All" class="text-danger"></div>
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 
                         <div class="form group">
@@ -45,19 +46,20 @@
                             <select asp-items="ViewBag.Permisos" asp-for="Permisos" id="choices-multiple-remove-button" placeholder="Seleccione los permisos" multiple>
                             </select>
                             <span asp-validation-for="Permisos" class="text-danger"></span>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                         </div>
 
                         <input value="@ViewBag.RoleIdentity" class="form-control" style="visibility: hidden" id="rol" />
 
-                        <div class="row">
+                        <div class="row col-4">
                             <div>
                                 <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
                             </div>
                             <br />
-                            <div class="form-group">
+                            <div class="form-group col-2">
                                 <input type="button" value="Crear" class="btn btn-primary" onclick="Crear()" />
                             </div>
-
                         </div>
                     </form>
                 </div>
@@ -92,7 +94,7 @@
                 //denyButtonText: 'No guardar',
             }).then((result) => {
                 if (result.isConfirmed) {
- 
+
                     $.ajax({
                         type: "POST",
                         url: '@Url.Action("AsignarPermisos", "Roles")',

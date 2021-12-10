@@ -10,7 +10,8 @@ namespace PrivTours.Models.Abstract
     public interface IAdminBusiness
     {
         ReporteDashboardViewModel ReporteDashboar();
-        Task<List<Cliente>> ObtenerListaClientes();
+
         
+
     }
 }

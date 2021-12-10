@@ -214,6 +214,8 @@ namespace PrivTours.Controllers
                 ViewData["Error"] = $"El rol con id {id} no se encontró";
                 return View("NotFound");
             }
+
+          
             var editarRolViewModel = new EditarRolViewModel
             {
                 Id = rol.Id,

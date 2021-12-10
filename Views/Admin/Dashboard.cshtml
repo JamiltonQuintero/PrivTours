@@ -17,6 +17,12 @@
     <link rel="stylesheet" href="~/adminlte/plugins/daterangepicker/daterangepicker.css">
     <!-- summernote -->
     <link rel="stylesheet" href="~/adminlte/plugins/summernote/summernote-bs4.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
 }
 
 
@@ -191,7 +197,7 @@
                                                         <br />
                                                         <br />
                                                         <div class="row justify-content-center">
-                                                            
+
                                                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalUsoServ">Generar reporte</button>
 
 
@@ -232,16 +238,63 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    ...
+                                    <table id="tReport" class="display" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Cantidad de solicitudes</th>
+                                                <th>Nombre de servicio solicitado</th>
+                                                <th>Desde</th>
+                                                <th>Hasta</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th>8</th>
+                                                <th>Nombre de servicio solicitado</th>
+                                                <th>Desde</th>
+                                                <th>Hasta</th>
+
+                                            </tr>
+                                            <tr>
+                                                <th>Cantidad de solicitudes</th>
+                                                <th>Nombre de servicio solicitado</th>
+                                                <th>Desde</th>
+                                                <th>Hasta</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Cantidad de solicitudes</th>
+                                                <th>Nombre de servicio solicitado</th>
+                                                <th>Desde</th>
+                                                <th>Hasta</th>
+
+                                            </tr>
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Pais</th>
+                                                <th>Cantidad</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <hr />
+                                    <br />
+                                    <h4>Gráfico de barras</h4>
+
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                                     @* generar botones de exportacion aca *@
-                                    <button type="button" class="btn btn-primary">Understood</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="cofirmarArchivo ()">Exportar a PDF</button>
+                                    <button id="xlsx2" type="button" class="btn btn-success" data-dismiss="modal" onclick="cofirmarArchivo ()">Exportar a EXCEL</button>
+
+
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <!-- Modal CanSer-->
                     <!-- Modal ProcCli-->
                     <div class="modal fade" id="modalProcCli" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modalProcCliLabel" aria-hidden="true">
@@ -254,12 +307,50 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    ...
+                                    <table id="tReportCan" class="display" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Pais</th>
+                                                <th>Cantidad</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Colombia</td>
+                                                <td>4</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Estados Unidos</td>
+                                                <td>5</td>
+                                            </tr>
+                                            <tr>
+                                                <td>España</td>
+                                                <td>6</td>
+                                            </tr>
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Pais</th>
+                                                <th>Cantidad</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <hr />
+                                    <br />
+                                    <h4>Gráfico de barras</h4>
+                                    <canvas id="myChart1"></canvas>
+                                    <script src="chart.js"></script>
+
+
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                                     @* generar botones de exportacion aca *@
-                                    <button type="button" class="btn btn-primary">Understood</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="cofirmarArchivo ()">Exportar a PDF</button>
+                                    <button id="xlsx2" type="button" class="btn btn-success" data-dismiss="modal" onclick="cofirmarArchivo ()">Exportar a EXCEL</button>
+
+
                                 </div>
                             </div>
                         </div>
@@ -276,7 +367,42 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    ...
+                                    <table id="tReport" class="display" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>Pais</th>
+                                                <th>Cantidad</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Colombia</td>
+                                                <td>4</td>
+
+                                            </tr>
+                                            <tr>
+                                                <td>Estados Unidos</td>
+                                                <td>5</td>
+                                            </tr>
+                                            <tr>
+                                                <td>España</td>
+                                                <td>6</td>
+
+                                            </tr>
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Pais</th>
+                                                <th>Cantidad</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <hr />
+                                    <br />
+                                    <h4>Gráfico de barras</h4>
+
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -384,6 +510,9 @@
     <script src="~/js/Tabla.js"></script>
     <script src="~/js/CardAnim.js"></script>
     <script type="text/javascript" src="js/jquery.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+
     <script type="text/javascript">
 
         function mostrar(id) {
@@ -406,6 +535,42 @@
             }
 
 
+        }
+        $(document).ready(function () {
+            $('#tReportCan').DataTable();
+        });
+
+        var ctx1 = document.getElementById('myChart1').getContext('2d');
+        var chart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Colombia', 'España', 'Estados Unidos'],
+                datasets: [{
+                    label: 'Paises',
+                    backgroundColor: '#42a5f5',
+                    borderColor: 'gray',
+                    data: [4, 6, 5, 1]
+                }
+                ]
+            },
+            options: {}
+        });
+
+        function cofirmarArchivo() {
+            swal({
+                title: "Reporte generado exitosamente",
+                icon: "success",
+                button: "Cerrar",
+            });
+        }
+
+        function rangoInicio() {
+            var x = document.getElementById("myText").value;
+            document.getElementById("demo").innerHTML = x;
+        }
+        function rangoFin() {
+            var x = document.getElementById("myText").value;
+            document.getElementById("demo").innerHTML = x;
         }
 
     </script>

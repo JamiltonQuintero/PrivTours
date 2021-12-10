@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PrivTours.Models.Abstract;
-using PrivTours.Models.DAL;
-using PrivTours.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using PrivTours.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -52,7 +50,7 @@ namespace PrivTours.Controllers
                 {
                     usuariosPermiso.Reporte_Generar_Permiso = true;
                 }
-                
+
             }
 
             var reporte = _iAdminBusiness.ReporteDashboar();
@@ -116,6 +114,8 @@ namespace PrivTours.Controllers
 
             return usuarioViewModel;
         }
+
+       
 
     }
 }
