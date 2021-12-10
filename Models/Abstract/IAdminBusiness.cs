@@ -10,8 +10,5 @@ namespace PrivTours.Models.Abstract
     public interface IAdminBusiness
     {
         ReporteDashboardViewModel ReporteDashboar();
-
-        
-
     }
 }

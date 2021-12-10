@@ -115,7 +115,5 @@ namespace PrivTours.Controllers
             return usuarioViewModel;
         }
 
-       
-
     }
 }

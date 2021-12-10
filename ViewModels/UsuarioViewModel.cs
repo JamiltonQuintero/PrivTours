@@ -30,6 +30,7 @@ namespace PrivTours.ViewModels
         [Required(ErrorMessage = "El correo es requerido")]
         [EmailAddress(ErrorMessage = "Correo invalido")]
         public string Email { get; set; }
+        [Required(ErrorMessage = "El teléfono es requerido")]
         public string Telefono { get; set; }
 
 
