@@ -201,15 +201,11 @@ namespace PrivTours.Controllers
                 return NotFound();
             }
 
-            var empleadovm = await ObtenerPermisosUsuarioLogeado();
-            if (empleadovm.Empleados_editar_Permiso)
-            {
                     var usuario = await _userManager.FindByIdAsync(id);
                     if (usuario == null)
                     {
                         return NotFound();
-                    } else
-                    {
+                    } 
                         var RolesUsuario = await ObtenerRolUsuario(usuario);
                         var usuarioViewModel = new UsuarioViewModel()
                         {
@@ -225,12 +221,9 @@ namespace PrivTours.Controllers
                             RolSeleccionado = RolesUsuario.Count == 0 ? "" : RolesUsuario.First()
                         };
                         ViewData["Rol"] = "Empleado";
-                        empleadovm.Empleado = usuarioViewModel;
-                    }
-             
-            }
+        
 
-            return View(empleadovm);
+            return View(usuarioViewModel);
         }
 
 
