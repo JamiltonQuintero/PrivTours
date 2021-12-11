@@ -25,19 +25,19 @@ namespace PrivTours.Models.Entities
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [DisplayName("Telefono")]
-        [Required(ErrorMessage = "{0} is required")]
+        [DisplayName("Teléfono")]
+        [Required(ErrorMessage = "El teléfono es requerido.")]
         [DataType(DataType.PhoneNumber)]
         public int Telefono { get; set; }
 
-        [DisplayName("Telefono de emergencia")]
+        [DisplayName("Teléfono de emergencia")]
         [DataType(DataType.PhoneNumber)]
         public int TelefonoEmer { get; set; }
         public string Pais { get; set; }
         [DisplayName("Tipo de documento")]
         public int IdTipoDoc { get; set; }
 
-        [DisplayName("Numero de documento")]
+        [DisplayName("Número de documento")]
         public string NumDoc { get; set; }
 
         [DataType(DataType.DateTime)]

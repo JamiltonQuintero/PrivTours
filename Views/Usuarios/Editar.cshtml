@@ -30,7 +30,7 @@
         @if (Model.Usuarios_crear_Permiso)
         {
             <div class="container-fluid">
-                <hr />
+
                 <form method="post" asp-action="Editar" id="formulario" name="formulario">
                     <!--<div asp-validation-summary="All" class="text-danger"></div>-->
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -73,14 +73,19 @@
                         </div>
                     </div>
 
-                    <div class="form-row d-flex justify-content-end">
-                        <a asp-action="Index" class="btn btn-outline-secondary mx-2">Volver</a>
-                        <!--<input type="button" value="Editar" class="btn btn-primary" onclick="Editar()" />-->
-                        <input type="submit" value="Editar" class="btn btn-primary" />
-                    </div>
+                  
+                <div class="row col-4">
+                <div>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                </div>
+                <br />
+                <div class="form-group col-2">
+                    <input type="submit" value="Editar" class="btn btn-primary"/>
+                </div>
+            </div>
+            </form>
 
-                </form>
-            </div><!-- /.container-fluid -->
+        </div><!-- /.container-fluid -->
         }
         else
         {

@@ -50,7 +50,7 @@ namespace PrivTours.Controllers
                 {
                     usuariosPermiso.Reporte_Generar_Permiso = true;
                 }
-                
+
             }
 
             var reporte = _iAdminBusiness.ReporteDashboar();
