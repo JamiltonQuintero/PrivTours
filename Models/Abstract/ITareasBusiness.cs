@@ -19,7 +19,6 @@ namespace PrivTours.Models.Abstract
         Task<bool> EliminarTareaPorId(int id);
         Task<bool> EditarTareaEstado(Tarea tarea);
         Task<List<Tarea>> ObtenerListaTareasPorEstado(byte estado);
-
         Task<List<Tarea>> ObtenerListaTareas();
 
 

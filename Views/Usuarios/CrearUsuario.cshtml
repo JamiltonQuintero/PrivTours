@@ -15,8 +15,8 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a asp-action="Dashboard" asp-controller="Admin">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Usuarios</li>
+                        <li class="breadcrumb-item"><a asp-action="Index">Usuarios</a></li>
+                        <li class="breadcrumb-item active">Crear usuario</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -28,70 +28,81 @@
     <div class="content">
         @if (Model.Usuarios_crear_Permiso)
         {
-            <div class="container-fluid">
-                <hr />
-                <!--<div class="row ">-->
-                <form method="post" asp-action="CrearUsuario" id="formulario" name="formulario">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="container-fluid">
 
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Usuario.Documento" class="control-label">Documento <span style="color: red;">*</span></label>
-                            <input asp-for="Usuario.Documento" required placeholder="Documento" class="form-control" />
-                            <span asp-validation-for="Usuario.Documento" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Usuario.Telefono" class="control-label">Teléfono</label>
-                            <input asp-for="Usuario.Telefono" required placeholder="Teléfono" class="form-control" />
-                            <span asp-validation-for="Usuario.Telefono" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Usuario.Nombre" class="control-label">Nombre <span style="color: red;">*</span></label>
-                            <input asp-for="Usuario.Nombre" required placeholder="Nombre" class="form-control" />
-                            <span asp-validation-for="Usuario.Nombre" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Usuario.Apellido" class="control-label">Apellido <span style="color: red;">*</span></label>
-                            <input asp-for="Usuario.Apellido" required placeholder="Apellido" class="form-control" />
-                            <span asp-validation-for="Usuario.Apellido" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Usuario.Password" class="control-label">Constraseña <span style="color: red;">*</span></label>
-                            <input asp-for="Usuario.Password" required placeholder="Contraseña" class="form-control" />
-                            <span asp-validation-for="Usuario.Password" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Usuario.ConfirmarPassword" class="control-label">Confirmar contraseña <span style="color: red;">*</span></label>
-                            <input type="password" asp-for="Usuario.ConfirmarPassword" required placeholder="Confirmar contraseña" class="form-control" />
-                            <span asp-validation-for="Usuario.ConfirmarPassword" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Usuario.Email" class="control-label">E-mail <span style="color: red;">*</span></label>
-                            <input asp-for="Usuario.Email" required placeholder="E-mail" class="form-control" />
-                            <span asp-validation-for="Usuario.Email" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Usuario.RolSeleccionado" class="control-label">Seleccionar rol <span style="color: red;">*</span></label>
-                            <select asp-for="Usuario.RolSeleccionado" class="form-control" asp-items="ViewBag.Roles">
-                                <option value="">Seleccione...</option>
-                            </select>
-                            <span asp-validation-for="Usuario.RolSeleccionado" class="text-danger"></span>
-                        </div>
-                    </div>
+            <!--<div class="row ">-->
+            <form method="post" asp-action="CrearUsuario" id="formulario" name="formulario">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                    <div class="form-row d-flex justify-content-end">
-                        <a asp-action="Index" class="btn btn-outline-secondary mx-2">Volver</a>
-                        <!--<input type="button" value="Crear" class="btn btn-primary" onclick="guardarUsuario()" />-->
-                        <input type="submit" value="Crear" class="btn btn-primary" />
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Usuario.Documento" class="control-label">Documento <span style="color: red;">*</span></label>
+                        <input asp-for="Usuario.Documento" required placeholder="Documento" class="form-control" />
+                        <span asp-validation-for="Usuario.Documento" class="text-danger"></span>
                     </div>
-                </form>
-            </div><!-- /.container-fluid -->
+                    <div class="form-group col-md-6">
+                        <label asp-for="Usuario.Telefono" class="control-label">Teléfono</label>
+                        <input asp-for="Usuario.Telefono" required placeholder="Teléfono" class="form-control" />
+                        <span asp-validation-for="Usuario.Telefono" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Usuario.Nombre" class="control-label">Nombre <span style="color: red;">*</span></label>
+                        <input asp-for="Usuario.Nombre" required placeholder="Nombre" class="form-control" />
+                        <span asp-validation-for="Usuario.Nombre" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Usuario.Apellido" class="control-label">Apellido <span style="color: red;">*</span></label>
+                        <input asp-for="Usuario.Apellido" required placeholder="Apellido" class="form-control" />
+                        <span asp-validation-for="Usuario.Apellido" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Usuario.Password" class="control-label">Constraseña <span style="color: red;">*</span></label>
+                        <input asp-for="Usuario.Password" required placeholder="Contraseña" class="form-control" />
+                        <span asp-validation-for="Usuario.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Usuario.ConfirmarPassword" class="control-label">Confirmar contraseña <span style="color: red;">*</span></label>
+                        <input type="password" asp-for="Usuario.ConfirmarPassword" required placeholder="Confirmar contraseña" class="form-control" />
+                        <span asp-validation-for="Usuario.ConfirmarPassword" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Usuario.Email" class="control-label">E-mail <span style="color: red;">*</span></label>
+                        <input asp-for="Usuario.Email" required placeholder="E-mail" class="form-control" />
+                        <span asp-validation-for="Usuario.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Usuario.RolSeleccionado" class="control-label">Seleccionar rol <span style="color: red;">*</span></label>
+                        <select asp-for="Usuario.RolSeleccionado" class="form-control" asp-items="ViewBag.Roles">
+                            <option value="">Seleccione...</option>
+                        </select>
+                        <span asp-validation-for="Usuario.RolSeleccionado" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+
+               
+
+            <div class="row col-4">
+                <div>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+                </div>
+                <br />
+                <div class="form-group col-2">
+                    <input type="submit" value="Crear" class="btn btn-primary" />
+                </div>
+            </div>
+            </form>
+     
+
+
+        </div><!-- /.container-fluid -->
         }
         else
         {
