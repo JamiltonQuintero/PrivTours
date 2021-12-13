@@ -177,21 +177,16 @@ namespace PrivTours.Controllers
             {
                 return NotFound();
             }
-            var serviciovm = await ObtenerPermisosUsuarioLogeado();
-            if (serviciovm.Servicios_editar_Permiso)
-            {
-                var servicio = await _serviciosBusiness.ObtenerServicioPorId(id.Value);
+                
+            var servicio = await _serviciosBusiness.ObtenerServicioPorId(id.Value);
                 if (servicio == null)
                 {
                     return NotFound();
-                } else
-                {
-                    serviciovm.Servicio = servicio;
                 }
                 
-            }
+            
    
-            return View(serviciovm);
+            return View(servicio);
         }
 
         // POST: Servicios/Edit/5
