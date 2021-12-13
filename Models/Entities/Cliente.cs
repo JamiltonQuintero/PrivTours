@@ -16,12 +16,15 @@ namespace PrivTours.Models.Entities
         public int ClienteId { get; set; }
 
         [DisplayName("Nombres")]
+        [Required(ErrorMessage = "Debes ingresar un nombre.")]
         public string Nombre { get; set; }
+
+        [Required(ErrorMessage = "Debes ingresar un apellido.")]
 
         public string Apellidos { get; set; }
 
         [DisplayName("Correo electronico")]
-        [Required(ErrorMessage = "{0} is required")]
+        [Required(ErrorMessage = "Debes ingresar un email.")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
@@ -31,6 +34,7 @@ namespace PrivTours.Models.Entities
         public int Telefono { get; set; }
 
         [DisplayName("Teléfono de emergencia")]
+        [Required(ErrorMessage = "El teléfono es requerido.")]
         [DataType(DataType.PhoneNumber)]
         public int TelefonoEmer { get; set; }
         public string Pais { get; set; }

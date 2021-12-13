@@ -17,6 +17,8 @@ namespace PrivTours.ViewModels
         [Required(ErrorMessage = "Debes ingresar un rol.")]
         [Compare("NombreRol", ErrorMessage = "El rol que tratas de ingresar ya se encuentra registrado.")]
         public string NombreRol { get; set; }
+
+        [Required(ErrorMessage = "Debes seleccionar al menos un permiso.")]
         public string[] Permisos { get; set; }
         public string[] PermisosSinSelec { get; set; }
 

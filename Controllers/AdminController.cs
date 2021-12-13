@@ -22,7 +22,7 @@ namespace PrivTours.Controllers
         private readonly UserManager<UsuarioIdentity> _userManager;
         private readonly IRolBusiness _iRolBusiness;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public AdminController(IAdminBusiness adminBusiness, UserManager<UsuarioIdentity> userManager, IRolBusiness rolBusiness, RoleManager<IdentityRole> roleManager)
+        public AdminController( IAdminBusiness adminBusiness, UserManager<UsuarioIdentity> userManager, IRolBusiness rolBusiness, RoleManager<IdentityRole> roleManager)
         {
             _iAdminBusiness = adminBusiness;
             _userManager = userManager;
@@ -52,7 +52,7 @@ namespace PrivTours.Controllers
                 }
 
             }
-
+            
             var reporte = _iAdminBusiness.ReporteDashboar();
             var usuarios = await _userManager.Users.ToListAsync();
             var listaUsuariosViewModel = new List<UsuarioViewModel>();
@@ -88,7 +88,8 @@ namespace PrivTours.Controllers
 
         public ActionResult Reportes()
         {
-            return View();
+           
+                return View();
         }
 
 
@@ -114,6 +115,8 @@ namespace PrivTours.Controllers
 
             return usuarioViewModel;
         }
+
+        
 
     }
 }

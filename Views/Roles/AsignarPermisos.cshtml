@@ -21,7 +21,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a asp-action="Index">Configuracion</a></li>
+                        <li class="breadcrumb-item"><a asp-action="Index">Configuración</a></li>
                         <li class="breadcrumb-item active">Asignar permisos</li>
                     </ol>
                 </div><!-- /.col -->
@@ -46,7 +46,6 @@
                             <select asp-items="ViewBag.Permisos" asp-for="Permisos" id="choices-multiple-remove-button" placeholder="Seleccione los permisos" multiple>
                             </select>
                             <span asp-validation-for="Permisos" class="text-danger"></span>
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                         </div>
 

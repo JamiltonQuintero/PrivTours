@@ -15,5 +15,6 @@ namespace PrivTours.ViewModels
         public int TotServicio { get; set; }
         public int TotSolicitudes { get; set; }
 
+
     }
 }

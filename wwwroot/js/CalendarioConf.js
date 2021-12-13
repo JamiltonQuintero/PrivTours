@@ -255,7 +255,7 @@ function guardarTarea() {
     } else {
         Swal.fire({
             icon: 'error',
-            title: 'Las fechas deben ser validas',
+            title: 'Las fechas deben ser válidas',
             showConfirmButton: false,
             timer: 1500
         })

@@ -1,14 +1,47 @@
 ﻿<!-- Main Footer -->
+
 <footer class="main-footer dark-mode">
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">
-        <strong>
-            
-            <a href="https://drive.google.com/drive/folders/116GAa_M15Sxm3WL03eLkOmFBTD3IIKcn?usp=sharing" class="elements">
-                <i class="far fa-question-circle fa-lg"></i>
-            </a>    
-        </strong>
 
+        <!-- Modal -->
+        <div class="modal fade"  id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" >
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+            <div class="modal-dialog " role="document" style="background-color: transparent;">
+                <div class="modal-content" style="background-color:#ffffff;">
+                    <div class="modal-header">
+                        <i class="far fa-question-circle fa-2x" style="color: blue;"></i>
+                        <h5 class="modal-title" id="exampleModalLongTitle" style="margin-left: 10px; color:black;">Ayuda en linea</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="list-group">
+                        <a href="#" class="list-group-item" style="background-color:#ffffff;">1. Dashboard.</a>
+                        <a href="#" class="list-group-item" style="background-color:#ffffff;">2. Configuración.</a>
+                        <a href="#" class="list-group-item" style="background-color:#ffffff;">3. Usuarios.</a>
+                        <a href="#" class="list-group-item" style="background-color:#ffffff;">4. Empleados.</a>
+                        <a href="#" class="list-group-item" style="background-color:#ffffff;">5. Clientes.</a>
+                        <a href="#" class="list-group-item" style="background-color:#ffffff;">6. Servicios.</a>
+                        <a href="#" class="list-group-item" style="background-color:#ffffff;">7. Solicitud de Servicios.</a>
+                        <a href="#" class="list-group-item" style="background-color:#ffffff;">8. Tareas.</a>
+                        <a href="#" class="list-group-item" style="background-color:#ffffff;">9. Accesos de usuario.</a>
+                       
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <strong>
+            <a class="far fa-question-circle fa-lg" data-toggle="modal" data-target="#exampleModalLong">
+            </a>
+
+        </strong>
+        
 
     </div>
     <!-- Default to the left -->

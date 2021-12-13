@@ -112,12 +112,12 @@ function filtar() {
 
                         "<h4 class='card-subtitle mb-2 text-muted'>Nombre cliente :  </h4>" +
                         "<p>" + e.cliente.nombre + " " + e.cliente.apellidos + "</p>" +
-                        "<h4 class='card-subtitle mb-2 text-muted'>Telefono cliente</h4>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Teléfono cliente</h4>" +
                         "<p>" + e.cliente.telefono + "</p>" +
 
                         "<h4 class='ard-subtitle mb-2 text-muted'>Nombre tarea :  </h4>" +
                         "<p>" + e.operacion.nombre + "</p>" +
-                        "<h4 class='card-subtitle mb-2 text-muted'>Descripcion tarea :  </h4>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Descripción tarea :  </h4>" +
                         "<p>" + e.descripcionTarea + "</p>" +
 
 
@@ -235,12 +235,12 @@ function filtar() {
 
                         "<h4 class='card-subtitle mb-2 text-muted'>Nombre cliente :  </h4>" +
                         "<p>" + e.cliente.nombre + " " + e.cliente.apellidos + "</p>" +
-                        "<h4 class='card-subtitle mb-2 text-muted'>Telefono cliente</h4>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Teléfono cliente</h4>" +
                         "<p>" + e.cliente.telefono + "</p>" +
 
                         "<h4 class='ard-subtitle mb-2 text-muted'>Nombre tarea :  </h4>" +
                         "<p>" + e.operacion.nombre + "</p>" +
-                        "<h4 class='card-subtitle mb-2 text-muted'>Descripcion tarea :  </h4>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Descripción tarea :  </h4>" +
                         "<p>" + e.descripcionTarea + "</p>" +
 
 
@@ -330,12 +330,12 @@ function filtar() {
 
                         "<h4 class='card-subtitle mb-2 text-muted'>Nombre cliente :  </h4>" +
                         "<p>" + e.cliente.nombre + " " + e.cliente.apellidos + "</p>" +
-                        "<h4 class='card-subtitle mb-2 text-muted'>Telefono cliente</h4>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Teléfono cliente</h4>" +
                         "<p>" + e.cliente.telefono + "</p>" +
 
                         "<h4 class='ard-subtitle mb-2 text-muted'>Nombre tarea :  </h4>" +
                         "<p>" + e.operacion.nombre + "</p>" +
-                        "<h4 class='card-subtitle mb-2 text-muted'>Descripcion tarea :  </h4>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Descripción tarea :  </h4>" +
                         "<p>" + e.descripcionTarea + "</p>" +
 
 
@@ -428,12 +428,12 @@ function filtar() {
 
                         "<h4 class='card-subtitle mb-2 text-muted'>Nombre cliente :  </h4>" +
                         "<p>" + e.cliente.nombre + " " + e.cliente.apellidos + "</p>" +
-                        "<h4 class='card-subtitle mb-2 text-muted'>Telefono cliente</h4>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Teléfono cliente</h4>" +
                         "<p>" + e.cliente.telefono + "</p>" +
 
                         "<h4 class='ard-subtitle mb-2 text-muted'>Nombre tarea :  </h4>" +
                         "<p>" + e.operacion.nombre + "</p>" +
-                        "<h4 class='card-subtitle mb-2 text-muted'>Descripcion tarea :  </h4>" +
+                        "<h4 class='card-subtitle mb-2 text-muted'>Descripción tarea :  </h4>" +
                         "<p>" + e.descripcionTarea + "</p>" +
 
 

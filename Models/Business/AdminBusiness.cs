@@ -20,6 +20,16 @@ namespace PrivTours.Models.Business
             _dbContext = context;
         }
 
+        public DateTime fechaInicioTarea { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime fechaFinTarea { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+       
+
+        public Task<List<Tarea>> ObterTareas()
+        {
+            throw new NotImplementedException();
+        }
+
         public ReporteDashboardViewModel ReporteDashboar()
 
         {
@@ -34,6 +44,9 @@ namespace PrivTours.Models.Business
 
             return reporte;
         }
+
+     
+
 
 
 
