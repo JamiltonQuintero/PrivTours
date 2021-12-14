@@ -138,6 +138,12 @@ namespace PrivTours.Controllers
         }
 
         [Authorize()]
+        private async Task<List<UsuarioIdentity>> ObtenerUsuarioEnRol(string rolName)
+        {
+            return new List<UsuarioIdentity>(await _userManager.GetUsersInRoleAsync(rolName));
+        }
+
+        [Authorize()]
         public IActionResult CrearRol()
         {
             return View();
@@ -189,14 +195,25 @@ namespace PrivTours.Controllers
 
             try
             {
+
                 var rol = await _roleManager.FindByIdAsync(roleIdentityId);
                 if (rol == null)
                 {
                     ViewData["Error"] = $"El rol con id {roleIdentityId} no se encontró";
                     return View("NotFound");
                 }
-                await _roleManager.DeleteAsync(rol);
-                return Json(new { status = true });
+
+                var usersInRole = await ObtenerUsuarioEnRol(rol.Name);
+
+                if (usersInRole.Count > 0)
+                {
+                    return Json(new { status = false , data = $"El rol {rol.Name} tiene usuarios, por lo tanto no puede ser elimninado" });
+
+                } else
+                {
+                    await _roleManager.DeleteAsync(rol);
+                    return Json(new { status = true });
+                }      
             }
             catch (Exception e)
             {
@@ -204,6 +221,8 @@ namespace PrivTours.Controllers
             }
 
         }
+
+
 
         [Authorize()]
         public async Task<IActionResult> EditarRol(string id)

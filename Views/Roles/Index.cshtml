@@ -190,6 +190,13 @@
                                     showConfirmButton: false,
                                     timer: 5000
                                 })
+                            } else if (!result.status && result.data) {
+                                console.log("ERROR!!");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: result.data,
+                                })
                             } else {
                                 console.log("ERROR!!");
                                 Swal.fire({
