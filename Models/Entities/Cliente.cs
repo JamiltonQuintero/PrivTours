@@ -23,7 +23,7 @@ namespace PrivTours.Models.Entities
 
         public string Apellidos { get; set; }
 
-        [DisplayName("Correo electronico")]
+        [DisplayName("Correo electrónico")]
         [Required(ErrorMessage = "Debes ingresar un email.")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
@@ -37,6 +37,8 @@ namespace PrivTours.Models.Entities
         [Required(ErrorMessage = "El teléfono es requerido.")]
         [DataType(DataType.PhoneNumber)]
         public int TelefonoEmer { get; set; }
+
+        [DisplayName("País")]
         public string Pais { get; set; }
         [DisplayName("Tipo de documento")]
         public int IdTipoDoc { get; set; }
